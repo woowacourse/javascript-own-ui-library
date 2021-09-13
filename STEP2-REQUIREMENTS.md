@@ -1,4 +1,4 @@
-<p align="middle">Level4 - Step 1</p>
+<p align="middle">Level4 - Step 2</p>
 <h2 align="middle">상태 관리 만들기</h2>
 
 > ✔️ 원활한 리뷰를 위해 **10월 27일(수)** 까지 PR 해주세요.
