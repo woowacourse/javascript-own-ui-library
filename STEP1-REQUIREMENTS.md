@@ -17,4 +17,5 @@
 ### 심화 요구사항
 
 - [ ] 나만의 JSX Parser 구현
+- [ ] 동일한 Element인 경우 Key 속성을 만들어 순서를 지정하도록 구현
 - [ ] Router 구현 후 Query Parameter를 사용해 초기 값 정의
