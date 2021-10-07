@@ -1,0 +1,35 @@
+{
+  "name": "javascript-own-ui-library",
+  "packageManager": "yarn@3.0.2",
+  "author": {
+    "name": "Danny Kim",
+    "email": "likepeppermint@gmail.com",
+    "url": "https://velog.io/@bigsaigon333"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --fix --cache **/*.js",
+    "format": "prettier --write --ignore-unknown .",
+    "prepare": "husky install"
+  },
+  "engines": {
+    "node": ">=12.18.3"
+  },
+  "types": "module",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-plugin-import": "^2.24.2",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "nodemon": "^2.0.13",
+    "prettier": "2.3.1"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*": "prettier --write --ignore-unknown"
+  }
+}
