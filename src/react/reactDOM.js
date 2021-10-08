@@ -1,8 +1,8 @@
-export const render = (vDom, container) => {
+const render = (vNode, container) => {
   const {
     type,
     props: { children, ...attrs },
-  } = vDom;
+  } = vNode;
 
   const node = Object.entries(attrs).reduce(
     (node, [key, value]) => {
