@@ -1,4 +1,4 @@
-const render = (vNode, container) => {
+const commit = (vNode, container) => {
   const {
     type,
     props: { children, ...attrs },
@@ -17,9 +17,9 @@ const render = (vNode, container) => {
 
   if (!children) {
   } else if (Array.isArray(children)) {
-    children.forEach(child => render(child, node));
+    children.forEach(child => commit(child, node));
   } else if (typeof children === 'object') {
-    render(children, node);
+    commit(children, node);
   } else {
     throw new Error('Invalid children type.');
   }
@@ -29,6 +29,23 @@ const render = (vNode, container) => {
   return node;
 };
 
-export default {
-  render,
-};
+const ReactDOM = (() => {
+  let latestVNode = null;
+  let root = null;
+
+  return {
+    render(vNode, container) {
+      root = container;
+      latestVNode = vNode;
+
+      return commit(vNode(), container);
+    },
+    update() {
+      //TODO: diff
+      root.innerHTML = '';
+      commit(latestVNode(), root);
+    },
+  };
+})();
+
+export default ReactDOM;

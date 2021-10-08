@@ -29,7 +29,9 @@ const createElement = (type, props, ...children) => {
   };
 };
 
-export default {
+const React = {
   createElement,
   createTextNode,
 };
+
+export default React;
