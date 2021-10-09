@@ -8,7 +8,7 @@
 ### 필수 요구사항
 
 - [x] VirtualDOM 생성 팩토리 함수 구현 (aka createElement)
-- [ ] 렌더러 구현
+- [x] 렌더러 구현
 - [ ] 직접 구현한 렌더러와 VirtualDOM으로 Counter App 렌더링
 - [ ] DOM Node 비교
 - [ ] 업데이트 DOM Node
