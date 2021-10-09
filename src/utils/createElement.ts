@@ -1,8 +1,8 @@
-import type { MyElement } from "./types";
+import type { MyElementNode } from "./types";
 
 const createElement = (
   tagName: string,
-  { props, children }: Pick<MyElement, "props" | "children">
+  { props, children }: Pick<MyElementNode, "props" | "children">
 ) => ({
   tagName,
   props,

@@ -1,6 +1,8 @@
-import type { MyElement } from "./types";
+import type { MyNode } from "./types";
 
-const render = (element: MyElement | string, container: Element) => {
+let old: MyNode | null = null;
+
+const sync = (element: MyNode, container: Element) => {
   if (typeof element === "string") {
     container.innerHTML += element;
     return;
@@ -17,6 +19,16 @@ const render = (element: MyElement | string, container: Element) => {
   }
 
   container.append(node);
+};
+
+const render = (element: MyNode, container: Element) => {
+  if (old) {
+    // 비교 알고리즘
+  }
+
+  sync(element, container);
+
+  old = element;
 };
 
 export default render;
