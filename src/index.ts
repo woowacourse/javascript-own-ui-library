@@ -23,6 +23,8 @@ const dom = createElement("div", {
   ],
 });
 
+console.log(dom);
+
 const $root = document.querySelector("#root");
 
 if ($root) render(dom, $root);
