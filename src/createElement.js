@@ -38,6 +38,10 @@ const createElement = (tagName, params) => {
     node.children = params.children;
   }
 
+  if (params.eventListener) {
+    Object.entries(params.eventListener).forEach(([key, value]) => (node.eventListener[key] = value));
+  }
+
   return node;
 };
 

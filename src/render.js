@@ -1,3 +1,4 @@
+import Sunny from './Sunny.js';
 import { isEmptyObject } from './utils/objectUtils.js';
 
 const createDomNode = (sunnyNode) => {
@@ -32,14 +33,11 @@ const render = (element, prevElement) => {
   /* elem, prevElement 비교 */
 
   const current = createDomNode(element);
-
-  console.log(current);
+  const parsedPrevEelement = Sunny.parseDomElement(prevElement);
 
   /* 변경사항이 감지되면 무조건 전체 갈아끼움. */
   document.querySelector('#root').innerHTML = '';
   document.querySelector('#root').append(current);
-
-  // console.dir(prevElement);
 };
 
 export default render;
