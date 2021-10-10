@@ -103,6 +103,7 @@ export const parse = (template, parent) => {
 
       if (value.length > 0) {
         const node = new TextNode(value);
+
         parent.append(node);
       }
       indexStart = indexTextEnd + 1;
