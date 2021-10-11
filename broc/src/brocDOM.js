@@ -123,6 +123,10 @@ class VDOM {
       throw TypeError("Invalid parameter. 'container' is expected to be 'HTMLElement'");
     }
 
+    if (!container.id) {
+      throw Error("'container' must have own id");
+    }
+
     this.element = element;
     this.container = container;
     this.stored = null;
@@ -149,14 +153,16 @@ const render = (() => {
   const VDOM_MAP = new Map();
 
   return (element, container) => {
-    const currentVDOM = VDOM_MAP.get(container) ?? new VDOM(element, container);
+    stateController.reset(container.id);
+
+    const currentVDOM = VDOM_MAP.get(container.id) ?? new VDOM(element, container);
+
+    stateController.registerRenderer(currentVDOM.updateDOM.bind(currentVDOM));
 
     if (!VDOM_MAP.has(container)) {
       currentVDOM.renderVDOMtoDOM();
-      VDOM_MAP.set(container, currentVDOM);
+      VDOM_MAP.set(container.id, currentVDOM);
     }
-
-    stateController.reset(currentVDOM.updateDOM.bind(currentVDOM));
   };
 })();
 

@@ -34,9 +34,10 @@ const createTextNode = (value) => createElement(TEXT_NODE, { value });
 const createFragment = (...children) => createElement(FRAGMENT, null, ...children);
 
 export const stateController = (() => {
+  const renderer = new Map();
   const states = [];
   let stateIndex = 0;
-  let renderer = null;
+  let currentContainerId = "";
 
   return {
     getStateIndex() {
@@ -47,6 +48,11 @@ export const stateController = (() => {
       return states[index];
     },
 
+    getRenderId() {
+      console.log(currentContainerId);
+      return currentContainerId;
+    },
+
     getStatesLength() {
       return states.length;
     },
@@ -55,17 +61,26 @@ export const stateController = (() => {
       states[index] = value;
     },
 
+    setStateIndexToNext() {
+      stateIndex++;
+    },
+
     isStatesLengthNormal() {
       return states.length >= stateIndex;
     },
 
-    reset(newRenderer) {
+    reset(containerId) {
+      console.log("reset");
       stateIndex = 0;
-      renderer = newRenderer;
+      currentContainerId = containerId;
     },
 
-    render() {
-      renderer();
+    registerRenderer(newRenderer) {
+      renderer.set(currentContainerId, newRenderer);
+    },
+
+    render(id) {
+      renderer.get(id)?.();
     },
   };
 })();
@@ -76,6 +91,7 @@ const useState = (initialState) => {
   }
 
   const currentIndex = stateController.getStateIndex();
+  const currentRenderId = stateController.getRenderId();
 
   if (stateController.getStatesLength() === currentIndex) {
     stateController.setState(currentIndex, initialState ?? null);
@@ -87,7 +103,7 @@ const useState = (initialState) => {
       typeof newState === "function" ? newState(stateController.getStateByIndex(currentIndex)) : newState
     );
 
-    stateController.render();
+    stateController.render(currentRenderId);
   };
 
   return [stateController.getStateByIndex(currentIndex), setState];
