@@ -49,7 +49,6 @@ export const stateController = (() => {
     },
 
     getRenderId() {
-      console.log(currentContainerId);
       return currentContainerId;
     },
 
@@ -70,7 +69,6 @@ export const stateController = (() => {
     },
 
     reset(containerId) {
-      console.log("reset");
       stateIndex = 0;
       currentContainerId = containerId;
     },
