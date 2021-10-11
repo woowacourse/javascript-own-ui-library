@@ -10,7 +10,7 @@ export type AttributeName = typeof attributeNameList[number];
 export type StyleName = typeof styleNameList[number];
 export type DomEvent = typeof domEventList[number];
 
-export interface ChrisElement {
+export interface VElement {
   type: TagType;
   attribute: {
     [key in AttributeName]?: string;
@@ -21,15 +21,17 @@ export interface ChrisElement {
   dataset: {
     [key: string]: string;
   };
-  children: string | Array<ChrisElement>;
+  children: string | Array<VElement>;
 }
 
-type EventHandler = {
+export type EventHandler = {
   event: DomEvent;
-  handler: Function;
+  callback: Function;
 };
 
 export type Component = (props?: any) => string;
+
+export type Renderer = () => void;
 
 // export type Component = (props?: any) => {
 //   template: string;

@@ -1,3 +1,6 @@
-import render from "./lib/render";
+import Root from "./components/Root";
+import initRenderer from "./lib/render";
 
-render("#root");
+const $root = document.querySelector("#root");
+
+initRenderer($root, Root);

@@ -6,10 +6,13 @@ import {
   idSeparatorUnit,
 } from "./constants";
 import { contains } from "./@types/guards";
-import { getRegExp } from "./utils";
 
 export const isPlainText = (template: string) => {
   return template.substring(0, 5) === "text:";
+};
+
+export const getPlainText = (template: string) => {
+  return template.substr(5).trim();
 };
 
 export const hasChildren = (template: string) => {
@@ -75,27 +78,30 @@ export const isStyleName = (
   return true;
 };
 
+export const getChildrenTemplates = (template: string, separator: string) => {
+  const [, ...childrenTemplates] = template.split(separator);
+
+  return childrenTemplates;
+};
+
 export const separateTemplate = (
   template: string,
   depth: number
 ): [string, string[]] => {
   const depthString = String(depth);
-  const separator = `(${depthString})`;
+  const separator = `\(${depthString}\)`;
   const separatorIndex = template.indexOf(separator);
-  const parentTemplate = template.substring(0, separatorIndex);
 
+  if (separatorIndex === -1) {
+    const parentTemplate = template.substring(0, template.length);
+
+    return [parentTemplate, []];
+  }
+
+  const parentTemplate = template.substring(0, separatorIndex);
   const childrenTemplates = getChildrenTemplates(template, separator);
 
-  const childrenTemplate = template.substring(
-    separatorIndex + 1,
-    template.length
-  );
-
   return [parentTemplate, childrenTemplates];
-};
-
-export const getChildrenTemplates = (template: string, separator: string) => {
-  return template.match(getRegExp(``)) ?? [];
 };
 
 export const getTagType = (template: string) => {
@@ -166,4 +172,3 @@ export const getStyles = (template: string) => {
   return styles;
 };
 
-export const getChildren = (template: string) => {};

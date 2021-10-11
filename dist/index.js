@@ -729,7 +729,6 @@ function render(id) {
     var $root = document.querySelector(id);
     var rootComponent = (0,_components_Root__WEBPACK_IMPORTED_MODULE_1__["default"])();
     var rootElement = createElement(rootComponent);
-    console.log("rootElement", rootElement);
     var rootHTMLElement = createHTMLElement(rootElement);
     $root.appendChild(rootHTMLElement);
     setEvents();
