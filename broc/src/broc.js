@@ -1,15 +1,17 @@
-import { FRAGMENT, TEXT_NODE } from "./constants/broc.js";
+import { EMPTY_ELEMENT, FRAGMENT, TEXT_NODE } from "./constants/broc.js";
 
 const createChildren = (children) =>
-  children
-    .filter((child) => child !== undefined && child !== null && typeof child !== "boolean")
-    .reduce((fixedChildren, child) => {
-      if (Array.isArray(child)) {
-        return [...fixedChildren, ...createChildren(child)];
-      }
+  children.reduce((fixedChildren, child) => {
+    if (child === undefined || child === null || typeof child === "boolean") {
+      return [...fixedChildren, createEmptyElement()];
+    }
 
-      return [...fixedChildren, child?.type ? child : createTextNode(child)];
-    }, []);
+    if (Array.isArray(child)) {
+      return [...fixedChildren, ...createChildren(child)];
+    }
+
+    return [...fixedChildren, child?.type ? child : createTextNode(child)];
+  }, []);
 
 const createElement = (type, props = {}, ...children) => {
   if (typeof type !== "string" && typeof type !== "function") {
@@ -32,6 +34,8 @@ const createElement = (type, props = {}, ...children) => {
 const createTextNode = (value) => createElement(TEXT_NODE, { value });
 
 const createFragment = (...children) => createElement(FRAGMENT, null, ...children);
+
+const createEmptyElement = () => createElement(EMPTY_ELEMENT);
 
 export const stateController = (() => {
   const renderer = new Map();
