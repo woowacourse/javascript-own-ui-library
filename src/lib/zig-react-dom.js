@@ -1,5 +1,6 @@
-function _render(element, container) {
+const _render = (element, container) => {
   const { type, props } = element;
+
   const initialNode = type === 'text' ? document.createTextNode('') : document.createElement(type);
 
   const vDom = Object.entries(props).reduce((totalNode, [key, value]) => {
@@ -10,20 +11,12 @@ function _render(element, container) {
     return totalNode;
   }, initialNode);
 
-  // REFACTOR: ts interface로 수정 (함수 바디 상단부에서)
-  props.children.forEach((child) => {
-    if (typeof child === 'object') {
-      _render(child, vDom);
-    } else {
-      // {} 형태의 template tag로 들어오는 경우
-      const textNode = document.createTextNode(child);
-      vDom.appendChild(textNode);
-    }
-  });
-  container.appendChild(vDom);
-}
+  props.children.forEach((child) => _render(child, vDom));
 
-function render(component, container) {
+  container.appendChild(vDom);
+};
+
+const render = (component, container) => {
   if (typeof component !== 'function') {
     console.error('component type should be function');
 
@@ -33,7 +26,7 @@ function render(component, container) {
   const { type, props } = component();
 
   _render({ type, props }, container);
-}
+};
 
 const ReactDOM = {
   render,
