@@ -1,5 +1,5 @@
 import { stateController } from "./broc.js";
-import { FRAGMENT, TEXT_NODE } from "./constants/broc.js";
+import { EMPTY_ELEMENT, FRAGMENT, TEXT_NODE } from "./constants/broc.js";
 
 const setEventHandlers = (() => {
   const eventMap = new Map();
@@ -56,7 +56,7 @@ const createFragmentFromVDOM = (vdomNode) => {
 
   const fragment = document.createDocumentFragment();
 
-  fragment.append(...vdomNode.props.children.map((child) => createDOMTreeFromVDOM(child)));
+  fragment.append(...vdomNode.props.children.map((child) => createDOMTreeFromVDOM(child)).filter((node) => node));
 
   return fragment;
 };
@@ -73,7 +73,7 @@ const createDOMNodeFromVDOM = (vdomNode) => {
   const $root = document.createElement(vdomNode.type);
 
   setDOMAttributesWithProps($root, vdomNode.props);
-  $root.append(...vdomNode.props.children.map((child) => createDOMTreeFromVDOM(child)));
+  $root.append(...vdomNode.props.children.map((child) => createDOMTreeFromVDOM(child)).filter((node) => node));
 
   return $root;
 };
@@ -88,6 +88,8 @@ const createDOMTreeFromVDOM = (vdomNode) => {
       return createFragmentFromVDOM(vdomNode);
     case TEXT_NODE:
       return createTextNodeFromVDOM(vdomNode);
+    case EMPTY_ELEMENT:
+      return null;
     default:
       return createDOMNodeFromVDOM(vdomNode);
   }
@@ -138,6 +140,22 @@ class VDOM {
     this.stored = createVDOMNode(this.element);
   }
 
+  // diff() {
+  //   const newVDOM = createVDOMNode(this.element);
+
+  //   const _diff = (newVDOMNode, storedVDOMNode, parent) => {
+  //     if (newVDOMNode.type !== storedVDOMNode.type) {
+  //       if (storedVDOMNode.type === FRAGMENT) {
+  //         removeChildrenAll(parent);
+  //         parent.append(createDOMNodeFromVDOM(newVDOMNode));
+  //       } else {
+  //       }
+  //     }
+  //   };
+
+  //   return _diff(newVDOM, this.stored, this.container);
+  // }
+
   renderVDOMtoDOM() {
     this.container.append(createDOMTreeFromVDOM(this.stored));
   }
@@ -146,6 +164,11 @@ class VDOM {
     this.container.innerHTML = "";
     this.setVDOM();
     this.renderVDOMtoDOM();
+
+    // this.element를 통해 새로운 vdom 생성
+    // 새로운 vdom과 stored를 비교
+    // 변화가 있는 dom의 좌표와 변경 사항을 저장
+    // 변경사항을 dom에 반영
   }
 }
 
@@ -155,7 +178,7 @@ const render = (() => {
   return (element, container) => {
     stateController.reset(container.id);
 
-    const currentVDOM = VDOM_MAP.get(container.id) ?? new VDOM(element, container.id);
+    const currentVDOM = VDOM_MAP.get(container.id) ?? new VDOM(element, container);
 
     stateController.registerRenderer(currentVDOM.updateDOM.bind(currentVDOM));
 
