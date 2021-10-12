@@ -1,3 +1,4 @@
+import { TEXT_NODE } from './constants/constant.js';
 import ReactDOM from './reactDOM.js';
 
 export const useState = (() => {
@@ -19,7 +20,7 @@ export const useState = (() => {
 
 const createTextNode = value => {
   return {
-    type: 'TEXT_NODE',
+    type: TEXT_NODE,
     props: {
       nodeValue: value,
     },

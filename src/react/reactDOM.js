@@ -1,3 +1,5 @@
+import { TEXT_NODE } from './constants/constant.js';
+
 const commit = (vNode, container) => {
   const {
     type,
@@ -10,7 +12,7 @@ const commit = (vNode, container) => {
 
       return node;
     },
-    type === 'TEXT_NODE'
+    type === TEXT_NODE
       ? document.createTextNode('')
       : document.createElement(type)
   );
@@ -35,7 +37,7 @@ const ReactDOM = (() => {
 
   return {
     render(vNode, container) {
-      if (!latestVNode || !root) {
+      if (vNode && container) {
         root = container;
         latestVNode = vNode;
 

@@ -1,7 +1,7 @@
 import React, { useState } from './react/react.js';
 import ReactDOM from './react/reactDOM.js';
 
-const vDom = () => {
+const App = () => {
   const [count, setCount] = useState(0);
 
   return React.createElement(
@@ -46,4 +46,4 @@ const vDom = () => {
   );
 };
 
-ReactDOM.render(vDom, document.getElementById('root'));
+ReactDOM.render(App, document.getElementById('root'));
