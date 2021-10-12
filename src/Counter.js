@@ -3,11 +3,13 @@ import { Broc } from "../broc/index.js";
 const Counter = () => {
   const [count, setCount] = Broc.useState(0);
 
-  const increase = () => {
+  const onIncreaseButtonClick = () => {
     setCount((prev) => prev + 1);
   };
 
-  const decrease = () => setCount((prev) => prev - 1);
+  const onDecreaseButtonClick = () => setCount((prev) => prev - 1);
+
+  const onReset = () => setCount(0);
 
   return Broc.createElement(
     "div",
@@ -16,9 +18,9 @@ const Counter = () => {
     Broc.createElement(
       "div",
       { className: "btn-group" },
-      Broc.createElement("button", null, Broc.createElement("strong", { onClick: decrease }, "-")),
-      Broc.createElement("button", null, Broc.createElement("strong", null, "RESET")),
-      Broc.createElement("button", null, Broc.createElement("strong", { onClick: increase }, "+"))
+      Broc.createElement("button", null, Broc.createElement("strong", { onClick: onDecreaseButtonClick }, "-")),
+      Broc.createElement("button", null, Broc.createElement("strong", { onClick: onReset }, "RESET")),
+      Broc.createElement("button", null, Broc.createElement("strong", { onClick: onIncreaseButtonClick }, "+"))
     )
   );
 };
