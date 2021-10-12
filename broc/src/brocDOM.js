@@ -155,11 +155,11 @@ const render = (() => {
   return (element, container) => {
     stateController.reset(container.id);
 
-    const currentVDOM = VDOM_MAP.get(container.id) ?? new VDOM(element, container);
+    const currentVDOM = VDOM_MAP.get(container.id) ?? new VDOM(element, container.id);
 
     stateController.registerRenderer(currentVDOM.updateDOM.bind(currentVDOM));
 
-    if (!VDOM_MAP.has(container)) {
+    if (!VDOM_MAP.has(container.id)) {
       currentVDOM.renderVDOMtoDOM();
       VDOM_MAP.set(container.id, currentVDOM);
     }
