@@ -1,31 +1,8 @@
-import createElement from "./utils/createElement";
-import render from "./utils/render";
+import MyDOM from "./myReact/render";
 import "./index.css";
+import App from "./App";
 
-const dom = createElement("div", {
-  props: { className: "container" },
-  children: [
-    createElement("span", { props: { className: "count" }, children: ["0"] }),
-    createElement("div", {
-      props: { className: "btn-group" },
-      children: [
-        createElement("button", {
-          children: [createElement("strong", { children: ["-"] })],
-        }),
-        createElement("button", {
-          children: [createElement("strong", { children: ["RESET"] })],
-        }),
-        createElement("button", {
-          children: [createElement("strong", { children: ["+"] })],
-        }),
-      ],
-    }),
-  ],
-});
+const $root = document.querySelector<HTMLElement>("#root");
 
-console.log(dom);
-
-const $root = document.querySelector("#root");
-
-if ($root) render(dom, $root);
+if ($root) MyDOM.render(App, $root);
 else console.error("#root element를 찾지 못했습니다");
