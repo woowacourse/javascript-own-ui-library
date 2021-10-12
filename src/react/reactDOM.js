@@ -35,12 +35,13 @@ const ReactDOM = (() => {
 
   return {
     render(vNode, container) {
-      root = container;
-      latestVNode = vNode;
+      if (!latestVNode || !root) {
+        root = container;
+        latestVNode = vNode;
 
-      return commit(vNode(), container);
-    },
-    update() {
+        return commit(vNode(), container);
+      }
+
       //TODO: diff
       root.innerHTML = '';
       commit(latestVNode(), root);

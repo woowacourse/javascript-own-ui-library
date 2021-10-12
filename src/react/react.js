@@ -1,3 +1,22 @@
+import ReactDOM from './reactDOM.js';
+
+export const useState = (() => {
+  let state = null;
+
+  const setState = newState => {
+    state = newState;
+    ReactDOM.render();
+  };
+
+  return initialState => {
+    if (!state) {
+      state = initialState;
+    }
+
+    return [state, setState];
+  };
+})();
+
 const createTextNode = value => {
   return {
     type: 'TEXT_NODE',

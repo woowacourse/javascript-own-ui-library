@@ -1,17 +1,10 @@
-import React from './react/react.js';
+import React, { useState } from './react/react.js';
 import ReactDOM from './react/reactDOM.js';
 
-let state = {
-  count: 0,
-};
+const vDom = () => {
+  const [count, setCount] = useState(0);
 
-const setState = newState => {
-  state = { ...state, ...newState };
-  ReactDOM.update();
-};
-
-const vDom = () =>
-  React.createElement(
+  return React.createElement(
     'div',
     {
       className: 'container',
@@ -21,7 +14,7 @@ const vDom = () =>
       {
         className: 'count',
       },
-      state.count
+      count
     ),
     React.createElement(
       'div',
@@ -31,25 +24,26 @@ const vDom = () =>
       React.createElement(
         'button',
         {
-          onclick: () => setState({ count: state.count - 1 }),
+          onclick: () => setCount(count - 1),
         },
         React.createElement('strong', null, '-')
       ),
       React.createElement(
         'button',
         {
-          onclick: () => setState({ count: 0 }),
+          onclick: () => setCount(0),
         },
         React.createElement('strong', null, 'RESET')
       ),
       React.createElement(
         'button',
         {
-          onclick: () => setState({ count: state.count + 1 }),
+          onclick: () => setCount(count + 1),
         },
         React.createElement('strong', null, '+')
       )
     )
   );
+};
 
 ReactDOM.render(vDom, document.getElementById('root'));
