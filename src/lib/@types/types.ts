@@ -15,9 +15,6 @@ export interface VElement {
   style: {
     [key in StyleName]?: string;
   };
-  dataset: {
-    [key: string]: string;
-  };
   children: string | Array<VElement>;
 }
 
@@ -34,6 +31,6 @@ export type HandlerStorage = {
   [event in DomEvent]?: Handler[];
 };
 
-export type ElementStorage = {
-  [key: number]: Element;
+export type HTMLElementStorage = {
+  [key: number]: HTMLElement;
 };

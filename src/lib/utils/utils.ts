@@ -117,11 +117,11 @@ export const setVElementProperty = (
 };
 
 export const setHTMLElementAttributes = (
-  HTMLElement: HTMLElement,
+  Element: Element,
   attribute: VElement["attribute"]
 ) => {
   Object.keys(attribute).forEach((attributeName) => {
     // TODO : 여기 as string 어떻게 지우지?
-    HTMLElement.setAttribute(attributeName, attribute[attributeName] as string);
+    Element.setAttribute(attributeName, attribute[attributeName] as string);
   });
 };

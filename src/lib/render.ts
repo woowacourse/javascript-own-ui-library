@@ -75,7 +75,6 @@ const createVElement = (template: ReturnType<Component>, depth: number) => {
     attribute: {},
     style: {},
     children: [],
-    dataset: {},
   };
 
   setVElementProperty(vElement, getVElementProperty(noBlankParentTemplate));
@@ -148,9 +147,10 @@ const render = ($root: Element, rootComponent: Component) => {
   vStorage.initElementIndex();
 
   if (vDom) {
-    vStorage.updater(latestVDom, () => {
+    vStorage.compare(latestVDom, () => {
       renderHTML($root, rootElement, false);
     });
+    vStorage.initElementIndex();
     vStorage.setVDom(rootElement);
 
     return;

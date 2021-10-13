@@ -3,12 +3,12 @@ import {
   Handler,
   StateStorage,
   HandlerStorage,
-  ElementStorage,
+  HTMLElementStorage,
   DomEvent,
 } from "../@types/types";
 import { domEventList } from "../constants";
 import { getGlobalEventHandler } from "../eventHandler";
-import { setHTMLElementAttributes } from "../utils/utils";
+import { getHTMLElementStyles, setHTMLElementAttributes } from "../utils/utils";
 
 const addAllDefaultEventListener = (
   handlerStorage: HandlerStorage,
@@ -26,7 +26,7 @@ const addAllDefaultEventListener = (
 export default class VStorage {
   private stateStorage: StateStorage = {};
   private handlerStorage: HandlerStorage = {};
-  private elementStorage: ElementStorage = {};
+  private HTMLElementStorage: HTMLElementStorage = {};
   private VDom: VElement | null = null;
   private elementIndex: number = -1;
   private stateIndex: number = -1;
@@ -57,28 +57,68 @@ export default class VStorage {
     this.stateIndex = -1;
   }
 
-  compare(prevVElement: VElement, vElement: VElement, index: number) {
+  updater(prevVElement: VElement, vElement: VElement) {
+    this.increaseElementIndex();
+    const HTMLElement = this.HTMLElementStorage[this.elementIndex];
+
+    if (prevVElement.type !== vElement.type) {
+      return true;
+    }
+
+    if (typeof prevVElement.children !== typeof vElement.children) {
+      return true;
+    }
+
+    if (
+      Array.isArray(prevVElement.children) &&
+      Array.isArray(vElement.children) &&
+      prevVElement.children.length !== vElement.children.length
+    ) {
+      return true;
+    }
+
     if (
       JSON.stringify(prevVElement.attribute) !==
       JSON.stringify(vElement.attribute)
     ) {
-      const HTMLElement = this.elementStorage[index];
-      // setHTMLElementAttributes(HTMLElement, vElement.attribute);
+      setHTMLElementAttributes(HTMLElement, vElement.attribute);
+    }
+
+    if (JSON.stringify(prevVElement.style) !== JSON.stringify(vElement.style)) {
+      HTMLElement.setAttribute("style", getHTMLElementStyles(vElement.style));
+    }
+
+    if (
+      typeof prevVElement.children === "string" &&
+      typeof vElement.children === "string"
+    ) {
+      HTMLElement.innerText = vElement.children;
+    }
+
+    if (
+      typeof prevVElement.children !== "string" &&
+      typeof vElement.children !== "string"
+    ) {
+      prevVElement.children.forEach((child, index) => {
+        return this.updater(child, vElement.children[index] as VElement);
+      });
     }
   }
 
-  updater(latestVDom: VElement, onFindDifference: Function) {
-    // const $element = this.elementStorage[this.elementIndex];
-    // if (prevVDom.type !== latestVDom.type) {
-    // }
+  compare(latestVDom: VElement, onFindDifference: Function) {
+    if (!this.VDom) {
+      throw Error("업데이트 될 VDOM 이 초기화되지 않았습니다.");
+    }
 
-    if (JSON.stringify(this.VDom) !== JSON.stringify(latestVDom)) {
+    const distortionFound = this.updater(this.VDom, latestVDom);
+
+    if (distortionFound === true) {
       onFindDifference();
     }
   }
 
-  getElementStorage() {
-    return this.elementStorage;
+  getHTMLElementStorage() {
+    return this.HTMLElementStorage;
   }
 
   getStateStorage() {
@@ -110,7 +150,13 @@ export default class VStorage {
   }
 
   setElement(elementIndex: number, $element: Element) {
-    this.elementStorage[elementIndex] = $element;
+    if (!($element instanceof HTMLElement)) {
+      throw Error(
+        "HTMLElement 가 아닌 Element를 HTMLElementStorage에 넣으려고 하고 있습니다"
+      );
+    }
+
+    this.HTMLElementStorage[elementIndex] = $element;
   }
 
   setHandler(event: DomEvent, handler: Handler) {
