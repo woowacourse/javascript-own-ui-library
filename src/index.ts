@@ -1,3 +1,5 @@
+import "./index.css";
+
 import Root from "./components/Root";
 import initRenderer from "./lib/render";
 

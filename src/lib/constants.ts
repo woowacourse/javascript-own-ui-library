@@ -1,3 +1,5 @@
+import { DomEvent } from "./@types/types";
+
 export const tagTypeList = [
   "a",
   "abbr",
@@ -504,22 +506,17 @@ export const styleNameList = [
   "z-index",
 ] as const;
 
-export const domEventList = [
+export const domEventList: Array<DomEvent> = [
   "abort",
-  "afterprint",
   "animationend",
   "animationiteration",
   "animationstart",
-  "beforeprint",
-  "beforeunload",
   "blur",
   "canplay",
   "canplaythrough",
   "change",
   "click",
   "contextmenu",
-  "copy",
-  "cut",
   "dblclick",
   "drag",
   "dragend",
@@ -534,9 +531,6 @@ export const domEventList = [
   "focus",
   "focusin",
   "focusout",
-  "fullscreenchange",
-  "fullscreenerror",
-  "hashchange",
   "input",
   "invalid",
   "keydown",
@@ -546,7 +540,6 @@ export const domEventList = [
   "loadeddata",
   "loadedmetadata",
   "loadstart",
-  "message",
   "mousedown",
   "mouseenter",
   "mouseleave",
@@ -554,12 +547,6 @@ export const domEventList = [
   "mouseover",
   "mouseout",
   "mouseup",
-  "offline",
-  "online",
-  "open",
-  "pagehide",
-  "pageshow",
-  "paste",
   "pause",
   "play",
   "playing",
@@ -568,11 +555,9 @@ export const domEventList = [
   "resize",
   "reset",
   "scroll",
-  "search",
   "seeked",
   "seeking",
   "select",
-  "show",
   "stalled",
   "submit",
   "suspend",
@@ -583,11 +568,10 @@ export const domEventList = [
   "touchmove",
   "touchstart",
   "transitionend",
-  "unload",
   "volumechange",
   "waiting",
   "wheel",
-] as const;
+];
 
 // 만들어만 두고 연결은 나중에 시키자
 

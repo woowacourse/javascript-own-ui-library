@@ -1,23 +1,66 @@
-import { VElement, Component } from "./@types/types";
+import { Component, VElement } from "./@types/types";
+import VStorage from "./storage/storage";
+import store from "./store";
 import {
-  getAttributes,
-  getClasses,
   getIdCounts,
-  getIds,
   getPlainText,
-  getStyles,
-  getTagType,
   isPlainText,
   separateTemplate,
 } from "./template";
-import VStorage from "./storage/storage";
-import store from "./store";
+import {
+  getElementSelector,
+  getHTMLElementStyles,
+  getVElementProperty,
+  isAllAttributesMatch,
+  isAllStyleMatch,
+  isClassNamesExist,
+  setHTMLElementAttributes,
+  setVElementProperty,
+} from "./utils/utils";
 
-function createElement(template: ReturnType<Component>, depth: number) {
-  const vStorage = store.getCurrentVStorage();
-  vStorage.increaseElementIndex();
-  vStorage.initStateIndex();
+const setVElementChildren = (
+  vElement: VElement,
+  childrenTemplates: string[],
+  parentDepth: number
+) => {
+  if (childrenTemplates.length === 0) {
+    return;
+  }
 
+  if (
+    childrenTemplates.length !== 1 &&
+    childrenTemplates.some((childrenTemplate) => isPlainText(childrenTemplate))
+  ) {
+    throw Error(
+      "텍스트 자식 노드는 하나만 생성할 수 있으며 다른 엘리먼트들과 형제가 될수 없습니다"
+    );
+  }
+
+  const [firstChildTemplate] = childrenTemplates;
+
+  if (childrenTemplates.length === 1 && isPlainText(firstChildTemplate)) {
+    vElement.children = getPlainText(firstChildTemplate);
+  } else {
+    vElement.children = childrenTemplates.map((childrenTemplate) =>
+      createVElement(childrenTemplate, parentDepth + 1)
+    );
+  }
+};
+
+const setHTMLElementChildren = (
+  HTMLElement: HTMLElement,
+  children: VElement["children"]
+) => {
+  if (typeof children === "string") {
+    HTMLElement.appendChild(document.createTextNode(children));
+  } else {
+    children.forEach((child) => {
+      HTMLElement.appendChild(createHTMLElement(child));
+    });
+  }
+};
+
+const createVElement = (template: ReturnType<Component>, depth: number) => {
   const [parentTemplate, childrenTemplates] = separateTemplate(template, depth);
   const noBlankParentTemplate = parentTemplate
     .replace(/\n/g, "")
@@ -27,15 +70,7 @@ function createElement(template: ReturnType<Component>, depth: number) {
     throw Error("id 가 여럿인 태그를 만들 수 없습니다");
   }
 
-  if (
-    childrenTemplates.some(
-      (childrenTemplate) => getIdCounts(childrenTemplate) > 1
-    )
-  ) {
-    throw Error("자식 태그 중 id 가 여럿인 태그가 있습니다");
-  }
-
-  const element: VElement = {
+  const vElement: VElement = {
     type: "div",
     attribute: {},
     style: {},
@@ -43,102 +78,53 @@ function createElement(template: ReturnType<Component>, depth: number) {
     dataset: {},
   };
 
-  if (childrenTemplates.length > 0) {
-    if (
-      childrenTemplates.length !== 1 &&
-      childrenTemplates.some((childrenTemplate) =>
-        isPlainText(childrenTemplate)
-      )
-    ) {
-      throw Error(
-        "텍스트 자식 노드는 하나만 생성할 수 있으며 다른 엘리먼트들과 형제가 될수 없습니다"
-      );
-    }
+  setVElementProperty(vElement, getVElementProperty(noBlankParentTemplate));
+  setVElementChildren(vElement, childrenTemplates, depth);
 
-    const [firstChildTemplate] = childrenTemplates;
+  return vElement;
+};
 
-    if (childrenTemplates.length === 1 && isPlainText(firstChildTemplate)) {
-      element.children = getPlainText(firstChildTemplate);
-    } else {
-      element.children = childrenTemplates.map((childrenTemplate) =>
-        createElement(childrenTemplate, depth + 1)
-      );
-    }
-  }
-
-  const tagType = getTagType(noBlankParentTemplate);
-  element.type = tagType;
-
-  const Ids = getIds(noBlankParentTemplate);
-
-  if (Ids) {
-    const [id] = Ids;
-    element.attribute.id = id;
-  }
-
-  const classes = getClasses(noBlankParentTemplate);
-
-  if (classes) {
-    element.attribute.class = classes.join(" ");
-  }
-
-  const attributes = getAttributes(noBlankParentTemplate);
-
-  if (attributes) {
-    attributes.forEach(([attributeName, attributeValue]) => {
-      element.attribute[attributeName] = attributeValue;
-    });
-  }
-
-  const styles = getStyles(noBlankParentTemplate);
-
-  if (styles) {
-    styles.forEach(([styleName, styleValue]) => {
-      element.style[styleName] = styleValue;
-    });
-  }
-
-  return element;
-}
-
-function createHTMLElement(element: VElement): HTMLElement {
-  const { type, attribute, style, children } = element;
+const createHTMLElement = (vElement: VElement): HTMLElement => {
+  const { type, attribute, style, children } = vElement;
   const vStorage = store.getCurrentVStorage();
-  const elementIndex = vStorage.getCurrentElementIndex();
-
+  vStorage.increaseElementIndex();
+  const elementIndex = vStorage.getElementIndex();
   const HTMLElement = document.createElement(type);
-  Object.keys(attribute).forEach((attributeName) => {
-    // TODO : 여기 as string 어떻게 지우지?
-    HTMLElement.setAttribute(attributeName, attribute[attributeName] as string);
-  });
 
-  const elementStyles = Object.keys(style)
-    .map((styleName) => `${styleName}:${style[styleName]}`)
-    .join(";");
-  HTMLElement.setAttribute("style", elementStyles);
-
-  if (typeof children === "string") {
-    HTMLElement.appendChild(document.createTextNode(children));
-  } else {
-    children.forEach((child) => {
-      HTMLElement.appendChild(createHTMLElement(child));
-    });
-  }
-
+  setHTMLElementAttributes(HTMLElement, attribute);
   HTMLElement.setAttribute("data-element-index", String(elementIndex));
 
+  const elementStyles = getHTMLElementStyles(style);
+  HTMLElement.setAttribute("style", elementStyles);
+
+  setHTMLElementChildren(HTMLElement, children);
+
   vStorage.setElement(elementIndex, HTMLElement);
-  vStorage.increaseElementIndex();
 
   return HTMLElement;
-}
+};
 
-function setEvents(
+const checkEventBindings = () => {
+  const vStorage = store.getCurrentVStorage();
+  const handlerStorage = vStorage.getHandlerStorage();
+
+  Object.keys(handlerStorage).forEach((event) => {
+    const eventHandlers = handlerStorage[event];
+    eventHandlers?.forEach((handler) => {
+      const selector = getElementSelector(handler.template);
+
+      if (!document.querySelector(selector)) {
+        throw Error(`${handler.template}에 해당하는 요소를 찾을 수 없습니다`);
+      }
+    });
+  });
+};
+
+const renderHTML = (
   $root: Element,
-  handlerStorage: VStorage["handlerStorage"]
-) {}
-
-function renderHTML($root: Element, rootElement: VElement, isInitial: boolean) {
+  rootElement: VElement,
+  isInitial: boolean
+) => {
   const rootHTMLElement = createHTMLElement(rootElement);
 
   if (isInitial) {
@@ -146,15 +132,17 @@ function renderHTML($root: Element, rootElement: VElement, isInitial: boolean) {
   } else {
     $root.replaceChild(rootHTMLElement, $root.firstChild!);
   }
-}
+};
 
-function render($root: Element, rootComponent: Component) {
+const render = ($root: Element, rootComponent: Component) => {
   store.setCurrentRootId($root.id);
+  const vStorage = store.getCurrentVStorage();
+  vStorage.initElementIndex();
+  vStorage.initStateIndex();
 
   const rootTemplate = rootComponent();
-  const rootElement = createElement(rootTemplate, 1);
+  const rootElement = createVElement(rootTemplate, 1);
   const latestVDom: VElement = rootElement;
-  const vStorage = store.getCurrentVStorage();
   const vDom = vStorage.getVDom();
 
   vStorage.initElementIndex();
@@ -163,18 +151,16 @@ function render($root: Element, rootComponent: Component) {
     vStorage.updater(latestVDom, () => {
       renderHTML($root, rootElement, false);
     });
+    vStorage.setVDom(rootElement);
 
     return;
   }
 
   vStorage.setVDom(rootElement);
   renderHTML($root, rootElement, true);
-  vStorage.initElementIndex();
 
-  console.log(vStorage.getStateStorage());
-
-  setEvents($root, vStorage.getHandlerStorage());
-}
+  checkEventBindings();
+};
 
 export default function initRenderer(
   $root: Element | null,
@@ -184,7 +170,7 @@ export default function initRenderer(
     throw Error("존재하지 않는 루트 태그입니다");
   }
 
-  const vStorage = new VStorage();
+  const vStorage = new VStorage($root);
 
   store.addRenderer($root.id, () => render($root, rootComponent));
   store.addVStorage($root.id, vStorage);

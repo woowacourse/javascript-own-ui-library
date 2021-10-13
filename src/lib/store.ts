@@ -1,13 +1,13 @@
 import { Renderer } from "./@types/types";
 import VStorage from "./storage/storage";
 
-type VStorageStore = {
+interface VStorageStore {
   [key: string]: VStorage;
-};
+}
 
-type RendererStore = {
+interface RendererStore {
   [key: string]: Renderer;
-};
+}
 
 class Store {
   private vStorageStore: VStorageStore = {};

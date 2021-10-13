@@ -2,29 +2,24 @@ import store from "../store";
 
 const useState = <T>(defaultValue: T): [T, (state: T) => void] => {
   const vStorage = store.getCurrentVStorage();
-  const currentElementIndex = vStorage.getCurrentElementIndex();
-  const currentStateIndex = vStorage.getCurrentStateIndex();
+  vStorage.increaseStateIndex();
+  const stateIndex = vStorage.getStateIndex();
 
-  if (!vStorage.getElementState(currentElementIndex)) {
-    vStorage.initState(currentElementIndex);
+  if (!vStorage.getState(stateIndex)) {
+    vStorage.setState(stateIndex, defaultValue);
   }
 
-  if (!vStorage.getState(currentElementIndex, currentStateIndex)) {
-    vStorage.addState(currentElementIndex, currentStateIndex, defaultValue);
-  }
+  const state = vStorage.getState(stateIndex);
 
-  const state = vStorage.getState(currentElementIndex, currentStateIndex);
   const setState = (newState: T) => {
     if (state === newState) {
       return;
     }
 
-    vStorage.setState(currentElementIndex, currentStateIndex, newState);
+    vStorage.setState(stateIndex, newState);
     const renderer = store.getCurrentRenderer();
     renderer();
   };
-
-  vStorage.increaseStateIndex();
 
   return [state, setState];
 };

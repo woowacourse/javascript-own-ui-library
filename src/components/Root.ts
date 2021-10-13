@@ -1,31 +1,49 @@
 import { Component } from "../lib/@types/types";
 import useState from "../lib/hooks/useState";
+import store from "../lib/store";
+import Counter from "./Counter";
 
 const Root: Component = () => {
-  // 그러네 여기서 이미 실행이 되야 하네 함수 컴포넌트가
+  const [count, setCount] = useState(0);
 
-  // return {
-  //   template:
-  //     "div#rootDivId.rootDivClass.rootDivClass2$background-color: red$width: 100px$height: 100px",
-  //   eventHandlers: [],
-  //   children: [],
-  // };
+  // count 가 똑같은 값이 계속 들어온다\
 
-  const [testText, setTestText] = useState<string>("test1");
-  const [testText2, setTestText2] = useState<string>("test2");
+  const onIncrease = () => {
+    const vStorage = store.getCurrentVStorage();
+    setCount(count + 1);
+  };
 
-  setTimeout(() => {
-    setTestText("hehheheheheeh");
-  }, 2000);
+  const onDecrease = () => {
+    const vStorage = store.getCurrentVStorage();
+    setCount(count - 1);
+  };
+
+  const onReset = () => {
+    const vStorage = store.getCurrentVStorage();
+    setCount(0);
+  };
 
   return `
-    div#id1.class1.class2$background-color: red$width: 100px$height: 100px
-      (1)div#id2$background-color: blue$width: 50px$height: 50px
-        (2)div#id2$background-color: tomato$width: 20px$height: 20px
-        (2)div#id2$background-color: tomato$width: 20px$height: 20px
-          (3)text: ${testText}
-      (1)div#id3$background-color: green$width: 50px$height: 50px
+    div.container
+      (1)span.count
+        (2)text: ${count}
+      (1)${Counter({
+        onIncrease,
+        onDecrease,
+        onReset,
+      })}
   `;
+
+  // return `
+  //   div#id1.class1.class2$background-color: red$width: 100px$height: 100px
+  //     (1)div#id2$background-color: blue$width: 50px$height: 50px
+  //       (2)div#id2$background-color: tomato$width: 20px$height: 20px
+  //       (2)div#id2$background-color: tomato$width: 20px$height: 20px
+  //         (3)text: ${testText}
+  //       (2)span
+  //         (3)text: ${testText2}
+  //     (1)div#id3$background-color: green$width: 50px$height: 50px
+  // `;
 };
 
 export default Root;

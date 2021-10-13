@@ -57,9 +57,7 @@ export const isAttributes = (
 };
 
 export const hasWrongStyleName = (styleNames: string[]) => {
-  return styleNames.some(
-    (styleName) => !contains<StyleName>(styleNameList, styleName)
-  );
+  return styleNames.some((styleName) => !contains(styleNameList, styleName));
 };
 
 export const isStyleName = (
@@ -115,7 +113,7 @@ export const getTagType = (template: string) => {
 };
 
 export const getIdCounts = (template: string) => {
-  return template.split("").filter((char) => char === idSeparatorUnit).length;
+  return template.match(/\#/g)?.length ?? 0;
 };
 
 export const getIds = (template: string) => {
@@ -129,7 +127,7 @@ export const getIds = (template: string) => {
 };
 
 export const getClasses = (template: string) => {
-  const classStrings = template.match(/\.([0-9]|[A-Z]|[a-z])*/g);
+  const classStrings = template.match(/\.([0-9]|[A-Z]|[a-z]|[-])*/g);
 
   if (!classStrings) {
     return null;

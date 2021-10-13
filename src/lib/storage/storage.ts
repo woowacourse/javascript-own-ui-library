@@ -1,51 +1,70 @@
-import { VElement, EventHandler } from "../@types/types";
-import store from "../store";
+import {
+  VElement,
+  Handler,
+  StateStorage,
+  HandlerStorage,
+  ElementStorage,
+  DomEvent,
+} from "../@types/types";
+import { domEventList } from "../constants";
+import { getGlobalEventHandler } from "../eventHandler";
+import { setHTMLElementAttributes } from "../utils/utils";
 
-interface StateStorage {
-  [key: number | string]: {
-    [index: number]: any;
-  };
-}
-
-interface handlerStorage {
-  [selector: string]: EventHandler;
-}
-
-interface elementStorage {
-  [key: number]: Element;
-}
-
-interface componentStorage {
-  [key: number]: VElement;
-}
+const addAllDefaultEventListener = (
+  handlerStorage: HandlerStorage,
+  $root: Element
+) => {
+  domEventList.forEach((domEvent) => {
+    handlerStorage[domEvent] = [];
+    const globalClickEventHandler = getGlobalEventHandler(
+      handlerStorage[domEvent]!
+    );
+    $root.addEventListener(domEvent, globalClickEventHandler);
+  });
+};
 
 export default class VStorage {
   private stateStorage: StateStorage = {};
-  private handlerStorage: handlerStorage = {};
-  private componentStorage: componentStorage = {};
-  private elementStorage: elementStorage = {};
+  private handlerStorage: HandlerStorage = {};
+  private elementStorage: ElementStorage = {};
   private VDom: VElement | null = null;
-  private elementIndex: number = 0;
-  private stateIndex: number = 0;
+  private elementIndex: number = -1;
+  private stateIndex: number = -1;
+  private $root: Element;
 
-  increaseStateIndex() {
-    this.stateIndex += 1;
-  }
-
-  initStateIndex() {
-    this.stateIndex = 0;
+  constructor(rootElement: Element) {
+    this.$root = rootElement;
+    addAllDefaultEventListener(this.handlerStorage, this.$root);
   }
 
   initState(elementIndex: number) {
-    this.stateStorage[elementIndex] = {};
+    this.stateStorage[elementIndex] = [];
   }
 
   increaseElementIndex() {
     this.elementIndex += 1;
   }
 
+  increaseStateIndex() {
+    this.stateIndex += 1;
+  }
+
   initElementIndex() {
-    this.elementIndex = 0;
+    this.elementIndex = -1;
+  }
+
+  initStateIndex() {
+    this.stateIndex = -1;
+  }
+
+  compare(prevVElement: VElement, vElement: VElement, index: number) {
+    if (
+      JSON.stringify(prevVElement.attribute) !==
+      JSON.stringify(vElement.attribute)
+    ) {
+      const HTMLElement = this.elementStorage[index];
+      // setHTMLElementAttributes(HTMLElement, vElement.attribute);
+    }
   }
 
   updater(latestVDom: VElement, onFindDifference: Function) {
@@ -56,81 +75,63 @@ export default class VStorage {
     if (JSON.stringify(this.VDom) !== JSON.stringify(latestVDom)) {
       onFindDifference();
     }
-
-    // 비교 끝난 후에 초기화
   }
 
   getElementStorage() {
     return this.elementStorage;
   }
 
-  getComponentStorage() {}
-
   getStateStorage() {
     return this.stateStorage;
   }
 
-  getElementState(elementIndex: number) {
-    return this.stateStorage[elementIndex];
+  getState(stateIndex: number) {
+    return this.stateStorage[stateIndex];
   }
 
-  getState(elementIndex: number, stateIndex: number) {
-    return this.stateStorage[elementIndex][stateIndex];
-  }
-
-  getCurrentStateIndex() {
-    return this.stateIndex;
-  }
-
-  getCurrentElementIndex() {
+  getElementIndex() {
     return this.elementIndex;
+  }
+
+  getStateIndex() {
+    return this.stateIndex;
   }
 
   getVDom() {
     return this.VDom;
   }
 
-  getCurrentElementState() {
-    return this.stateStorage[this.elementIndex];
-  }
-
   getHandlerStorage() {
     return this.handlerStorage;
+  }
+
+  getHandlers(event: DomEvent) {
+    return this.handlerStorage[event];
   }
 
   setElement(elementIndex: number, $element: Element) {
     this.elementStorage[elementIndex] = $element;
   }
 
-  addState(elementIndex: number, stateIndex: number, state: any) {
-    this.stateStorage[elementIndex][stateIndex] = state;
-  }
+  setHandler(event: DomEvent, handler: Handler) {
+    const eventHandlers = this.handlerStorage[event];
+    const prevHandlerIndex = eventHandlers?.findIndex(
+      (prevHandler) => prevHandler.template === handler.template
+    );
 
-  addHandler(selector: string, eventHandler: EventHandler) {
-    this.handlerStorage[selector] = eventHandler;
+    if (prevHandlerIndex !== -1) {
+      eventHandlers?.splice(prevHandlerIndex!, 1, handler);
+      return;
+    }
+
+    eventHandlers?.push(handler);
   }
 
   setVDom(rootElement: VElement) {
     this.VDom = rootElement;
   }
 
-  setState(elementIndex: number, stateIndex: number, newState: any) {
-    this.stateStorage[elementIndex][stateIndex] = newState;
-  }
-
-  updateState(state: any) {
-    if (!(this.elementIndex in this.stateStorage)) {
-      return;
-    }
-
-    this.stateStorage[this.elementIndex] = state;
-  }
-
-  updateHandler(selector: string, eventHandler: EventHandler) {
-    if (!(this.elementIndex in this.handlerStorage)) {
-      return;
-    }
-
-    this.handlerStorage[selector] = eventHandler;
+  setState(stateIndex: number, newState: any) {
+    this.stateStorage[stateIndex] = newState;
   }
 }

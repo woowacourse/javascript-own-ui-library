@@ -1,14 +1,11 @@
-import {
-  attributeNameList,
-  styleNameList,
-  tagTypeList,
-  domEventList,
-} from "../constants";
+import { attributeNameList, tagTypeList } from "../constants";
 
 export type TagType = typeof tagTypeList[number];
 export type AttributeName = typeof attributeNameList[number];
-export type StyleName = typeof styleNameList[number];
-export type DomEvent = typeof domEventList[number];
+export type StyleName = keyof Omit<CSSStyleDeclaration, number>;
+export type DomEvent = keyof GlobalEventHandlersEventMap;
+export type Component = (props?: any) => string;
+export type Renderer = () => void;
 
 export interface VElement {
   type: TagType;
@@ -24,17 +21,19 @@ export interface VElement {
   children: string | Array<VElement>;
 }
 
-export type EventHandler = {
-  event: DomEvent;
+export interface Handler {
+  template: string;
   callback: Function;
+}
+
+export type StateStorage = {
+  [key: number]: any;
 };
 
-export type Component = (props?: any) => string;
+export type HandlerStorage = {
+  [event in DomEvent]?: Handler[];
+};
 
-export type Renderer = () => void;
-
-// export type Component = (props?: any) => {
-//   template: string;
-//   eventHandlers?: EventHandler[];
-//   children?: string[];
-// };
+export type ElementStorage = {
+  [key: number]: Element;
+};
