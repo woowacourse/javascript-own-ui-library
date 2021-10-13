@@ -27,8 +27,10 @@ const diff = (oldNode: MyNode, newNode: MyNode) => {
       newNode.children![i] as MyNode
     );
 
-    if (hasDifference) return false;
+    if (hasDifference) return true;
   }
+
+  return false;
 };
 
 export default diff;
