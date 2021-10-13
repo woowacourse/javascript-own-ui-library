@@ -8,8 +8,8 @@ const removeLineBreaks = (str) => str.replace(/(\r\n|\n|\r)/gm, '');
  * @returns {Object[]} - [['class', 'container'], ...]
  */
 const parseAttributes = (attributesToBeParsed) => {
-  return attributesToBeParsed.map((v) => {
-    let [key, value] = v.split('=');
+  return attributesToBeParsed.map((attribute) => {
+    let [key, value] = attribute.split('=');
     if (!value) {
       value = true;
     } else {
