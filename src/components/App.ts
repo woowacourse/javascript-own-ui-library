@@ -1,7 +1,7 @@
 import useState from "../lib/hooks/useState";
 import Counter from "./Counter";
 
-const Root = () => {
+const App = () => {
   const [count, setCount] = useState(0);
 
   const onIncrease = () => {
@@ -28,4 +28,4 @@ const Root = () => {
   `;
 };
 
-export default Root;
+export default App;
