@@ -2,8 +2,11 @@ import { RootNode, Node, TextNode } from './class.js';
 
 const removeLineBreaks = (str) => str.replace(/(\r\n|\n|\r)/gm, '');
 
-/* @params attributesToBeParsed : ['class="container"'] */
-/* @return attributes : [['class', 'container']] */
+/**
+ * Returns attributes that are parsed
+ * @param {Object[]} attributesToBeParsed - ['class="container"', ...]
+ * @returns {Object[]} - [['class', 'container'], ...]
+ */
 const parseAttributes = (attributesToBeParsed) => {
   return attributesToBeParsed.map((v) => {
     let [key, value] = v.split('=');
@@ -80,9 +83,11 @@ const getTextNodeInfo = (t, indexStart) => {
   return { value: value.trim(), indexTextEnd };
 };
 
-/* @params template : string */
-/* @params parent : RootNode | TextNode */
-/* @return parent : RootNode | TextNode (children updated) */
+/**
+ * Returns parent node after update its children by parsing template
+ * @param {string} template
+ * @param {Object} parent - One of [ RootNode | TextNode ]
+ */
 export const parse = (template, parent) => {
   if (!parent) {
     parent = new RootNode();
