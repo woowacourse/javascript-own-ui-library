@@ -9,14 +9,10 @@ const removeLineBreaks = (str) => str.replace(/(\r\n|\n|\r)/gm, '');
  */
 const parseAttributes = (attributesToBeParsed) => {
   return attributesToBeParsed.map((attribute) => {
-    let [key, value] = attribute.split('=');
+    const [key, value] = attribute.split('=');
+    const safeValue = value !== undefined ? true : value.replace(/"/g, '');
 
-    if (value !== undefined) {
-      value = true;
-    } else {
-      value = value.replace(/"/g, '');
-    }
-    return [key, value];
+    return [key, safeValue];
   });
 };
 
