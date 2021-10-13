@@ -10,7 +10,8 @@ const removeLineBreaks = (str) => str.replace(/(\r\n|\n|\r)/gm, '');
 const parseAttributes = (attributesToBeParsed) => {
   return attributesToBeParsed.map((attribute) => {
     let [key, value] = attribute.split('=');
-    if (!value) {
+
+    if (value !== undefined) {
       value = true;
     } else {
       value = value.replace(/"/g, '');
@@ -88,10 +89,7 @@ const getTextNodeInfo = (t, indexStart) => {
  * @param {string} template
  * @param {Object} parent - One of [ RootNode | TextNode ]
  */
-export const parse = (template, parent) => {
-  if (!parent) {
-    parent = new RootNode();
-  }
+export const parse = (template, parent = new RootNode()) => {
   const t = removeLineBreaks(template);
   let indexStart = 0;
 
