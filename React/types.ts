@@ -1,5 +1,5 @@
 export interface ReactElement {
   nodeName: keyof HTMLElementTagNameMap;
-  children?: ReactElement[] | string;
+  children?: ReactElement[] | string | number;
   className?: string;
 }
