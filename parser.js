@@ -58,7 +58,7 @@ const getIndexOfClosingTag = (t, tagName, indexOpeningTagStart) => {
       cp++;
     }
   }
-  return closingIndexes.slice(-1)[0];
+  return closingIndexes.pop();
 };
 
 const getNodeInfo = (t, indexStart) => {
