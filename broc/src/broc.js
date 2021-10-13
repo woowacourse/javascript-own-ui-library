@@ -100,12 +100,13 @@ const useState = (initialState) => {
   }
 
   const setState = (newState) => {
-    stateController.setState(
-      currentIndex,
-      typeof newState === "function" ? newState(stateController.getStateByIndex(currentIndex)) : newState
-    );
+    const _newState =
+      typeof newState === "function" ? newState(stateController.getStateByIndex(currentIndex)) : newState;
 
-    stateController.render(currentRenderId);
+    if (stateController.getStateByIndex(currentIndex) !== _newState) {
+      stateController.setState(currentIndex, _newState);
+      stateController.render(currentRenderId);
+    }
   };
 
   return [stateController.getStateByIndex(currentIndex), setState];
