@@ -23,7 +23,7 @@ const myDOM: MyDOM = {
   _render() {
     const newNode = typeof this.node === "function" ? this.node() : this.node;
 
-    if (this.oldNode && diff(this.oldNode, newNode as MyNode)) return;
+    if (this.oldNode && !diff(this.oldNode, newNode as MyNode)) return;
 
     paint(newNode as MyNode, this.root as HTMLElement, true);
     this.oldNode = newNode;
