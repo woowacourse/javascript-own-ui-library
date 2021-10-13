@@ -109,6 +109,8 @@ const useState = (initialState) => {
     }
   };
 
+  stateController.setStateIndexToNext();
+
   return [stateController.getStateByIndex(currentIndex), setState];
 };
 
