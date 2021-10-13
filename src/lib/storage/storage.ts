@@ -90,7 +90,8 @@ export default class VStorage {
 
     if (
       typeof prevVElement.children === "string" &&
-      typeof vElement.children === "string"
+      typeof vElement.children === "string" &&
+      prevVElement.children !== vElement.children
     ) {
       HTMLElement.innerText = vElement.children;
     }
