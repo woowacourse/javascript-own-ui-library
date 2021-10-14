@@ -22,10 +22,6 @@ const createElement = (type, props, ...children) => {
       return createTextNode(child);
     }
 
-    if (!child || typeof child === 'boolean') {
-      return createTextNode(null);
-    }
-
     return child;
   });
 

@@ -1,37 +1,7 @@
-import { createTextNode } from './react.js';
 import { TEXT_NODE } from './constants/constant.js';
 
-const shouldUpdateNode = (oldNode, newNode) => {
-  return true;
-  // if (!oldNode) return true;
-
-  // if (oldNode.type !== newNode.type) {
-  //   return true;
-  // }
-
-  // const oldNodeAttrs = Object.entries(oldNode.props).map(([key, value]) =>
-  //   key === 'children' ? '' : value
-  // );
-  // const newNodeAttrs = Object.entries(newNode.props).map(([key, value]) =>
-  //   key === 'children' ? '' : value
-  // );
-
-  // if (oldNodeAttrs.some((attr, index) => attr !== newNodeAttrs[index])) {
-  //   return true;
-  // }
-
-  // return false;
-};
-
-const mountToDOM = (latestNode, newNode, container) => {
-  if (!newNode?.type || !newNode?.props) return;
-
-  const {
-    type,
-    props: { children, ...attrs },
-  } = newNode;
-
-  const DOMNode = Object.entries(attrs).reduce(
+const createDOMNode = (type, attrs) =>
+  Object.entries(attrs).reduce(
     (node, [key, value]) => {
       node[key] = value;
 
@@ -42,16 +12,28 @@ const mountToDOM = (latestNode, newNode, container) => {
       : document.createElement(type)
   );
 
-  if (shouldUpdateNode(latestNode, newNode)) {
-    container.append(DOMNode);
-  }
+const mountToDOM = (element, container) => {
+  if (
+    !element ||
+    typeof element === 'boolean' ||
+    !element?.type ||
+    !element?.props
+  )
+    return;
+
+  const {
+    type,
+    props: { children, ...attrs },
+  } = element;
+
+  const DOMNode = createDOMNode(type, attrs);
+
+  container.append(DOMNode);
 
   if (Array.isArray(children)) {
-    children.forEach((child, index) =>
-      mountToDOM(latestNode?.props?.children[index], child, DOMNode)
-    );
+    children.forEach(child => mountToDOM(child, DOMNode));
   } else {
-    mountToDOM(latestNode?.props?.children, children, DOMNode);
+    mountToDOM(children, DOMNode);
   }
 };
 
@@ -66,13 +48,10 @@ export const renderSubtreeIntoContainer = (() => {
       _element = element;
     }
 
-    const newNode =
-      typeof _element === 'function' ? _element() : createTextNode(_element);
+    _latestVNode = typeof _element === 'function' ? _element() : _element;
 
     _root.innerHTML = '';
-    mountToDOM(_latestVNode, newNode, _root);
-
-    _latestVNode = newNode;
+    mountToDOM(_latestVNode, _root);
   };
 })();
 
