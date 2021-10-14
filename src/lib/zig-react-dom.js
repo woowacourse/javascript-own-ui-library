@@ -5,7 +5,7 @@ const _render = (element, container) => {
 
   const vDom = Object.entries(props).reduce((totalNode, [key, value]) => {
     if (key !== 'children') {
-      totalNode[key] = value; // text일 때는 key === nodeValue
+      totalNode[key] = value;
     }
 
     return totalNode;
@@ -23,9 +23,9 @@ const render = (component, container) => {
     return;
   }
 
-  const { type, props } = component();
+  const element = component();
 
-  _render({ type, props }, container);
+  _render(element, container);
 };
 
 const ReactDOM = {

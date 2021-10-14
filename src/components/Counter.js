@@ -1,16 +1,14 @@
 import Zig from '../lib/zig-react';
 
 const Counter = () => {
-  const [count, setCount] = Zig.useState(0);
+  const [getCount, setCount] = Zig.useState(0);
 
   const decrease = () => {
-    console.log('decrease!');
-    setCount(count - 1);
+    setCount(getCount() - 1);
   };
 
   const increase = () => {
-    console.log('increase!');
-    setCount(count + 1);
+    setCount(getCount() + 1);
   };
 
   const reset = () => setCount(0);
@@ -18,7 +16,7 @@ const Counter = () => {
   return Zig.createElement(
     'div',
     { className: 'container' },
-    Zig.createElement('span', { className: 'count' }, count),
+    Zig.createElement('span', { className: 'count' }, getCount()),
     Zig.createElement(
       'div',
       { className: 'btn-group' },
