@@ -1,22 +1,5 @@
 import { TEXT_NODE } from './constants/constant.js';
-import ReactDOM from './reactDOM.js';
-
-export const useState = (() => {
-  let state = null;
-
-  const setState = newState => {
-    state = newState;
-    ReactDOM.render();
-  };
-
-  return initialState => {
-    if (!state) {
-      state = initialState;
-    }
-
-    return [state, setState];
-  };
-})();
+import { renderSubtreeIntoContainer } from './reactDOM.js';
 
 const createTextNode = value => {
   return {
@@ -49,9 +32,27 @@ const createElement = (type, props, ...children) => {
   };
 };
 
+//TODO: useState에서 다수의 상태를 다룰 수 있도록 변경
+const useState = (() => {
+  let state = null;
+
+  const setState = newState => {
+    state = newState;
+    renderSubtreeIntoContainer();
+  };
+
+  return initialState => {
+    if (!state) {
+      state = initialState;
+    }
+
+    return [state, setState];
+  };
+})();
+
 const React = {
   createElement,
-  createTextNode,
+  useState,
 };
 
 export default React;

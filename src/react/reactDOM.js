@@ -1,10 +1,18 @@
 import { TEXT_NODE } from './constants/constant.js';
 
-const commit = (vNode, container) => {
+const mountToDOM = (element, container) => {
+  if (typeof element === 'boolean' || !element) return;
+
+  if (!element?.type || !element?.props) {
+    container.append(element);
+
+    return;
+  }
+
   const {
     type,
     props: { children, ...attrs },
-  } = vNode;
+  } = element;
 
   const node = Object.entries(attrs).reduce(
     (node, [key, value]) => {
@@ -17,38 +25,47 @@ const commit = (vNode, container) => {
       : document.createElement(type)
   );
 
-  if (!children) {
-  } else if (Array.isArray(children)) {
-    children.forEach(child => commit(child, node));
-  } else if (typeof children === 'object') {
-    commit(children, node);
-  } else {
-    throw new Error('Invalid children type.');
-  }
-
   container.append(node);
 
-  return node;
+  if (Array.isArray(children)) {
+    children.forEach(child => mountToDOM(child, node));
+  } else {
+    mountToDOM(children, node);
+  }
 };
 
-const ReactDOM = (() => {
-  let latestVNode = null;
-  let root = null;
+export const renderSubtreeIntoContainer = (() => {
+  let _root = null;
+  let _element = null;
+  let _latestVNode = null;
 
-  return {
-    render(vNode, container) {
-      if (vNode && container) {
-        root = container;
-        latestVNode = vNode;
+  return (element, container) => {
+    if (container) {
+      _root = container;
+      _element = element;
+    }
 
-        return commit(vNode(), container);
-      }
-
-      //TODO: diff
-      root.innerHTML = '';
-      commit(latestVNode(), root);
-    },
+    _latestVNode = typeof _element === 'function' ? _element() : _element;
+    _root.innerHTML = '';
+    mountToDOM(_latestVNode, _root);
   };
 })();
 
+const render = (element, container) => {
+  if (!container instanceof HTMLElement) {
+    throw new Error('Target container is not a DOM element.');
+  }
+
+  renderSubtreeIntoContainer(element, container);
+};
+
+const ReactDOM = {
+  render,
+};
+
 export default ReactDOM;
+
+// diff
+// 1. mountToDOM(oldNode, newNode, container)
+// 2. newNode && shouldUpdate(oldNode, newNode) -> 업데이트
+// 3. _latestVNode = newNode;

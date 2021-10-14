@@ -1,8 +1,8 @@
-import React, { useState } from './react/react.js';
+import React from './react/react.js';
 import ReactDOM from './react/reactDOM.js';
 
 const App = () => {
-  const [count, setCount] = useState(0);
+  const [count, setCount] = React.useState(0);
 
   return React.createElement(
     'div',
