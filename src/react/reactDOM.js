@@ -1,20 +1,36 @@
 import { TEXT_NODE } from './constants/constant.js';
 
-const mountToDOM = (element, container) => {
-  if (typeof element === 'boolean' || !element) return;
+const shouldUpdateNode = (oldNode, newNode) => {
+  return true;
+  // if (!oldNode) return true;
 
-  if (!element?.type || !element?.props) {
-    container.append(element);
+  // if (oldNode.type !== newNode.type) {
+  //   return true;
+  // }
 
-    return;
-  }
+  // const oldNodeAttrs = Object.entries(oldNode.props).map(([key, value]) =>
+  //   key === 'children' ? '' : value
+  // );
+  // const newNodeAttrs = Object.entries(newNode.props).map(([key, value]) =>
+  //   key === 'children' ? '' : value
+  // );
+
+  // if (oldNodeAttrs.some((attr, index) => attr !== newNodeAttrs[index])) {
+  //   return true;
+  // }
+
+  // return false;
+};
+
+const mountToDOM = (latestNode, newNode, container) => {
+  if (!newNode?.type || !newNode?.props) return;
 
   const {
     type,
     props: { children, ...attrs },
-  } = element;
+  } = newNode;
 
-  const node = Object.entries(attrs).reduce(
+  const DOMNode = Object.entries(attrs).reduce(
     (node, [key, value]) => {
       node[key] = value;
 
@@ -25,12 +41,16 @@ const mountToDOM = (element, container) => {
       : document.createElement(type)
   );
 
-  container.append(node);
+  if (shouldUpdateNode(latestNode, newNode)) {
+    container.append(DOMNode);
+  }
 
   if (Array.isArray(children)) {
-    children.forEach(child => mountToDOM(child, node));
+    children.forEach((child, index) =>
+      mountToDOM(latestNode?.props?.children[index], child, DOMNode)
+    );
   } else {
-    mountToDOM(children, node);
+    mountToDOM(latestNode?.props?.children, children, DOMNode);
   }
 };
 
@@ -45,9 +65,12 @@ export const renderSubtreeIntoContainer = (() => {
       _element = element;
     }
 
-    _latestVNode = typeof _element === 'function' ? _element() : _element;
+    const newNode = typeof _element === 'function' ? _element() : _element;
+
     _root.innerHTML = '';
-    mountToDOM(_latestVNode, _root);
+    mountToDOM(_latestVNode, newNode, _root);
+
+    _latestVNode = newNode;
   };
 })();
 
@@ -64,8 +87,3 @@ const ReactDOM = {
 };
 
 export default ReactDOM;
-
-// diff
-// 1. mountToDOM(oldNode, newNode, container)
-// 2. newNode && shouldUpdate(oldNode, newNode) -> 업데이트
-// 3. _latestVNode = newNode;
