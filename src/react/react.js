@@ -1,7 +1,7 @@
 import { TEXT_NODE } from './constants/constant.js';
 import { renderSubtreeIntoContainer } from './reactDOM.js';
 
-const createTextNode = value => {
+export const createTextNode = value => {
   return {
     type: TEXT_NODE,
     props: {
@@ -17,11 +17,17 @@ const createElement = (type, props, ...children) => {
       props,
     };
 
-  const childNodes = children.map(child =>
-    typeof child === 'string' || typeof child === 'number'
-      ? createTextNode(child)
-      : child
-  );
+  const childNodes = children.map(child => {
+    if (typeof child === 'string' || typeof child === 'number') {
+      return createTextNode(child);
+    }
+
+    if (!child || typeof child === 'boolean') {
+      return createTextNode(null);
+    }
+
+    return child;
+  });
 
   return {
     type,

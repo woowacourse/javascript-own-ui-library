@@ -1,3 +1,4 @@
+import { createTextNode } from './react.js';
 import { TEXT_NODE } from './constants/constant.js';
 
 const shouldUpdateNode = (oldNode, newNode) => {
@@ -65,7 +66,8 @@ export const renderSubtreeIntoContainer = (() => {
       _element = element;
     }
 
-    const newNode = typeof _element === 'function' ? _element() : _element;
+    const newNode =
+      typeof _element === 'function' ? _element() : createTextNode(_element);
 
     _root.innerHTML = '';
     mountToDOM(_latestVNode, newNode, _root);
