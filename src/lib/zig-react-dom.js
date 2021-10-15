@@ -1,35 +1,57 @@
-const _render = (element, container) => {
-  const { type, props } = element;
+import reconciliate from './reconciliate';
 
-  const initialNode = type === 'text' ? document.createTextNode('') : document.createElement(type);
+const ZigDom = (function () {
+  const _render = (element, container) => {
+    const { type, props } = element;
 
-  const vDom = Object.entries(props).reduce((totalNode, [key, value]) => {
-    if (key !== 'children') {
-      totalNode[key] = value;
+    const initialNode = type === 'text' ? document.createTextNode('') : document.createElement(type);
+
+    const vDom = Object.entries(props).reduce((totalNode, [key, value]) => {
+      if (key !== 'children') {
+        totalNode[key] = value;
+      }
+
+      return totalNode;
+    }, initialNode);
+
+    props.children.forEach((child) => _render(child, vDom));
+
+    container.appendChild(vDom);
+  };
+
+  let currDom;
+  let node;
+  let root;
+
+  const render = (component, container) => {
+    node = node || component;
+    root = root || container;
+
+    if (typeof node !== 'function') {
+      console.error('component should return function');
+
+      return;
     }
 
-    return totalNode;
-  }, initialNode);
+    const vDom = node();
+    currDom = vDom;
 
-  props.children.forEach((child) => _render(child, vDom));
+    _render(vDom, root);
+  };
 
-  container.appendChild(vDom);
-};
+  const rerender = () => {
+    const newDom = node();
 
-const render = (component, container) => {
-  if (typeof component !== 'function') {
-    console.error('component type should be function');
+    reconciliate(currDom, newDom);
 
-    return;
-  }
+    root.innerHTML = '';
 
-  const element = component();
+    render();
 
-  _render(element, container);
-};
+    currDom = newDom;
+  };
 
-const ReactDOM = {
-  render,
-};
+  return { render, rerender };
+})();
 
-export default ReactDOM;
+export default ZigDom;

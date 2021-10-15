@@ -1,3 +1,5 @@
+import ZigDom from './zig-react-dom';
+
 const Zig = (function () {
   const createElement = (type, props, ...children) => {
     return {
@@ -26,12 +28,12 @@ const Zig = (function () {
     const _idx = idx;
     hooks[_idx] = initialValue;
 
-    const getState = () => {
-      return hooks[_idx] || initialValue;
-    };
+    const getState = () => hooks[_idx] || initialValue;
 
     const setState = (newValue) => {
       hooks[_idx] = newValue;
+
+      ZigDom.rerender();
     };
 
     idx++;
