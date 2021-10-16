@@ -97,6 +97,7 @@ class Component {
   constructor(props) {
     this.state = {};
     this.props = props;
+    this.root;
   }
 
   setState(nextState) {
@@ -108,10 +109,22 @@ class Component {
       if (this.state[key] === nextState[key]) continue;
 
       this.state = nextState;
-      const subTree = this.render();
-
+      this.render();
       break;
     }
+  }
+
+  st(subTree) {
+    const { element, children } = subTree;
+
+    if (this.root) {
+      children.forEach((child) => child.render(element));
+      this.root.replaceWith(element);
+    }
+
+    this.root = element;
+
+    return subTree;
   }
 
   render() {}
@@ -129,9 +142,13 @@ class Count extends Component {
   }
 
   render() {
-    return el('span', { class: 'count' }, {}, [
-      el('text', {}, {}, this.props.amount),
-    ]);
+    const subTree = this.st(
+      el('span', { class: 'count' }, {}, [
+        el('text', {}, {}, this.props.amount),
+      ])
+    );
+
+    return subTree;
   }
 }
 class Container extends Component {
@@ -157,20 +174,22 @@ class Container extends Component {
   }
 
   render() {
-    return el('div', { class: 'container' }, {}, [
-      cp(Count, { amount: this.state.amount }),
-      el('div', { class: 'btn-group' }, {}, [
-        el('button', {}, { click: this.decrease }, [
-          el('strong', {}, {}, [el('text', {}, {}, '-')]),
+    return this.st(
+      el('div', { class: 'container' }, {}, [
+        cp(Count, { amount: this.state.amount }),
+        el('div', { class: 'btn-group' }, {}, [
+          el('button', {}, { click: this.decrease }, [
+            el('strong', {}, {}, [el('text', {}, {}, '-')]),
+          ]),
+          el('button', {}, { click: this.reset }, [
+            el('strong', {}, {}, [el('text', {}, {}, 'RESET')]),
+          ]),
+          el('button', {}, { click: this.increase }, [
+            el('strong', {}, {}, [el('text', {}, {}, '+')]),
+          ]),
         ]),
-        el('button', {}, { click: this.reset }, [
-          el('strong', {}, {}, [el('text', {}, {}, 'RESET')]),
-        ]),
-        el('button', {}, { click: this.increase }, [
-          el('strong', {}, {}, [el('text', {}, {}, '+')]),
-        ]),
-      ]),
-    ]);
+      ])
+    );
   }
 }
 
