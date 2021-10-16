@@ -93,54 +93,87 @@ const el = (tag, attrs, events, children) => {
   return node;
 };
 
-const render = (domTree, root) => {
-  while (root.firstChild) {
-    root.removeChild(root.firstChild);
+class Component {
+  constructor(props) {
+    this.state = {};
+    this.props = props;
   }
 
-  domTree.render(root);
+  setState(nextState) {
+    const keys = Object.keys(nextState);
+
+    for (let i = 0; i < keys.length; i++) {
+      const key = keys[i];
+
+      if (this.state[key] === nextState[key]) continue;
+
+      this.state = nextState;
+      const subTree = this.render();
+
+      break;
+    }
+  }
+
+  render() {}
+}
+
+const cp = (ClassName, props) => {
+  const component = new ClassName(props);
+
+  return component.render();
 };
 
-const listeners = [];
-const subscribe = (listener) => listeners.push(listener);
-const notify = () => listeners.forEach((listener) => listener());
+class Count extends Component {
+  constructor(props) {
+    super(props);
+  }
 
-let amount = 0;
+  render() {
+    return el('span', { class: 'count' }, {}, [
+      el('text', {}, {}, this.props.amount),
+    ]);
+  }
+}
+class Container extends Component {
+  constructor(props) {
+    super(props);
+    this.state = { amount: 0 };
 
-const decrease = () => {
-  amount -= 1;
-  notify();
-};
+    this.decrease = this.decrease.bind(this);
+    this.reset = this.reset.bind(this);
+    this.increase = this.increase.bind(this);
+  }
 
-const reset = () => {
-  amount = 0;
-  notify();
-};
+  decrease() {
+    this.setState({ amount: this.state.amount - 1 });
+  }
 
-const increase = () => {
-  amount += 1;
-  notify();
-};
+  reset() {
+    this.setState({ amount: 0 });
+  }
 
-const domRender = () => {
-  render(
-    el('div', { class: 'container' }, {}, [
-      el('span', { class: 'count' }, {}, [el('text', {}, {}, amount)]),
+  increase() {
+    this.setState({ amount: this.state.amount + 1 });
+  }
+
+  render() {
+    return el('div', { class: 'container' }, {}, [
+      cp(Count, { amount: this.state.amount }),
       el('div', { class: 'btn-group' }, {}, [
-        el('button', {}, { click: decrease }, [
+        el('button', {}, { click: this.decrease }, [
           el('strong', {}, {}, [el('text', {}, {}, '-')]),
         ]),
-        el('button', {}, { click: reset }, [
+        el('button', {}, { click: this.reset }, [
           el('strong', {}, {}, [el('text', {}, {}, 'RESET')]),
         ]),
-        el('button', {}, { click: increase }, [
+        el('button', {}, { click: this.increase }, [
           el('strong', {}, {}, [el('text', {}, {}, '+')]),
         ]),
       ]),
-    ]),
-    document.getElementById('root')
-  );
-};
+    ]);
+  }
+}
 
-subscribe(domRender);
-domRender();
+const domRender = (domTree, root) => domTree.render(root);
+
+domRender(cp(Container, {}), document.getElementById('root'));
