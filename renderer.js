@@ -17,7 +17,10 @@ const createElement = (node, parent) => {
 };
 
 export const render = (virtualDOM, root) => {
-  // diffing 없이 무조건 새로 추가
+  const rootFragment = new DocumentFragment();
+
+  virtualDOM.children.map((node) => createElement(node, rootFragment));
+
   root.innerHTML = '';
-  virtualDOM.children.map((node) => createElement(node, root));
+  root.append(rootFragment);
 };
