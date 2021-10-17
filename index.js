@@ -6,24 +6,30 @@ let count = 0;
 const UPDATE_TIME_INTERVAL = 150;
 const getVirtualDOM = () => parse(counterTemplate(count));
 const $root = document.querySelector('#root');
-const addEventListeners = () => {
-  const $subtractButton = document.querySelector('.btn-subtract');
-  const $addButton = document.querySelector('.btn-add');
-  const $resetButton = document.querySelector('.btn-reset');
+const handleClickCounter = (e) => {
+  const isSubtractButtonClicked = !!e.target.closest('.btn-subtract');
+  const isAddButtonClicked = !!e.target.closest('.btn-add');
+  const isResetButtonClicked = !!e.target.closest('.btn-reset');
 
-  $addButton.addEventListener('click', () => (count += 1));
-  $subtractButton.addEventListener('click', () => (count -= 1));
-  $resetButton.addEventListener('click', () => (count = 0));
+  if (isSubtractButtonClicked) {
+    count += 1;
+    return;
+  }
+  if (isAddButtonClicked) {
+    count -= 1;
+    return;
+  }
+  if (isResetButtonClicked) {
+    count = 0;
+  }
 };
 
 const virtualDOM = getVirtualDOM();
-
+$root.addEventListener('click', handleClickCounter);
 render(virtualDOM, $root);
-addEventListeners();
 
 setInterval(() => {
   const virtualDOM = getVirtualDOM();
 
   render(virtualDOM, $root);
-  addEventListeners();
 }, UPDATE_TIME_INTERVAL);
