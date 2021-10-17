@@ -1,9 +1,11 @@
 import { createElement as h } from "./lib/React.js";
 import createStateMachine from "./lib/StateMachine.js";
 
-const [get, set] = createStateMachine({ count: 0 });
+const [get, set, init] = createStateMachine();
 
 const Counter = () => {
+  init({ count: 0 });
+
   const { count } = get();
 
   const reset = () => set("count", 0);
