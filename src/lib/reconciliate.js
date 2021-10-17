@@ -1,17 +1,30 @@
+let isMarked = false;
+
+const isPrimitive = (test) => test !== Object(test);
+
 const deepEqual = (prevDom, newDom) => {
-  if (typeof prevDom !== 'object' || prevDom === null || typeof newDom !== 'object' || newDom === null) {
+  if (isPrimitive(prevDom) && isPrimitive(newDom)) {
+    return prevDom === newDom;
+  }
+
+  if (prevDom.type !== newDom.type) {
     return false;
   }
 
-  if (Object.keys(prevDom).length != Object.keys(newDom).length) return false;
+  if (Object.keys(prevDom)?.length != Object.keys(newDom)?.length) {
+    return false;
+  }
 
-  for (const prop in prevDom) {
-    if (newDom.hasOwnProperty(prop)) {
-      if (!deepEqual(prevDom[prop], newDom[prop])) {
+  for (const key in prevDom) {
+    if (newDom.hasOwnProperty(key)) {
+      if (!deepEqual(prevDom[key], newDom[key])) {
+        // element type이라면
+        if (newDom.type && !isMarked) {
+          newDom['marked'] = true;
+          isMarked = true;
+        }
         return false;
       }
-    } else {
-      return false;
     }
   }
 
@@ -19,7 +32,12 @@ const deepEqual = (prevDom, newDom) => {
 };
 
 const reconciliate = (prevDom, newDom) => {
-  console.log(deepEqual(prevDom, newDom));
+  isMarked = false;
+
+  const markedDom = { ...newDom };
+  const isEqual = deepEqual(prevDom, markedDom);
+
+  return { isEqual, markedDom };
 };
 
 export default reconciliate;

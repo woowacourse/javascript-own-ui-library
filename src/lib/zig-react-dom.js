@@ -1,54 +1,77 @@
 import reconciliate from './reconciliate';
 
 const ZigDom = (function () {
-  const _render = (element, container) => {
+  let currDom;
+  let domFactory;
+  let root;
+
+  const createDom = (element, container) => {
     const { type, props } = element;
 
+    const fragment = document.createDocumentFragment();
     const initialNode = type === 'text' ? document.createTextNode('') : document.createElement(type);
 
     const vDom = Object.entries(props).reduce((totalNode, [key, value]) => {
-      if (key !== 'children') {
+      if (key !== 'children' && key !== 'marked') {
         totalNode[key] = value;
       }
 
       return totalNode;
     }, initialNode);
 
-    props.children.forEach((child) => _render(child, vDom));
+    props.children.forEach((child) => createDom(child, vDom));
+
+    (container || fragment).appendChild(vDom);
+
+    return container || fragment;
+  };
+
+  const _render = (element, container) => {
+    const vDom = createDom(element);
 
     container.appendChild(vDom);
   };
 
-  let currDom;
-  let node;
-  let root;
-
   const render = (component, container) => {
-    node = node || component;
+    domFactory = domFactory || component;
     root = root || container;
 
-    if (typeof node !== 'function') {
+    if (typeof domFactory !== 'function') {
       console.error('component should return function');
 
       return;
     }
 
-    const vDom = node();
+    const vDom = domFactory();
     currDom = vDom;
 
     _render(vDom, root);
   };
 
   const rerender = () => {
-    const newDom = node();
+    const newDom = domFactory();
 
-    reconciliate(currDom, newDom);
-
-    root.innerHTML = '';
-
-    render();
+    const { isEqual, markedDom } = reconciliate(currDom, newDom);
 
     currDom = newDom;
+
+    // (쉬운 ver.)diff하지 않고 전부 리렌더링
+    // root.innerHTML = '';
+    // _render(newDom, root);
+
+    if (!isEqual) {
+      repaint(markedDom, root.firstChild);
+    }
+  };
+
+  const repaint = (element, originDom) => {
+    if (element.marked) {
+      originDom.replaceWith(createDom(element));
+    }
+
+    element.props.children.forEach((child, idx) => {
+      repaint(child, originDom.childNodes[idx]);
+    });
   };
 
   return { render, rerender };
