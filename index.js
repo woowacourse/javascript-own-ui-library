@@ -1,4 +1,4 @@
-import Counter from './Counter.js';
+import App from './App.js';
 import { render } from './lib/PeactDOM.js';
 
-render(Counter, document.getElementById('root'));
+render(App(), document.getElementById('root'));

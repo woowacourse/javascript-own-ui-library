@@ -1,7 +1,7 @@
 import { createElement } from './lib/Peact.js';
 import useState from './lib/useState.js';
 
-function Counter() {
+function App() {
   const [count, setCount] = useState(0);
 
   const increase = () => {
@@ -42,4 +42,4 @@ function Counter() {
   );
 }
 
-export default Counter;
+export default App;
