@@ -10,7 +10,7 @@ const removeLineBreaks = (str) => str.replace(/(\r\n|\n|\r)/gm, '');
 const parseAttributes = (attributesToBeParsed) => {
   return attributesToBeParsed.map((attribute) => {
     const [key, value] = attribute.split('=');
-    const safeValue = value !== undefined ? true : value.replace(/"/g, '');
+    const safeValue = value === undefined ? true : value.replace(/"/g, '');
 
     return [key, safeValue];
   });
