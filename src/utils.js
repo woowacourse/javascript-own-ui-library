@@ -1,3 +1,5 @@
+import { render } from '../index.js';
+
 export const $ = (selector) => document.querySelector(selector);
 export const $$ = (selector) => document.querySelectorAll(selector);
 
@@ -9,7 +11,7 @@ export const $$ = (selector) => document.querySelectorAll(selector);
  */
 export const minus = (state) => {
   state.value -= 1;
-  console.log(state.value);
+  render();
 };
 
 /**
@@ -18,7 +20,7 @@ export const minus = (state) => {
  */
 export const plus = (state) => {
   state.value += 1;
-  console.log(state.value);
+  render();
 };
 
 /**
@@ -27,5 +29,5 @@ export const plus = (state) => {
  */
 export const reset = (state) => {
   state.value = 0;
-  console.log(state.value);
+  render();
 };

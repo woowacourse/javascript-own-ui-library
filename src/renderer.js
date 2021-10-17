@@ -33,7 +33,7 @@ const makeChildren = (parentElem, children) => {
 };
 
 /**
- * @param {Node} currentElem
+ * @param {Node} parentElem
  * @param {String} textValue
  */
 const makeInnerText = (parentElem, textValue) => {

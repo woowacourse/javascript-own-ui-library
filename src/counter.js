@@ -1,8 +1,6 @@
 import { minus, plus, reset } from '../src/utils.js';
 
-export const createCounterDocumentObject = () => {
-  const state = { value: 0 };
-
+export const createCounterDocumentObject = (state) => {
   return {
     tagName: 'div',
     attributes: [{ class: 'container' }],
