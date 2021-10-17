@@ -1,30 +1,47 @@
 import ReactDOM from "./ReactDOM.js";
-import { throwError } from "../util/error.js";
+import assert from "../util/assert.js";
 
 /**
- * @param initialState 최초 상태. 반드시 객체여야 한다.
- * @returns [getter, setter] 최신 상태를 반환하는 getter와 상태를 갱신하는 setter를 반환한다
+ * @returns [getter, setter, initiator] 최신 상태를 반환하는 getter, 상태를 갱신하는 setter, 초기 상태를 저장하는 initiator
  */
-const createStateMachine = (initialState = {}) => {
-  if (typeof initialState !== "object" || initialState == null) {
-    throwError(`initialState는 반드시 객체여야 합니다: ${initialState}`);
-  }
 
-  let state = initialState;
+const createStateMachine = () => {
+  let state = {};
+  let isFirstCall = false;
 
   const setState = (key, value) => {
     state = {
       ...state,
       [key]: typeof value === "function" ? value(state[key]) : value,
     };
+    console.log(`[setState]`, state);
 
     // FIXME
     ReactDOM.render();
   };
 
-  const getState = () => state;
+  const getState = () => {
+    console.log(`[getState]`, state);
 
-  return [getState, setState];
+    return { ...state };
+  };
+
+  const initState = (initialState) => {
+    if (isFirstCall) return;
+
+    isFirstCall = true;
+
+    assert.equal(
+      () => typeof initialState === "object" && initialState != null,
+      true
+    );
+
+    state =
+      typeof initialState === "function" ? initialState() : { ...initialState };
+    console.log(`[initState]`, state);
+  };
+
+  return [getState, setState, initState];
 };
 
 export default createStateMachine;
