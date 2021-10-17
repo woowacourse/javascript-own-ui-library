@@ -49,19 +49,55 @@ const React = {
   },
 };
 
+const { addVDomQueue, exhaustVDomQueue } = (() => {
+  const vDomQueue = [];
+
+  // 변경사항들을 모아서 한번에 업데이트하는 로직입니다.
+  // vDom을 흉내낸것인데, while문을 돌면서 real Dom에 업데이트가 여러번 일어날것 같아서, 제대로 동작할지는 모르겠습니다.
+  const addVDomQueue = (diffCallback) => {
+    vDomQueue.push(diffCallback);
+  };
+
+  const exhaustVDomQueue = () => {
+    while (vDomQueue.length > 0) {
+      const callback = vDomQueue.shift();
+      callback();
+    }
+  };
+
+  return {
+    addVDomQueue,
+    exhaustVDomQueue,
+  };
+})();
+
 function diff($elem, $newElem) {
-  const isSameTagName = $elem?.nodeName === $newElem.nodeName;
+  if (!$elem.vDom) {
+    // vDom이 없으면 자기자신으로 추가해줍니다.
+    $elem = Object.assign($elem, {
+      vDom: $elem,
+    });
+  }
+
+  const isSameTagName = $elem.vDom?.nodeName === $newElem.nodeName;
   const isSameChildrenLength =
-    $elem.childNodes.length === $newElem.childNodes.length; // 이걸로 자식요소가 완벽히 달라진점을 찾을 수는 없지만, 어차피 재귀로 돌것이므로 길이만 체크했습니다.
+    $elem.vDom.childNodes.length === $newElem.childNodes.length; // 이걸로 자식요소가 완벽히 달라진점을 찾을 수는 없지만, 어차피 재귀로 돌것이므로 길이만 체크했습니다.
   const isSameAttrs =
-    JSON.stringify($elem.attributes) === JSON.stringify($newElem.attributes); // 심볼값처럼 stringify가 안되는 요소들은 따로 처리하지 않았습니다.
-  const isSameData = $elem?.data === $newElem?.data;
+    JSON.stringify($elem.vDom.attributes) ===
+    JSON.stringify($newElem.attributes); // 심볼값처럼 stringify가 안되는 요소들은 따로 처리하지 않았습니다.
+  const isSameData = $elem.vDom?.data === $newElem?.data;
 
   const isSameElement =
     isSameTagName && isSameChildrenLength && isSameAttrs && isSameData;
 
   if (!isSameElement) {
-    $elem.parentNode.replaceChild($newElem, $elem);
+    // 다른 Dom이라고 판단되면, vDom을 업데이트하고, 업데이트 콜백을 queue에 추가해줍니다.
+    $elem = Object.assign($elem, {
+      vDom: $newElem,
+    });
+    addVDomQueue(() => {
+      $elem.parentNode.replaceChild($elem.vDom, $elem);
+    });
 
     return;
   }
@@ -79,6 +115,8 @@ const ReactDOM = {
       rootElement.appendChild($elem);
     } else {
       diff(rootElement.firstChild, $elem);
+
+      exhaustVDomQueue();
     }
   },
 };
