@@ -1,0 +1,28 @@
+{
+  "name": "javascript-own-ui-library",
+  "version": "1.0.0",
+  "description": "<p align=\"middle\" >   <img src=\"https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/d54ca5e74f204f3b983378cdd4ee324e\" width=\"400\"> </p> <h1 align=\"middle\">Level4 - 나만의 UI Library 만들기</h1> </p>",
+  "main": "index.js",
+  "dependencies": {},
+  "devDependencies": {
+    "eslint": "^8.0.1",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "prettier": "^2.4.1"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/2SOOY/javascript-own-ui-library.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/2SOOY/javascript-own-ui-library/issues"
+  },
+  "homepage": "https://github.com/2SOOY/javascript-own-ui-library#readme"
+}
