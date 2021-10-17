@@ -1,3 +1,4 @@
+import { VNode } from './cheffe.js';
 import { ERROR_MESSAGE } from './constants.js';
 
 let currentRootElement = null;
@@ -51,17 +52,19 @@ function createRealDOMNode({ nodeName, attributes, children }) {
   return node;
 }
 
-function diff(newVNode, oldVNode) {}
-
 function update(vNode) {
   if (typeof vNode !== 'object') {
     throw new Error(ERROR_MESSAGE.RENDER.INVALID_VNODE);
   }
 
-  const { nodeName, attributes, children } = vNode;
+  if (VNode.isEqual(vNode, currentRootVNode)) {
+    currentRootVNode = vNode;
 
+    return;
+  }
+
+  const { nodeName, attributes, children } = vNode;
   const node = createRealDOMNode({ nodeName, attributes, children });
-  diff(vNode, currentRootVNode);
 
   const fragment = document.createDocumentFragment();
   fragment.appendChild(node);

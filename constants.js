@@ -6,4 +6,8 @@ export const ERROR_MESSAGE = {
     INVALID_VNODE:
       '`Cheffe.createElement`로 생성한 객체를 parameter에 할당해주세요.',
   },
+  VNODE: {
+    INVALID_PARAMETER_TYPE_IS_EQUAL:
+      'isEqual 메소드의 인자는 VNode 객체여야 합니다.',
+  },
 };
