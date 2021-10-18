@@ -1,3 +1,4 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-param-reassign */
 import { throwError } from "../util/error.js";
 
@@ -6,34 +7,56 @@ const DICT = {
 };
 
 const table = {
-  attr($element, key, value) {
-    $element.setAttribute(key, value);
-    return $element;
+  attr($element, key, value, command) {
+    if (command === "append" || command === "replace") {
+      $element.setAttribute(key, value);
+      return $element;
+    }
+
+    if (command === "remove") {
+      $element.removeAttribute(key);
+      return $element;
+    }
+
+    if (command === "keep") {
+      return $element;
+    }
+
+    throwError(`[table][attr] invalid Command ${command}`);
   },
-  event($element, key, value) {
-    // eslint-disable-next-line no-param-reassign
-    $element[key] = value;
-    return $element;
+  event($element, key, value, command) {
+    if (command === "append" || command === "replace") {
+      $element[key] = value;
+      return $element;
+    }
+
+    if (command === "remove") {
+      $element[key] = null;
+      return $element;
+    }
+
+    if (command === "keep") {
+      return $element;
+    }
+
+    throwError(`[table][event] invalid Command ${command}`);
   },
 };
 
-const router = ($element, key, value, type) =>
-  table[type]?.($element, key, value) ??
+const router = ($element, key, value, type, command = "append") =>
+  table[type]?.($element, key, value, command) ??
   throwError(`Invalid type: ${key} ${value} ${type}`);
 
-const mapPropsToAttributes = (props) => {
-  const attributes = [];
-
-  for (const [key, value] of Object.entries(props)) {
-    if (/^on/.test(key)) {
-      attributes.push([key.toLowerCase(), value, "event"]);
-    } else {
-      attributes.push([key in DICT ? DICT[key] : key, value, "attr"]);
-    }
+const mapPropToAttribute = (key, value) => {
+  if (/^on/.test(key)) {
+    return [key.toLowerCase(), value, "event"];
   }
 
-  return attributes;
+  return [key in DICT ? DICT[key] : key, value, "attr"];
 };
+
+const mapPropsToAttributes = (props) =>
+  Object.entries(props).map(([key, value]) => mapPropToAttribute(key, value));
 
 const convert = (vnode) => {
   const { type, props = {}, children = [], value } = vnode;
@@ -57,6 +80,99 @@ const convert = (vnode) => {
   return rnode;
 };
 
+const findCommand = (p, c, equal = (a, b) => a === b) => {
+  if (p == null && c != null) return "append";
+  if (p != null && c == null) return "remove";
+  if (!equal(p, c)) return "replace";
+
+  return "keep";
+};
+
+const diff = (prev, curr) => {
+  console.log("[diff] ", prev, curr);
+
+  //  if (typeof prev !== "object" || typeof curr !== "object") {
+  //   return { value: curr, command: findCommand(prev, curr) };
+  // }
+
+  if (prev == null && curr == null) {
+    return throwError("Invalid nullish prev and curr");
+  }
+
+  // if (prev == null) {
+  //   return { ...curr, command: "append" };
+  // }
+
+  if (curr == null) {
+    prev.ref.remove();
+
+    return;
+  }
+
+  if (prev.type !== curr.type) {
+    const parent = prev.ref.parentNode;
+    prev.ref.remove();
+    convert(curr);
+    parent.appendChild(curr.ref);
+
+    return;
+  }
+
+  if (curr.type === Symbol.for("textNode")) {
+    if (prev.value === curr.value) {
+      curr.ref = prev.ref;
+      return;
+    }
+
+    const parent = prev.ref.parentNode;
+    prev.ref.remove();
+
+    convert(curr);
+    parent.appendChild(curr.ref);
+
+    return;
+  }
+
+  curr.ref = prev.ref;
+
+  // const result = {
+  //   type: curr.type,
+  //   command: "keep",
+  //   props: { ...prev.props, ...curr.props } ?? {},
+  //   children: [],
+  // };
+
+  // props 비교
+  for (const key of Object.keys({ ...prev.props, ...curr.props } ?? {})) {
+    const prevValue = prev.props[key];
+    const currValue = curr.props[key];
+
+    router(
+      curr.ref,
+      ...mapPropToAttribute(key, currValue),
+      findCommand(prevValue, currValue)
+    );
+  }
+
+  // // children 비교
+  const prevChildren = prev.children[Symbol.iterator]();
+  const currChildren = curr.children[Symbol.iterator]();
+
+  // const index = 0;
+  while (true) {
+    const pr = prevChildren.next();
+    const cr = currChildren.next();
+
+    if (pr.done && cr.done) {
+      break;
+    }
+
+    // curr.children[index].ref =
+    diff(pr.value, cr.value);
+    // index += 1;
+  }
+};
+
 const reactDOM = (() => {
   let el = null;
   let cnt = null;
@@ -78,7 +194,23 @@ const reactDOM = (() => {
     prev = curr;
   };
 
-  return { render };
+  const rerender = () => {
+    // diff prev - curr
+    const curr = el();
+    // if (prev == null) {
+    //   const r = convert(curr);
+    //   cnt.appendChild(r);
+    //   prev = curr;
+    //   return;
+    // }
+
+    const rnode = diff(prev, curr);
+    console.log("[rerender] curr", curr, "rnode ", rnode);
+
+    prev = curr;
+  };
+
+  return { render, rerender };
 })();
 
 export default reactDOM;
