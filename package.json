@@ -11,7 +11,8 @@
   "scripts": {
     "lint": "eslint --fix --cache **/*.js",
     "format": "prettier --write --ignore-unknown .",
-    "prepare": "husky install"
+    "prepare": "husky install",
+    "deploy": "NODE_DEBUG=gh-pages gh-pages --dist src -f"
   },
   "engines": {
     "node": ">=12.18.3"
@@ -25,6 +26,7 @@
     "eslint-config-prettier": "^8.3.0",
     "eslint-import-resolver-node": "^0.3.6",
     "eslint-plugin-import": "^2.24.2",
+    "gh-pages": "^3.2.3",
     "husky": ">=6",
     "lint-staged": ">=10",
     "nodemon": "^2.0.13",
