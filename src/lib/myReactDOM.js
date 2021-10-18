@@ -33,6 +33,7 @@ const vNodeToNode = (vNode) => {
 const render = (Component, $element) => {
   const $target = vNodeToNode(Component);
 
+  $element.innerHTML = '';
   $element.append($target);
 };
 

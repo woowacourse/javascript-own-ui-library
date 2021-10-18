@@ -3,19 +3,33 @@ import CounterButton from './CounterButton.js';
 
 const { createElement } = myReact;
 
-const Counter = () => {
+const Counter = ({ getState, dispatch }) => {
+  const { number } = getState();
+
+  const onDecrease = () => {
+    dispatch({ type: 'DECREASE' });
+  };
+
+  const onIncrease = () => {
+    dispatch({ type: 'INCREASE' });
+  };
+
+  const onReset = () => {
+    dispatch({ type: 'RESET' });
+  };
+
   return createElement(
     'div',
     {
       className: 'container',
     },
-    createElement('span', { className: 'count' }, 0),
+    createElement('span', { className: 'count' }, number),
     createElement(
       'div',
       { className: 'btn-group' },
-      createElement(CounterButton, { text: '-' }),
-      createElement(CounterButton, { text: 'reset' }),
-      createElement(CounterButton, { text: '+' })
+      createElement(CounterButton, { text: '-', onClick: onDecrease }),
+      createElement(CounterButton, { text: 'reset', onClick: onReset }),
+      createElement(CounterButton, { text: '+', onClick: onIncrease })
     )
   );
 };
