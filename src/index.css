@@ -1,5 +1,5 @@
 :root {
-  --white: #eeeeee;
+  --white: #eee;
   --blue: #00adb5;
   --gray: #393e46;
   --main-border-radius: 3rem;
@@ -10,25 +10,25 @@ body {
 }
 
 .container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
   width: 100%;
   margin-top: 3rem;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
 }
 
 .count {
   display: flex;
-  padding: 2.5rem;
-  margin: 1.5rem;
+  align-items: center;
+  justify-content: center;
   min-width: 4rem;
+  margin: 1.5rem;
+  padding: 2.5rem;
   border-radius: var(--main-border-radius);
   background-color: var(--blue);
   color: var(--white);
   font-size: 3rem;
-  align-items: center;
-  justify-content: center;
 }
 
 .btn-group {
@@ -36,13 +36,13 @@ body {
 }
 
 .btn-group button {
-  background-color: var(--gray);
-  border: 0 solid;
-  color: var(--white);
-  padding: 1rem 2rem;
-  cursor: pointer;
   float: left;
+  padding: 1rem 2rem;
+  border: 0 solid;
+  background-color: var(--gray);
+  color: var(--white);
   font-size: 1.5rem;
+  cursor: pointer;
 }
 
 .btn-group button:first-child {
@@ -59,12 +59,12 @@ body {
   width: 10rem;
   height: 5rem;
   margin-top: 1rem;
-  font-size: 2rem;
+  border: none;
   border-radius: 0.5rem;
   box-shadow: 0 0 0 4px var(--blue);
-  border: none;
-  cursor: pointer;
   font-weight: 600;
+  font-size: 2rem;
+  cursor: pointer;
 }
 
 .toggle-btn:hover {
@@ -72,8 +72,8 @@ body {
 }
 
 .toggle-btn:focus {
-  outline: none;
   box-shadow: 0 0 0 6px var(--blue);
+  outline: none;
 }
 
 .toggle-btn:active {
