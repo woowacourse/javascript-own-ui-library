@@ -1,10 +1,9 @@
 import ReactDOM from "./ReactDOM.js";
-import assert from "../util/assert.js";
+import { throwError } from "../util/error.js";
 
 /**
  * @returns [getter, setter, initiator] 최신 상태를 반환하는 getter, 상태를 갱신하는 setter, 초기 상태를 저장하는 initiator
  */
-
 const createStateMachine = () => {
   let state = {};
   let isFirstCall = false;
@@ -16,8 +15,7 @@ const createStateMachine = () => {
     };
     console.log(`[setState]`, state);
 
-    // FIXME
-    ReactDOM.render();
+    ReactDOM.rerender();
   };
 
   const getState = () => {
@@ -31,13 +29,15 @@ const createStateMachine = () => {
 
     isFirstCall = true;
 
-    assert.equal(
-      () => typeof initialState === "object" && initialState != null,
-      true
-    );
+    if (typeof initialState !== "object" || initialState === null) {
+      throwError(
+        `initialState는 객체이거나 객체를 반환하는 함수여이어야 합니다`
+      );
+    }
 
     state =
       typeof initialState === "function" ? initialState() : { ...initialState };
+
     console.log(`[initState]`, state);
   };
 
