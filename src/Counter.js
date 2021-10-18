@@ -22,12 +22,12 @@ const Counter = () => {
     h(
       "div",
       { className: "btn-group" },
-      h("button", { onClick: decrement }, h("strong", undefined, "-")),
-      h("button", { onClick: reset }, h("strong", undefined, "RESET")),
-      h("button", { onClick: increment }, h("strong", undefined, "+"))
+      h("button", { onClick: decrement }, h("strong", null, "-")),
+      h("button", { onClick: reset }, h("strong", null, "RESET")),
+      h("button", { onClick: increment }, h("strong", null, "+"))
     ),
     h("button", { className: "toggle-btn", onClick: toggle }, "toggle"),
-    isMessageVisible ? h("h2", undefined, "만나서 반갑습니다") : null
+    isMessageVisible ? h("h2", null, "만나서 반갑습니다") : null
   );
 };
 

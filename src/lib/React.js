@@ -13,7 +13,7 @@ export const createTextNode = (value) => ({
  */
 export const createElement = (type, props, ...children) => ({
   type,
-  props,
+  props: props ?? {},
   children: children
     .filter((child) => child != null)
     .map((child) =>
