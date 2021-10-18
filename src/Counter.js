@@ -4,17 +4,20 @@ import createStateMachine from "./lib/StateMachine.js";
 const [get, set, init] = createStateMachine();
 
 const Counter = () => {
-  init({ count: 0 });
+  init({ count: 0, isMessageVisible: true });
 
-  const { count } = get();
+  const { count, isMessageVisible } = get();
 
   const reset = () => set("count", 0);
   const increment = () => set("count", (prev) => prev + 1);
   const decrement = () => set("count", (prev) => prev - 1);
+  const toggle = () => set("isMessageVisible", (prev) => !prev);
 
   return h(
     "div",
     { className: "container" },
+    h("h1", { className: "heading" }, "동동의 Counter"),
+
     h("span", { className: "count" }, count),
     h(
       "div",
@@ -22,7 +25,9 @@ const Counter = () => {
       h("button", { onClick: decrement }, h("strong", undefined, "-")),
       h("button", { onClick: reset }, h("strong", undefined, "RESET")),
       h("button", { onClick: increment }, h("strong", undefined, "+"))
-    )
+    ),
+    h("button", { className: "toggle-btn", onClick: toggle }, "toggle"),
+    isMessageVisible ? h("h2", undefined, "만나서 반갑습니다") : null
   );
 };
 
