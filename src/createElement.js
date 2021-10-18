@@ -30,10 +30,6 @@ const createElement = (tagName, params) => {
     addEventListener,
   };
 
-  if (!params.key) {
-    node['key'] = idGenerator.getId();
-  }
-
   if (params.children) {
     node.children = params.children;
   }
