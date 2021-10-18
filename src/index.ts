@@ -1,6 +1,5 @@
 import Count from "Components/Count";
+import "./index.css";
 import React from "../React";
 
-const element = Count();
-
-React.render(element, document.querySelector("#root"));
+React.render(Count, document.querySelector("#root"));

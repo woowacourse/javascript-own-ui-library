@@ -1,26 +1,34 @@
-import { ReactElement } from "./types";
+import { ReactComponent, ReactElement } from "./types";
 
-type Render = (element: ReactElement, container: HTMLElement) => void;
+type Render = (element: ReactComponent, container: HTMLElement) => void;
 
 const React = (function () {
   const states: unknown[] = [];
-  let rerender: () => void = null;
+  let rerender: () => void;
   let currentStateIndex = 0;
-  let $RootDOM: HTMLElement = null;
-  // const virtualDOM: ReactElement[] = [];
+  let $actualDOM: HTMLElement;
+  let virtualDOM: HTMLElement;
 
-  const drawToBrowser = (
-    element: ReactElement,
-    container: HTMLElement
-  ): HTMLElement => {
+  const convertReactElementToDOM = (element: ReactElement) => {
     const $newDOM = document.createElement(element.nodeName);
 
     if (element?.className) {
       $newDOM.className = element.className;
     }
 
-    container.appendChild($newDOM);
+    if (element?.onClick) {
+      $newDOM.addEventListener("click", element.onClick);
+    }
 
+    if (element?.className) {
+      $newDOM.className = element.className;
+    }
+
+    return $newDOM;
+  };
+
+  const getDOMElementToRender = (element: ReactElement): HTMLElement => {
+    const $newDOM = convertReactElementToDOM(element);
     const children = element.children;
 
     if (children === undefined) {
@@ -29,16 +37,20 @@ const React = (function () {
 
     if (typeof children === "string") {
       $newDOM.innerText = children;
-      return;
+      return $newDOM;
     }
 
     if (typeof children === "number") {
       $newDOM.innerText = String(children);
-      return;
+      return $newDOM;
     }
 
     children.forEach((child) => {
-      drawToBrowser(child, $newDOM);
+      const childToAppend = getDOMElementToRender(child);
+
+      if (childToAppend !== undefined) {
+        $newDOM.appendChild(childToAppend);
+      }
     });
 
     return $newDOM;
@@ -56,13 +68,9 @@ const React = (function () {
       };
     }
 
-    //초기에는 바로 실제DOM에 바로 렌더링
-    $RootDOM = drawToBrowser(element, container);
-
-    //그 이후부터는 VDOM을 만들고 비교후 렌더링
-    // 1. VDOM 생성
-    // 2. 실제 DOM과 비교
-    // 3. 바뀐 부분만 렌더링
+    virtualDOM = getDOMElementToRender(element());
+    container.replaceChildren(virtualDOM);
+    $actualDOM = virtualDOM;
   };
 
   const createElement = (
@@ -79,7 +87,7 @@ const React = (function () {
   const useState = <T>(
     initialValue: T
   ): [state: T, setState: (value: T) => void] => {
-    if (!states[currentStateIndex]) {
+    if (states[currentStateIndex] === undefined) {
       states[currentStateIndex] = initialValue;
     }
 
