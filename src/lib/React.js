@@ -1,3 +1,10 @@
+const textNodeSymbol = Symbol.for("textNode");
+
+export const createTextNode = (value) => ({
+  type: textNodeSymbol,
+  value,
+});
+
 /**
  * VirtualDOM 생성 팩토리 함수 구현 (aka createElement)
  * @params type HTMLElementTagName | Component
@@ -7,7 +14,11 @@
 export const createElement = (type, props, ...children) => ({
   type,
   props,
-  children: children.filter((child) => child != null),
+  children: children
+    .filter((child) => child != null)
+    .map((child) =>
+      typeof child !== "object" ? createTextNode(child) : child
+    ),
 });
 
 const React = {

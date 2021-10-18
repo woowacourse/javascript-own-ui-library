@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 import { throwError } from "../util/error.js";
 
 const DICT = {
@@ -34,48 +35,47 @@ const mapPropsToAttributes = (props) => {
   return attributes;
 };
 
-const convert = ({ type, props = {}, children = [] }) => {
+const convert = (vnode) => {
+  const { type, props = {}, children = [], value } = vnode;
   console.log(type, props, children);
-  const $element = document.createElement(type);
 
-  const attributes = mapPropsToAttributes(props);
+  const rnode =
+    type === Symbol.for("textNode")
+      ? document.createTextNode(value)
+      : document.createElement(type);
 
-  for (const [key, value, t] of attributes) {
-    router($element, key, value, t);
+  for (const attribute of mapPropsToAttributes(props)) {
+    router(rnode, ...attribute);
   }
 
   for (const child of children) {
-    $element.appendChild(
-      typeof child === "object"
-        ? convert(child)
-        : document.createTextNode(child)
-    );
+    rnode.appendChild(convert(child));
   }
 
-  return $element;
+  vnode.ref = rnode;
+
+  return rnode;
 };
 
 const reactDOM = (() => {
   let el = null;
   let cnt = null;
   let prev = null;
+  let rdom = null;
 
   const render = (element = el, container = cnt) => {
     el = element;
     cnt = container;
-
-    const curr = element;
-
-    // const diff = curr - prev;
     console.log("prev", prev);
 
-    // render diff
+    const curr = element();
+    rdom = convert(curr);
 
-    prev = curr;
-
-    // eslint-disable-next-line no-param-reassign
     container.innerHTML = "";
-    container.appendChild(convert(element()));
+    container.appendChild(rdom);
+
+    // preserve curr
+    prev = curr;
   };
 
   return { render };
