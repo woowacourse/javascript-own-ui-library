@@ -10,6 +10,7 @@
   "private": true,
   "scripts": {
     "lint": "eslint --fix --cache **/*.js",
+    "stylelint": "stylelint --fix --cache '**/*.css'",
     "format": "prettier --write --ignore-unknown .",
     "prepare": "husky install",
     "deploy": "NODE_DEBUG=gh-pages gh-pages --dist src -f"
@@ -30,10 +31,16 @@
     "husky": ">=6",
     "lint-staged": ">=10",
     "nodemon": "^2.0.13",
-    "prettier": "2.3.1"
+    "prettier": "2.3.1",
+    "stylelint": "^13.13.1",
+    "stylelint-config-hudochenkov": "^5.0.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-order": "^4.1.0"
   },
   "lint-staged": {
     "*.js": "eslint --cache --fix",
+    "*.css": "stylelint --cache --fix",
     "*": "prettier --write --ignore-unknown"
   }
 }
