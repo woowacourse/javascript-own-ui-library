@@ -1,12 +1,5 @@
-import idGenerator from './utils/idGenerator.js';
-
 const createElement = (tagName, params) => {
   const appendChild = (child) => {
-    if (node.children.find(({ key }) => child.key === key)) {
-      console.log('on');
-      return;
-    }
-
     node.children.push(child);
     child.parent = node;
   };

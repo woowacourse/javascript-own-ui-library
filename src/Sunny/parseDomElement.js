@@ -1,7 +1,7 @@
-import Sunny from './Sunny.js';
+import createElement from './createElement.js';
 
 const parseDomElement = (element) => {
-  const parsedElement = Sunny.createElement(element.tagName, {
+  const parsedElement = createElement(element.tagName, {
     id: element.id,
     class: element.className,
     textContent: element.textContent,

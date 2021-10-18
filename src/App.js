@@ -1,11 +1,9 @@
-import Sunny from './Sunny.js';
-import SunnyDom from './SunnyDom.js';
+import Sunny from './Sunny/index.js';
+import SunnyDom from './SunnyDom/index.js';
 
 const DEFAULT_COUNT = 0;
 
 let count = 0;
-
-let buttonText = 'RESET';
 
 const App = () => {
   const onDecrement = () => {
@@ -15,13 +13,11 @@ const App = () => {
 
   const onIncrement = () => {
     count = count + 1;
-    buttonText = 'RESET';
     SunnyDom.render(App());
   };
 
   const onReset = () => {
     count = DEFAULT_COUNT;
-    buttonText = 'UNSET';
     SunnyDom.render(App());
   };
 
@@ -37,7 +33,7 @@ const App = () => {
             eventListener: { click: onDecrement },
           }),
           Sunny.createElement('button', {
-            children: [Sunny.createElement('strong', { textContent: buttonText })],
+            children: [Sunny.createElement('strong', { textContent: 'RESET' })],
             eventListener: { click: onReset },
           }),
           Sunny.createElement('button', {
