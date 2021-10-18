@@ -7,7 +7,7 @@
 export const createElement = (type, props, ...children) => ({
   type,
   props,
-  children,
+  children: children.filter((child) => child != null),
 });
 
 const React = {
