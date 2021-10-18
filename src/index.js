@@ -1,29 +1,7 @@
 import Counter from './components/Counter.js';
 import { myReact, myReactDOM } from './lib/index.js';
 import createStore from './lib/store.js';
-
-const initialState = {
-  number: 0,
-};
-
-const reducer = (state = initialState, action) => {
-  switch (action.type) {
-    case 'INCREASE':
-      return {
-        number: state.number + 1,
-      };
-    case 'DECREASE':
-      return {
-        number: state.number - 1,
-      };
-    case 'RESET':
-      return {
-        number: 0,
-      };
-    default:
-      return state;
-  }
-};
+import { reducer, initialState } from './reducer.js';
 
 const store = createStore(reducer, initialState);
 
@@ -37,5 +15,6 @@ const render = () => {
   );
 };
 
-store.subscribe(render);
-render();
+store.subscribe(render); // 이후 state의 변화가 생기면(reducer가 호출되면) 자동으로 render 시키기
+
+render(); // 최초 렌더링
