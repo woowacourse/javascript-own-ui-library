@@ -1,4 +1,4 @@
-import { isClassProp, isEventProp, isPlainText } from './utils.js';
+import { isClassProp, isEventProp, isPlainText, diff } from './utils.js';
 
 const vNodeToNode = (vNode) => {
   const { type, props } = vNode;
@@ -30,11 +30,14 @@ const vNodeToNode = (vNode) => {
   return $node;
 };
 
-const render = (Component, $element) => {
-  const $target = vNodeToNode(Component);
+let oldNode = null;
+let newNode = null;
 
-  $element.innerHTML = '';
-  $element.append($target);
+const render = (Component, $element) => {
+  oldNode = $element.firstChild;
+  newNode = vNodeToNode(Component);
+
+  diff($element, oldNode, newNode);
 };
 
 export default {
