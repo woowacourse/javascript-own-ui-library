@@ -1,25 +1,9 @@
-import { ERROR_MESSAGE } from './constants.js';
-
 export class VNode {
-  #key;
-
   constructor({ key, nodeName, attributes, children }) {
-    this.#key = key;
+    this.key = key;
     this.nodeName = nodeName;
     this.attributes = attributes;
     this.children = children;
-  }
-
-  static isEqual(vNodeA, vNodeB) {
-    if (!vNodeA instanceof VNode || !vNodeB instanceof VNode) {
-      throw new Error(ERROR_MESSAGE.VNODE.INVALID_PARAMETER_TYPE_IS_EQUAL);
-    }
-
-    if (JSON.stringify(vNodeA) !== JSON.stringify(vNodeB)) {
-      return false;
-    }
-
-    return true;
   }
 }
 
