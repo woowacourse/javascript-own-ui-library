@@ -5,7 +5,6 @@ let count = 0;
 
 const App = () => {
   const onDecrease = () => {
-    console.log('onDecrease');
     count -= 1;
 
     CheffeDOM.update(
@@ -39,7 +38,6 @@ const App = () => {
   };
 
   const onIncrease = () => {
-    console.log('onIncrease');
     count += 1;
 
     CheffeDOM.update(
@@ -73,7 +71,6 @@ const App = () => {
   };
 
   const onReset = () => {
-    console.log('onReset');
     count = 0;
 
     CheffeDOM.update(

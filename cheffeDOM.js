@@ -55,11 +55,12 @@ function updateRealDOMNode(vNode, targetNode) {
   fragment.appendChild(node);
 
   targetNode.parentNode.replaceChild(fragment, targetNode);
+  console.log('DOM 업데이트됨');
 }
 
-// Real DOM Node와 VNode와의 변경 사항을 체크하고, 바뀐 부분만 렌더한다.
+// Real DOM Node와 VNode와의 변경 사항을 체크한다.
 // 루트 노드부터 시작해 상위 노드를 순서대로 쭉 비교한다.
-// 상위 노드가 변경되었으면 다른 상태로 간주한다.
+// 상위 노드가 변경되었으면, 하위 노드들도 변경된 상태로 간주한다.
 function diff(node, vNode) {
   // node가 텍스트 노드일 때, vNode가 VNode가 아닌 다른 타입이라면
   if (node instanceof Text && !(vNode instanceof VNode)) {
@@ -87,6 +88,7 @@ function diff(node, vNode) {
         currentVNode.nodeName
       );
 
+      updateRealDOMNode(currentVNode, currentNode);
       continue;
     }
 
@@ -97,12 +99,14 @@ function diff(node, vNode) {
       if (!currentVNode.attributes[name]) {
         console.log('해당 속성 없음', currentAttribute[name]);
 
+        updateRealDOMNode(currentVNode, currentNode);
         continue;
       }
 
       if (value !== currentVNode.attributes[name]) {
         console.log('속성 다름', value, currentVNode.attributes[name]);
 
+        updateRealDOMNode(currentVNode, currentNode);
         continue;
       }
     }
