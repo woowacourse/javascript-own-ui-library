@@ -2,6 +2,8 @@ const textNodeSymbol = Symbol.for("textNode");
 
 export const createTextNode = (value) => ({
   type: textNodeSymbol,
+  props: {},
+  children: [],
   value,
 });
 
@@ -23,6 +25,7 @@ export const createElement = (type, props, ...children) => ({
 
 const React = {
   createElement,
+  createTextNode,
 };
 
 export default React;
