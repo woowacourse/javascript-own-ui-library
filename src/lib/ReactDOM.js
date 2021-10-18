@@ -100,6 +100,10 @@ const diff = (prev, curr) => {
   }
 
   // if (prev == null) {
+  //   const parent = prev.ref.parentNode;
+
+  //   parent.appendChild(convert(curr));
+
   //   return { ...curr, command: "append" };
   // }
 
@@ -135,13 +139,6 @@ const diff = (prev, curr) => {
 
   curr.ref = prev.ref;
 
-  // const result = {
-  //   type: curr.type,
-  //   command: "keep",
-  //   props: { ...prev.props, ...curr.props } ?? {},
-  //   children: [],
-  // };
-
   // props 비교
   for (const key of Object.keys({ ...prev.props, ...curr.props } ?? {})) {
     const prevValue = prev.props[key];
@@ -158,7 +155,6 @@ const diff = (prev, curr) => {
   const prevChildren = prev.children[Symbol.iterator]();
   const currChildren = curr.children[Symbol.iterator]();
 
-  // const index = 0;
   while (true) {
     const pr = prevChildren.next();
     const cr = currChildren.next();
@@ -167,9 +163,14 @@ const diff = (prev, curr) => {
       break;
     }
 
-    // curr.children[index].ref =
+    if (pr.value == null) {
+      curr.ref.appendChild(convert(cr.value));
+
+      // eslint-disable-next-line no-continue
+      continue;
+    }
+
     diff(pr.value, cr.value);
-    // index += 1;
   }
 };
 
@@ -195,17 +196,10 @@ const reactDOM = (() => {
   };
 
   const rerender = () => {
-    // diff prev - curr
     const curr = el();
-    // if (prev == null) {
-    //   const r = convert(curr);
-    //   cnt.appendChild(r);
-    //   prev = curr;
-    //   return;
-    // }
 
-    const rnode = diff(prev, curr);
-    console.log("[rerender] curr", curr, "rnode ", rnode);
+    diff(prev, curr);
+    console.log("[rerender] curr ", curr);
 
     prev = curr;
   };
