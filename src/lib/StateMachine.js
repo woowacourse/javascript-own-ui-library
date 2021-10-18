@@ -1,4 +1,4 @@
-import ReactDOM from "./ReactDOM.js";
+import { rerender } from "./ReactDOM.js";
 import { throwError } from "../util/error.js";
 
 /**
@@ -13,16 +13,11 @@ const createStateMachine = () => {
       ...state,
       [key]: typeof value === "function" ? value(state[key]) : value,
     };
-    console.log(`[setState]`, state);
 
-    ReactDOM.rerender();
+    rerender();
   };
 
-  const getState = () => {
-    console.log(`[getState]`, state);
-
-    return { ...state };
-  };
+  const getState = () => ({ ...state });
 
   const initState = (initialState) => {
     if (isFirstCall) return;
@@ -37,8 +32,6 @@ const createStateMachine = () => {
 
     state =
       typeof initialState === "function" ? initialState() : { ...initialState };
-
-    console.log(`[initState]`, state);
   };
 
   return [getState, setState, initState];

@@ -1,4 +1,4 @@
 import Counter from "./Counter.js";
-import ReactDOM from "./lib/ReactDOM.js";
+import { render } from "./lib/ReactDOM.js";
 
-ReactDOM.render(Counter, document.getElementById("root"));
+render(Counter, document.getElementById("root"));
