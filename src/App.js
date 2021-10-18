@@ -5,25 +5,23 @@ const DEFAULT_COUNT = 0;
 
 let count = 0;
 
+let buttonText = 'RESET';
+
 const App = () => {
   const onDecrement = () => {
-    console.log('decrement');
     count = count - 1;
     SunnyDom.render(App());
   };
 
   const onIncrement = () => {
-    console.log('increment');
-    console.log('실행! : ', count);
-
     count = count + 1;
+    buttonText = 'RESET';
     SunnyDom.render(App());
   };
 
   const onReset = () => {
-    console.log('reset');
-
     count = DEFAULT_COUNT;
+    buttonText = 'UNSET';
     SunnyDom.render(App());
   };
 
@@ -39,7 +37,7 @@ const App = () => {
             eventListener: { click: onDecrement },
           }),
           Sunny.createElement('button', {
-            children: [Sunny.createElement('strong', { textContent: 'RESET' })],
+            children: [Sunny.createElement('strong', { textContent: buttonText })],
             eventListener: { click: onReset },
           }),
           Sunny.createElement('button', {

@@ -1,3 +1,4 @@
+import diff from './diff.js';
 import Sunny from './Sunny.js';
 import idGenerator from './utils/idGenerator.js';
 import { isEmptyObject } from './utils/objectUtils.js';
@@ -68,8 +69,6 @@ let prevDOMNode = {};
 
 /* element: SunnyDomNode, prevElement?: realDomNode */
 const render = (element, prevElement) => {
-  console.log(prevDOMNode);
-
   const parsedPrevElement = prevElement ? Sunny.parseDomElement(prevElement) : null;
 
   /* 최초 이전 노드가 없을 시 추가 */
@@ -81,8 +80,6 @@ const render = (element, prevElement) => {
     }
 
     prevDOMNode = parsedPrevElement;
-
-    console.log(prevDOMNode);
   }
 
   /* 부모노드는 실제 DOM에서 identifier 를 반드시 하나 이상 가지고 있어햐 함.*/
@@ -91,25 +88,12 @@ const render = (element, prevElement) => {
   /* 1. prevDOMNode의 하위에 해당 노드가 있는 지 찾기 */
   let targetNode = findElement(prevDOMNode, element.id, element.class);
 
-  console.log(targetNode);
-
   if (!targetNode) {
-    console.log('해당 노드 돔에 없어요');
-    console.log('그러니까 넣어줄거야.');
-
     // 일단 없으면 최상위에 가져다 꽂을것.
 
     element.key = idGenerator.getId();
 
-    console.log('나 키 이거 : ' + element.key);
-
     prevDOMNode.children.push(element);
-
-    console.log('가상돔에 넣었다?');
-
-    console.log(prevDOMNode);
-
-    console.log('그리고 돔에 넣을거야');
 
     const selector = prevDOMNode.id ? `#${prevDOMNode.id}` : prevDOMNode.class ? `.${prevDOMNode.class}` : '';
     const $parent = document.querySelector(selector);
@@ -122,153 +106,26 @@ const render = (element, prevElement) => {
   }
 
   if (targetNode) {
-    console.log('오 돔에 있네?');
-
-    console.log('targetNode : ', targetNode);
-    console.log('element : ', element);
-
-    console.log('그럼 해당 노드랑, 새로 들어온 엘리먼트에서 뭐가 달라졌는지 볼까?');
-
-    /* 여기서는 textContent만 확인할거야 */
-
-    console.log('먼저 내 자신부터 볼까?');
-
-    const changedNodes = [];
-
-    const isChanged = (() => {
-      if (createDomNode(targetNode).innerHTML !== createDomNode(element).innerHTML) {
-        // 왜 달라졌어?
-
-        console.log('자식이 달라졌니?');
-
-        targetNode.children.forEach((child, index) => {
-          if (String(child.textContent) !== String(element.children[index].textContent)) {
-            console.log(child.textContent, element.children[index].textContent);
-
-            changedNodes.push(element.children[index]);
-          }
-        });
-
-        console.log(changedNodes.length && '자식이 달라졌나봐!');
-        if (changedNodes.length) {
-          return true;
-        }
-
-        /* 자식이 아니면 내가 달라진거네! */
-        if (!changedNodes.length) {
-          console.log('자식이 아니면 내가 달라진거네!');
-          changedNodes.push(element);
-
-          return true;
-        }
-      }
-
-      /* 자식은? */
-
-      console.log(changedNodes);
-
-      targetNode.children.forEach((child, index) => {
-        if (child.textContent !== element.children[index].textContent) {
-          changedNodes.push(element.children[index]);
-        }
-      });
-
-      if (changedNodes.length) {
-        return true;
-      }
-
-      return false;
-    })();
-
-    console.log('달라졌니?', isChanged);
-    console.log('누가 달라졌어?, ', changedNodes);
-
-    /* 오 얘가 달라졌구나 */
+    const changedNodes = diff(targetNode, element, []);
 
     /* 그리고 바뀐 부분만 돔에 그릴거야 */
 
-    changedNodes.forEach((child, index) => {
-      console.log(child.textContent);
+    changedNodes?.forEach(({ prevNode, newNode }) => {
+      const selector = prevNode.id ? `#${prevNode.id}` : prevNode.class ? `.${prevNode.class}` : prevNode.tagName;
+      const $node = [...document.querySelectorAll(selector)].find(
+        ($elem) => $elem.innerHTML === createDomNode(prevNode).innerHTML
+      );
 
-      const selector = child.id ? `#${child.id}` : child.class ? `.${child.class}` : '';
-      const $node = document.querySelector(selector);
-
-      $node.innerHTML = createDomNode(child).innerHTML;
+      $node.innerHTML = createDomNode(newNode).innerHTML;
     });
 
-    /* 그럼 이전 prevNode를 업데이트 해주자! */
-
+    // 여기는 실제 돔에 영향을 안줘서 탐색을 하기 보다는, 그냥 대체 할 거야.
     prevDOMNode.children = [{ ...element, key: targetNode.key }];
 
     return;
   }
 
-  console.log('나 아무것도 아냐');
-
   return;
-  /* elem이 기존 Node에 존재하면 === key가 있으면 using Key, 재귀*/
-  if (element.key) {
-    const isExistInPrevDOMNode = findElementByKey(prevDOMNode, element.key);
-  }
-
-  /* key 가 없으면 가상 돔에 등록된적 없음 */
-  /* 그럼 내 노드의 최상단이 어디인지 확인해야함. */
-  /* 부모 노드가 없을 때까지 key 가 있는지 없는지 확인. */
-  let parentNodeInVDom = null;
-  let currentElem = element;
-
-  while (!parentNodeInVDom) {
-    if (!currentElem.parent) {
-      break;
-    }
-
-    if (currentElem.parent.key) {
-      parentNodeInVDom = currentElem.parent;
-      break;
-    }
-
-    currentElem = currentElem.parent;
-  }
-
-  if (parentNodeInVDom) {
-    /* id 나 class가 있는 경우 */
-    const selector = parentNodeInVDom.id
-      ? `#${parentNodeInVDom.id}`
-      : parentNodeInVDom.class
-      ? `.${parentNodeInVDom.class}`
-      : '';
-
-    console.log(selector);
-
-    const $parent = document.querySelector(selector);
-
-    element.key = idGenerator.getId();
-
-    $parent.innerHTML = '';
-    $parent.append(createDomNode(element));
-
-    return;
-  }
-
-  const current = createDomNode(element);
-
-  const $currentNode = document.querySelector(`.${element.class}`);
-
-  // 기존에 존재하지 않던 노드 이므로, 부모가 있으면 부모에 append
-  // 없으면 root에 append
-  if (!$currentNode) {
-    const $parentNode = document.querySelector(`.${element.parent?.class}`) || document.querySelector('#root');
-
-    $parentNode.append(current);
-
-    return;
-  }
-
-  $currentNode.innerHTML = '';
-
-  element.children.forEach((child) => {
-    $currentNode.append(createDomNode(child));
-  });
 };
 
 export default render;
