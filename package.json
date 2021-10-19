@@ -7,9 +7,15 @@
   "license": "MIT",
   "scripts": {
     "dev": "parcel index.html",
-    "build": "parcel build dist"
+    "build": "parcel build dist",
+    "test": "jest"
   },
   "devDependencies": {
+    "@babel/core": "^7.15.8",
+    "@babel/preset-typescript": "^7.15.0",
+    "@types/jest": "^27.0.2",
+    "babel-jest": "^27.3.0",
+    "jest": "^27.3.0",
     "parcel-bundler": "^1.12.5",
     "typescript": "^4.4.4"
   }
