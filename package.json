@@ -1,0 +1,34 @@
+{
+  "name": "javascript-own-ui-library",
+  "version": "0.0.1",
+  "description": "우아한테크코스 프론트엔드 3기 마지막 미션, 나만의 UI 라이브러리 만들기입니다.",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/devhyun637/javascript-own-ui-library.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/devhyun637/javascript-own-ui-library/issues"
+  },
+  "homepage": "https://github.com/devhyun637/javascript-own-ui-library#readme",
+  "devDependencies": {
+    "eslint": "^8.0.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "husky": "^7.0.2",
+    "lint-staged": "^11.2.3",
+    "prettier": "2.4.1"
+  },
+  "eslintConfig": {
+    "ignorePatterns": "node_modules"
+  },
+  "lint-staged": {
+    "*.{js,jsx}": "eslint --cache",
+    "*.{js,jsx,css,md,html,json}": "prettier --write"
+  },
+  "scripts": {
+    "prepare": "husky install"
+  }
+}
