@@ -8,7 +8,7 @@
   "scripts": {
     "dev": "parcel index.html",
     "build": "parcel build dist",
-    "test": "jest"
+    "test": "jest --watch --passWithNoTests"
   },
   "devDependencies": {
     "@babel/core": "^7.15.8",

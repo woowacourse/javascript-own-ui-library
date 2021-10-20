@@ -1,4 +1,8 @@
-const createElement = (tag, props, children): Node => {
+const createElement = (
+  tag: string,
+  props: { [key: string]: string },
+  children: string | Node
+): Node => {
   const element = document.createElement(tag);
 
   Object.keys(props)?.forEach((key) => {
