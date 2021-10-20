@@ -10,7 +10,7 @@
 - [x] VirtualDOM 생성 팩토리 함수 구현 (aka createElement)
 - [x] 렌더러 구현
 - [x] 직접 구현한 렌더러와 VirtualDOM으로 Counter App 렌더링
-- [ ] DOM Node 비교
+- [x] DOM Node 비교
 - [x] 업데이트 DOM Node
 - [x] 렌더링한 Counter App 동작시키기
 
