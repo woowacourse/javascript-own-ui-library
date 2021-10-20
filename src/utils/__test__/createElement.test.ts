@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import createElement from "./createElement";
+import createElement from "../createElement";
 
 describe("createElement Test", () => {
   beforeEach(() => {
