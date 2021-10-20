@@ -21,9 +21,8 @@ const toRNode = (vnode) => {
   }
 
   for (const child of children) {
-    const rchild = toRNode(child);
-    rnode.append(rchild);
-    child.ref = rchild;
+    child.ref = toRNode(child);
+    rnode.append(child.ref);
   }
 
   return rnode;
@@ -42,12 +41,8 @@ const diff = (prev, curr) => {
 
   // type이 다른 경우
   if (prev.type !== curr.type) {
-    const parent = prev.ref.parentNode;
-    prev.ref.remove();
-
-    const rnode = toRNode(curr);
-    parent.append(rnode);
-    curr.ref = rnode;
+    curr.ref = toRNode(curr);
+    prev.ref.replaceWith(curr.ref);
 
     return;
   }
@@ -62,12 +57,8 @@ const diff = (prev, curr) => {
     }
 
     // textNode의 value가 다른 경우
-    const parent = prev.ref.parentNode;
-    prev.ref.remove();
-
-    const rnode = toRNode(curr);
-    parent.append(rnode);
-    curr.ref = rnode;
+    curr.ref = toRNode(curr);
+    prev.ref.replaceWith(curr.ref);
 
     return;
   }
@@ -103,9 +94,8 @@ const diff = (prev, curr) => {
     }
 
     if (pr.value == null) {
-      const rnode = toRNode(cr.value);
-      curr.ref.append(rnode);
-      cr.value.ref = rnode;
+      cr.value.ref = toRNode(cr.value);
+      curr.ref.append(cr.value.ref);
 
       continue;
     }
@@ -119,18 +109,6 @@ const reactDOM = (() => {
   let rootContainer = null;
   let prev = null;
 
-  const render = (Comp, container) => {
-    App = Comp;
-    rootContainer = container;
-
-    const curr = Comp();
-
-    curr.ref = toRNode(curr);
-    container.append(curr.ref);
-
-    prev = curr;
-  };
-
   const rerender = () => {
     const curr = App();
 
@@ -142,6 +120,13 @@ const reactDOM = (() => {
     }
 
     prev = curr;
+  };
+
+  const render = (Component, container) => {
+    App = Component;
+    rootContainer = container;
+
+    rerender();
   };
 
   return { render, rerender };
