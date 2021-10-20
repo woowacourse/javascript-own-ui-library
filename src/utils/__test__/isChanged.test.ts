@@ -47,5 +47,13 @@ describe("diff Test", () => {
     element4.innerHTML = "0";
 
     expect(isChanged(element3, element4)).toBe(false);
+
+    const element5 = document.createElement("span");
+    const element6 = document.createElement("span");
+
+    element5.className = "yujo";
+    element6.className = "yujo";
+
+    expect(isChanged(element5, element6)).toBe(false);
   });
 });
