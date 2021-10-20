@@ -1,13 +1,15 @@
-const createElement = (tag, props, children) => {
+const createElement = (tag, props, children): Node => {
   const element = document.createElement(tag);
 
-  Object.keys(props).forEach((key) => {
+  Object.keys(props)?.forEach((key) => {
     element[key] = props[key];
   });
 
-  children.forEach((child) => {
-    element.appendChild(child);
-  });
+  if (typeof children !== "object") {
+    element.innerHTML = children;
+  } else {
+    element.appendChild(children);
+  }
 
   return element;
 };
