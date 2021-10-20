@@ -26,6 +26,7 @@ function createRealDOMNode(vNode) {
     // 모든 속성을 순회한다.
     Object.entries(attributes).forEach(([key, value]) => {
       const isEventHandler = key.slice(0, 2) === 'on';
+      const validValueTypes = ['string', 'boolean', 'number'];
 
       // 속성이 on으로 시작하고, value가 함수이면, 이벤트를 bind한다.
       if (isEventHandler && typeof value === 'function') {
@@ -34,8 +35,8 @@ function createRealDOMNode(vNode) {
         bindEvent(node, eventType, value);
       }
 
-      // value가 문자열이면, setAttribute한다.
-      else if (typeof value === 'string') {
+      // value가 유효하면, setAttribute한다.
+      else if (validValueTypes.includes(typeof value)) {
         node.setAttribute(key, value);
       }
     });
