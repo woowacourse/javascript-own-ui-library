@@ -11,9 +11,21 @@ const updateDOM = (state) => {
   render(virtualDOM, $root);
 };
 
-let state = { count: 0 };
+const DATE_OF_GRADUATION_CEREMONY = 1126;
+const lyrics = [
+  '안녕은 영원한 헤어짐은 아니겠지요.',
+  '다시 만나기 위한 약속일거야',
+  '함께했던 시간은 이젠 추억으로 남기고',
+  '서로 가야할 길 찾아서 떠나야해요',
+];
+const lyricsIter = lyrics[Symbol.iterator]();
+
+let state = { count: DATE_OF_GRADUATION_CEREMONY - 1 };
 const stateHandler = {
   set: (target, prop, value) => {
+    if (prop === 'count' && target[prop] >= DATE_OF_GRADUATION_CEREMONY) {
+      throw new RangeError(lyricsIter.next().value);
+    }
     target[prop] = value;
     updateDOM(target);
     return true;
