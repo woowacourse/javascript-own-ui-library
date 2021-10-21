@@ -12,19 +12,19 @@ const updateDOM = (state) => {
 };
 
 let state = { count: 0 };
-
-state = new Proxy(state, {
-  set(target, prop, value) {
+const stateHandler = {
+  set: (target, prop, value) => {
     target[prop] = value;
     updateDOM(target);
     return true;
   },
-  get(target, prop) {
+  get: (target, prop) => {
     if (prop in target) {
       return target[prop];
     }
   },
-});
+};
+state = new Proxy(state, stateHandler);
 
 const handleClickCounter = (e) => {
   const isAddButtonClicked = !!e.target.closest('.btn-add');
