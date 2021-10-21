@@ -1,4 +1,4 @@
-export const counterTemplate = (state) => `
+export const getCounterTemplate = (state) => `
 <div id="365kim" class="container">
   <span class="count">${state.count}</span>
   <div class="btn-group">

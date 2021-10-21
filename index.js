@@ -1,12 +1,12 @@
 import { render } from './renderer.js';
 import { parse } from './parser.js';
-import { counterTemplate } from './template.js';
+import { getCounterTemplate } from './template.js';
 
 const $root = document.querySelector('#root');
 
 const updateDOM = (state) => {
-  const template = counterTemplate(state);
-  const virtualDOM = parse(template);
+  const counterTemplate = getCounterTemplate(state);
+  const virtualDOM = parse(counterTemplate);
 
   render(virtualDOM, $root);
 };
