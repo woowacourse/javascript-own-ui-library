@@ -2,21 +2,29 @@ import { render } from './renderer.js';
 import { parse } from './parser.js';
 import { counterTemplate } from './template.js';
 
-let count = 0;
-
 const $root = document.querySelector('#root');
 
-const getVirtualDOM = () => {
-  const template = counterTemplate(count);
-
-  return parse(template);
-};
-
-const updateDOM = () => {
-  const virtualDOM = getVirtualDOM();
+const updateDOM = (state) => {
+  const template = counterTemplate(state);
+  const virtualDOM = parse(template);
 
   render(virtualDOM, $root);
 };
+
+let state = { count: 0 };
+
+state = new Proxy(state, {
+  set(target, prop, value) {
+    target[prop] = value;
+    updateDOM(target);
+    return true;
+  },
+  get(target, prop) {
+    if (prop in target) {
+      return target[prop];
+    }
+  },
+});
 
 const handleClickCounter = (e) => {
   const isAddButtonClicked = !!e.target.closest('.btn-add');
@@ -24,20 +32,17 @@ const handleClickCounter = (e) => {
   const isResetButtonClicked = !!e.target.closest('.btn-reset');
 
   if (isAddButtonClicked) {
-    count += 1;
-    updateDOM();
+    state.count += 1;
     return;
   }
   if (isSubtractButtonClicked) {
-    count -= 1;
-    updateDOM();
+    state.count -= 1;
     return;
   }
   if (isResetButtonClicked) {
-    count = 0;
-    updateDOM();
+    state.count = 0;
   }
 };
 
-updateDOM();
+updateDOM(state);
 $root.addEventListener('click', handleClickCounter);
