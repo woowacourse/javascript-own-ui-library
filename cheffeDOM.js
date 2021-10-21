@@ -132,7 +132,7 @@ function update(vNode) {
 }
 
 function render(vElement, rootElement) {
-  const vNode = vElement();
+  const vNode = vElement;
 
   if (currentRootVNode) {
     throw new Error(ERROR_MESSAGE.RENDER.ONLY_CALL_ONCE);

@@ -132,4 +132,4 @@ const App = () => {
 };
 
 const rootElement = document.getElementById('root');
-CheffeDOM.render(App, rootElement);
+CheffeDOM.render(App(), rootElement);
