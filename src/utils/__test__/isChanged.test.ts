@@ -29,6 +29,11 @@ describe("diff Test", () => {
     element6.className = "two";
 
     expect(isChanged(element5, element6)).toBe(true);
+
+    const element7 = document.createTextNode("hi");
+    const element8 = document.createTextNode("ho");
+
+    expect(isChanged(element7, element8)).toBe(true);
   });
 
   test("두 노드가 같은 경우 false를 반환한다.", () => {
@@ -55,5 +60,10 @@ describe("diff Test", () => {
     element6.className = "yujo";
 
     expect(isChanged(element5, element6)).toBe(false);
+
+    const element7 = document.createTextNode("hi");
+    const element8 = document.createTextNode("hi");
+
+    expect(isChanged(element7, element8)).toBe(false);
   });
 });
