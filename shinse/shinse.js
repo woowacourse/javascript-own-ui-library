@@ -24,7 +24,7 @@ const addInnerText = (newTag, element) => {
 };
 
 const insertNode = (element) => {
-	let childNode = document.createElement(element.tag);
+	const childNode = document.createElement(element.tag);
 	// 가장 바깥 Node 생성
 
 	// 만약 children이 node라면 재귀적으로 children을 넣어주기
@@ -49,7 +49,7 @@ const insertNode = (element) => {
 
 const createWrapperNode = (element) => {
 	// 가장 바깥을 감싸는 wrapperNode 만들기
-	let wrapperNode = createLastNode(element);
+	const wrapperNode = createLastNode(element);
 
 	// wrapperNode 내부 map을 돌며, children node를 넣어주기
 	Array.from(element.children).forEach((el) => {
