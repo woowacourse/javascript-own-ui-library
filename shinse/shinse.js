@@ -1,4 +1,4 @@
-const createNode = (element) => {
+const createLastNode = (element) => {
 	const newNode = document.createElement(element.tag);
 
 	addAttribute(newNode, element);
@@ -33,7 +33,7 @@ const insertNode = (element) => {
 			if (el.childrenType === 'node') {
 				childNode.append(createWrapperNode(el));
 			} else {
-				childNode.append(createNode(el));
+				childNode.append(createLastNode(el));
 			}
 		});
 	}
@@ -49,7 +49,7 @@ const insertNode = (element) => {
 
 const createWrapperNode = (element) => {
 	// 가장 바깥을 감싸는 wrapperNode 만들기
-	let wrapperNode = createNode(element);
+	let wrapperNode = createLastNode(element);
 
 	// wrapperNode 내부 map을 돌며, children node를 넣어주기
 	Array.from(element.children).forEach((el) => {
