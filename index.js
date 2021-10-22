@@ -7,18 +7,34 @@ let count = 0;
 
 ShinseDOM.render(getCounterNodeObj(count), rootElementId);
 
-const handleCounterButtons = (e) => {
-	const buttonId = e.target.id;
-
-	count = buttonId === 'minus-button' ? count - 1 : buttonId === 'plus-button' ? count + 1 : 0;
-
+const updateDOM = () => {
 	ShinseDOM.render(getCounterNodeObj(count), rootElementId);
-	addEventToCounterButtons(count);
+	addEventToCounterButtons();
+};
+
+const handleMinusButton = () => {
+	count -= 1;
+	updateDOM();
+};
+
+const handleResetButton = () => {
+	count = 0;
+	updateDOM();
+};
+
+const handlePlusButton = () => {
+	count += 1;
+	updateDOM();
 };
 
 const addEventToCounterButtons = () => {
-	const counterButtons = document.querySelector('.btn-group');
-	counterButtons.addEventListener('click', (e) => handleCounterButtons(e));
+	const minusButton = document.getElementById('minus-button');
+	const resetButton = document.getElementById('reset-button');
+	const plusButton = document.getElementById('plus-button');
+
+	minusButton.addEventListener('click', handleMinusButton);
+	resetButton.addEventListener('click', handleResetButton);
+	plusButton.addEventListener('click', handlePlusButton);
 };
 
-addEventToCounterButtons(count);
+addEventToCounterButtons();
