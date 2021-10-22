@@ -6,7 +6,7 @@ const createElement = (
   const element = document.createElement(tag);
 
   Object.keys(props)?.forEach((key) => {
-    element[key] = props[key];
+    element.setAttribute(key, props[key]);
   });
 
   children?.forEach((child) => {
