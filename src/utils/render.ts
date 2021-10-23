@@ -3,13 +3,16 @@ const isEmpty = (obj: any): Boolean => {
 };
 
 const render = (() => {
-  const oldNoe = {};
+  let oldNode;
 
   const inner = (target: Element, node: Node): void => {
-    if (isEmpty(oldNoe)) {
+    if (!oldNode) {
       target.appendChild(node);
-      oldNoe["root"] = node;
+
+      oldNode = node.childNodes;
     } else {
+      target.innerHTML = "";
+      target.appendChild(node);
     }
   };
 
