@@ -7,14 +7,8 @@ const render = (() => {
 
   const inner = (target: Element, node: Node): void => {
     if (isEmpty(oldNoe)) {
-      // target.appendChild(node);
-      // oldNoe["root"] = node;
-
-      // console.log(oldNoe);
-
-      console.log(node);
-
       target.appendChild(node);
+      oldNoe["root"] = node;
     } else {
     }
   };
