@@ -21,22 +21,36 @@ const lyrics = [
 const lyricsIter = lyrics[Symbol.iterator]();
 
 let state = { count: DATE_OF_GRADUATION_CEREMONY - 1 };
-const stateHandler = {
-  set: (target, prop, value) => {
-    if (prop === 'count' && target[prop] >= DATE_OF_GRADUATION_CEREMONY) {
-      console.log(lyricsIter.next().value);
-      return true;
+const propList = ['count'];
+
+const stateSetter = (target, prop, value) => {
+  try {
+    if (!propList.includes(prop)) {
+      throw new Error('Invalid prop');
+    }
+    if (prop === 'count' && value > DATE_OF_GRADUATION_CEREMONY) {
+      throw new Error(lyricsIter.next().value);
     }
     target[prop] = value;
     updateDOM(target);
+  } catch (e) {
+    console.log(e);
+  } finally {
     return true;
-  },
-  get: (target, prop) => {
-    if (prop in target) {
-      return target[prop];
-    }
-  },
+  }
 };
+
+const stateGetter = (target, prop) => {
+  if (prop in target) {
+    return target[prop];
+  }
+};
+
+const stateHandler = {
+  set: stateSetter,
+  get: stateGetter,
+};
+
 state = new Proxy(state, stateHandler);
 
 const handleClickCounter = (e) => {
