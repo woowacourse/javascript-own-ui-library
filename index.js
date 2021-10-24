@@ -24,7 +24,8 @@ let state = { count: DATE_OF_GRADUATION_CEREMONY - 1 };
 const stateHandler = {
   set: (target, prop, value) => {
     if (prop === 'count' && target[prop] >= DATE_OF_GRADUATION_CEREMONY) {
-      throw new RangeError(lyricsIter.next().value);
+      console.log(lyricsIter.next().value);
+      return true;
     }
     target[prop] = value;
     updateDOM(target);
