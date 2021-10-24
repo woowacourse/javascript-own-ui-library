@@ -36,6 +36,7 @@ const Count: ReactComponent = () => {
           }),
           React.createElement("button", {
             onClick: () => {
+              console.log(count);
               setCount(count + 1);
             },
             children: [

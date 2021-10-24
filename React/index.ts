@@ -1,76 +1,28 @@
 import { ReactComponent, ReactElement } from "./types";
+import { getDOMElementToRender, updateOnlyChangedDOM } from "./util";
 
 type Render = (element: ReactComponent, container: HTMLElement) => void;
 
 const React = (function () {
   const states: unknown[] = [];
-  let rerender: () => void;
+  let RootComponent: ReactComponent;
+  let $rootContainer: Element;
   let currentStateIndex = 0;
   let $actualDOM: HTMLElement;
-  let virtualDOM: HTMLElement;
 
-  const convertReactElementToDOM = (element: ReactElement) => {
-    const $newDOM = document.createElement(element.nodeName);
+  const render: Render = (Component, $container) => {
+    const isFirst = !RootComponent && !$rootContainer;
 
-    if (element?.className) {
-      $newDOM.className = element.className;
-    }
-
-    if (element?.onClick) {
-      $newDOM.addEventListener("click", element.onClick);
-    }
-
-    if (element?.className) {
-      $newDOM.className = element.className;
-    }
-
-    return $newDOM;
-  };
-
-  const getDOMElementToRender = (element: ReactElement): HTMLElement => {
-    const $newDOM = convertReactElementToDOM(element);
-    const children = element.children;
-
-    if (children === undefined) {
+    if (!isFirst) {
       return;
     }
 
-    if (typeof children === "string") {
-      $newDOM.innerText = children;
-      return $newDOM;
-    }
+    RootComponent = Component;
+    $rootContainer = $container;
 
-    if (typeof children === "number") {
-      $newDOM.innerText = String(children);
-      return $newDOM;
-    }
-
-    children.forEach((child) => {
-      const childToAppend = getDOMElementToRender(child);
-
-      if (childToAppend !== undefined) {
-        $newDOM.appendChild(childToAppend);
-      }
-    });
-
-    return $newDOM;
-  };
-
-  const render: Render = (element, container) => {
-    if (!container) {
-      console.error("render error: container element가 존재하지 않습니다.");
-      return;
-    }
-
-    if (!rerender) {
-      rerender = () => {
-        render(element, container);
-      };
-    }
-
-    virtualDOM = getDOMElementToRender(element());
-    container.replaceChildren(virtualDOM);
-    $actualDOM = virtualDOM;
+    const $virtualDOM = getDOMElementToRender(RootComponent());
+    $rootContainer.replaceChildren($virtualDOM);
+    $actualDOM = $virtualDOM;
   };
 
   const createElement = (
@@ -82,6 +34,12 @@ const React = (function () {
       nodeName: tag,
       ...props,
     };
+  };
+
+  const rerender = () => {
+    const $virtualDOM = getDOMElementToRender(RootComponent());
+
+    updateOnlyChangedDOM($virtualDOM, $actualDOM);
   };
 
   const useState = <T>(
