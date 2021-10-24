@@ -1,7 +1,3 @@
-const isEmpty = (obj: any): Boolean => {
-  return Object.keys(obj).length === 0;
-};
-
 const render = (() => {
   let oldNode;
 
@@ -11,6 +7,7 @@ const render = (() => {
 
       oldNode = node.childNodes;
     } else {
+      // NOTE 비교 없이 덮어쓰는 경우
       target.innerHTML = "";
       target.appendChild(node);
     }
