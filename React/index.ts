@@ -1,13 +1,18 @@
-import { ReactComponent, ReactElement } from "./types";
+import { isKeyOf } from "./typeGuard";
+import { Props, ReactComponent, ReactElement } from "./types";
 import { getDOMElementToRender, updateOnlyChangedDOM } from "./util";
 
 type Render = (element: ReactComponent, container: HTMLElement) => void;
 
+interface State<T> {
+  value: T;
+}
+
 const React = (function () {
-  const states: unknown[] = [];
+  const states: State<unknown>[] = [];
   let RootComponent: ReactComponent;
   let $rootContainer: Element;
-  let currentStateIndex = 0;
+  let stateIndex = 0;
   let $actualDOM: HTMLElement;
 
   const render: Render = (Component, $container) => {
@@ -27,9 +32,8 @@ const React = (function () {
 
   const createElement = (
     tag: keyof HTMLElementTagNameMap,
-    props: Omit<ReactElement, "nodeName">
+    props: Props
   ): ReactElement => {
-    const $element = document.createElement(tag);
     return {
       nodeName: tag,
       ...props,
@@ -42,20 +46,30 @@ const React = (function () {
     updateOnlyChangedDOM($virtualDOM, $actualDOM);
   };
 
-  const useState = <T>(
-    initialValue: T
-  ): [state: T, setState: (value: T) => void] => {
-    if (states[currentStateIndex] === undefined) {
-      states[currentStateIndex] = initialValue;
+  const useState = <T>(initialValue: T): State<T> => {
+    //TODO: stateIndex 활용해서 여러 state를 사용할 수 있도록 해야함.
+    if (states[stateIndex] === undefined) {
+      states[stateIndex] = {
+        value: initialValue,
+      };
     }
 
-    return [
-      states[currentStateIndex] as T,
-      (value: T) => {
-        states[currentStateIndex] = value;
-        rerender();
+    return new Proxy(states[stateIndex] as State<T>, {
+      get(obj, prop) {
+        if (isKeyOf(obj, prop)) {
+          return { ...states[stateIndex] }[prop];
+        }
       },
-    ];
+      set(obj, prop, value) {
+        if (isKeyOf(obj, prop)) {
+          states[stateIndex][prop] = value;
+          rerender();
+          return true;
+        }
+
+        return false;
+      },
+    });
   };
 
   return {

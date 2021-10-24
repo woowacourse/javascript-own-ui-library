@@ -3,3 +3,10 @@ export const isHTMLElement = (element: object): element is HTMLElement => {
     ? true
     : false;
 };
+
+export const isKeyOf = <T>(
+  obj: T,
+  key: string | number | symbol
+): key is keyof typeof obj => {
+  return key in obj ? true : false;
+};

@@ -1,4 +1,4 @@
-interface Props {
+export interface Props {
   children?: ReactElement[] | string | number;
   className?: string;
   onClick?: () => void;
