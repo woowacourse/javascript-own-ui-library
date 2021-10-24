@@ -37,11 +37,7 @@ const Counter = () => {
         { key: "021", event: { click: reset } },
         createElement("strong", { key: "0210" }, "RESET")
       ),
-      createElement(
-        "button",
-        { key: "022", event: { click: increase } },
-        createElement("strong", { key: "0220" }, "+")
-      )
+      createElement("button", { key: "022", event: { click: increase } }, createElement("strong", { key: "0220" }, "+"))
     )
   );
 };
