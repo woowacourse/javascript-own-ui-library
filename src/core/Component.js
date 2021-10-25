@@ -1,7 +1,9 @@
 import deepObjectEqual from "../deepEqual.js";
+import { html } from "../dom.js";
 
 // 웹 컴포넌트 입니다.
 class Component extends HTMLElement {
+  // 웹 컴포넌트에서 기본적으로 제공해주는 메서드입니다.
   constructor() {
     super();
   }
@@ -24,8 +26,14 @@ class Component extends HTMLElement {
   disconnectedCallback() {}
 
   // 아래부터는 제가 커스텀해준 메서드입니다.
+  // // step1에 필요한 기능들
 
   render() {}
+
+  template = null;
+  getTemplate() {
+    return html`<div></div>`;
+  }
 
   diff($oldDom, $newDom) {
     const hasVirtualDom = !!$oldDom?.vDom;
@@ -62,6 +70,8 @@ class Component extends HTMLElement {
       this.diff($oldDom.childNodes[i], $newDom.childNodes[i]);
     }
   }
+
+  // // step2에 필요한 기능들
 }
 
 export default Component;

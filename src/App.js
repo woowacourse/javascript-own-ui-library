@@ -22,7 +22,8 @@ class App extends Component {
             <strong>+</strong>
           </button>
         </div>
-        ${true && "<div>하이</div>"}
+        ${true &&
+        html`<div><span>조건부 렌더링 테스트:</span> ${this.count}</div>`}
       </div>
     </div>`;
   }
@@ -52,6 +53,10 @@ class App extends Component {
 
     this.diff(this.template, newTemplate);
   }
+}
+
+if (!window.customElements.get(App.WebComponentName)) {
+  window.customElements.define(App.WebComponentName, App);
 }
 
 export default App;

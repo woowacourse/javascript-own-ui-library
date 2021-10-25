@@ -52,15 +52,17 @@ export const html = (stringArr, ...paramArr) => {
     const node = domIterator.nextNode();
     if (!node) break;
 
-    // console.log(node);
-
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent;
 
       if (text.includes(TAGGED_TEMPLATE_LITERAL_PARAM_FLAG)) {
-        const realValueIndex = text.split("=")[1];
+        const realValueIndex = Number(text.split("=")[1].trim());
 
-        node.textContent = paramArr[realValueIndex];
+        if (paramArr[realValueIndex] instanceof HTMLElement) {
+          node.replaceWith(paramArr[realValueIndex]);
+        } else {
+          node.textContent = paramArr[realValueIndex];
+        }
       }
     }
 
