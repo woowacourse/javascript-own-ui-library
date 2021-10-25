@@ -60,8 +60,9 @@ function updateRealDOMNode(vNode, targetNode) {
 }
 
 // Real DOM Node와 VNode와의 변경 사항을 체크한다.
-// 루트 노드부터 시작해 상위 노드를 순서대로 쭉 비교한다.
-// 상위 노드가 변경되었으면, 하위 노드들도 변경된 상태로 간주한다.
+// 현재 노드의 nodeName, attributes들을 순서대로 쭉 비교한다.
+// 현재 노드가 변경되었으면, 하위 노드들도 변경된 상태로 간주하고 vNode의 내용을 DOM에 새로 업데이트한다..
+// 변경된 노드가 없으면 하위 노드들도 하나씩 재귀적으로 diff를 실행한다.
 function diff(node, vNode) {
   if (node instanceof Text && !(vNode instanceof VNode)) {
     // node 문자열과 vNode 문자열이 같지 않다면 텍스트 노드가 다르다고 판단한다.
@@ -70,54 +71,43 @@ function diff(node, vNode) {
 
       // 바뀐 노드에만 DOM을 업데이트한다.
       updateRealDOMNode(vNode, node);
+    }
+
+    return;
+  }
+
+  if (node.nodeName.toLowerCase() !== vNode.nodeName.toLowerCase()) {
+    console.log('노드 이름 다름', node.nodeName, vNode.nodeName);
+
+    updateRealDOMNode(vNode, node);
+
+    return;
+  }
+
+  // TODO: node.attributes와 Object.keys(vNode.attributes)의 길이가 다를 때, 참조 에러 막기
+  for (let j = 0; j < node.attributes.length; j++) {
+    const { name, value } = node.attributes[j];
+
+    if (!vNode.attributes[name]) {
+      console.log('해당 속성 없음', currentAttribute[name]);
+
+      updateRealDOMNode(vNode, node);
+
+      return;
+    }
+
+    if (value !== vNode.attributes[name]) {
+      console.log('속성 다름', value, vNode.attributes[name]);
+
+      updateRealDOMNode(vNode, node);
+
       return;
     }
   }
 
   // TODO: node.childNodes와 vNode.children의 길이가 다를 때, 참조 에러 막기
   for (let i = 0; i < node.childNodes.length; i++) {
-    const currentNode = node.childNodes[i];
-    const currentVNode = vNode.children[i];
-
-    if (
-      currentNode.nodeName.toLowerCase() !== currentVNode.nodeName.toLowerCase()
-    ) {
-      console.log(
-        '노드 이름 다름',
-        currentNode.nodeName,
-        currentVNode.nodeName
-      );
-
-      updateRealDOMNode(currentVNode, currentNode);
-      continue;
-    }
-
-    // TODO: currentNode.attributes와 Object.keys(currentVNode.attributes)의 길이가 다를 때, 참조 에러 막기
-    for (let j = 0; j < currentNode.attributes.length; j++) {
-      const { name, value } = currentNode.attributes[j];
-
-      if (!currentVNode.attributes[name]) {
-        console.log('해당 속성 없음', currentAttribute[name]);
-
-        updateRealDOMNode(currentVNode, currentNode);
-        continue;
-      }
-
-      if (value !== currentVNode.attributes[name]) {
-        console.log('속성 다름', value, currentVNode.attributes[name]);
-
-        updateRealDOMNode(currentVNode, currentNode);
-        continue;
-      }
-    }
-
-    // TODO: currentNode.childNodes와 Object.keys(currentVNode.children)의 길이가 다를 때, 참조 에러 막기
-    for (let j = 0; j < currentNode.childNodes.length; j++) {
-      const currentNodeChild = currentNode.childNodes[j];
-      const currentVNodeChild = currentVNode.children[j];
-
-      diff(currentNodeChild, currentVNodeChild);
-    }
+    diff(node.childNodes[i], vNode.children[i]);
   }
 }
 
