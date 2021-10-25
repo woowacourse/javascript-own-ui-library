@@ -21,28 +21,33 @@ const lyrics = [
 const lyricsIter = lyrics[Symbol.iterator]();
 
 let state = { count: DATE_OF_GRADUATION_CEREMONY - 1 };
-const propList = ['count'];
+const isValidProp = (prop) => prop === 'count';
 
 const stateSetter = (target, prop, value) => {
   try {
-    if (!propList.includes(prop)) {
-      throw new Error('Invalid prop');
+    if (!isValidProp(prop)) {
+      throw new Error(`Failed to execute getter: ${prop} is invalid prop`);
     }
-    if (prop === 'count' && value > DATE_OF_GRADUATION_CEREMONY) {
+    if (value > DATE_OF_GRADUATION_CEREMONY) {
       throw new Error(lyricsIter.next().value);
     }
     target[prop] = value;
     updateDOM(target);
   } catch (e) {
-    console.log(e);
+    console.error(e.message);
   } finally {
     return true;
   }
 };
 
 const stateGetter = (target, prop) => {
-  if (prop in target) {
+  try {
+    if (!isValidProp(prop)) {
+      throw new Error(`Failed to execute getter: ${prop} is invalid prop`);
+    }
     return target[prop];
+  } catch (e) {
+    console.error(e.message);
   }
 };
 
@@ -50,7 +55,6 @@ const stateHandler = {
   set: stateSetter,
   get: stateGetter,
 };
-
 state = new Proxy(state, stateHandler);
 
 const handleClickCounter = (e) => {
