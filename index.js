@@ -3,6 +3,10 @@ import { parse } from './parser.js';
 import { getCounterTemplate } from './template.js';
 import { DATE_OF_GRADUATION_CEREMONY, LYRICS, COUNT_VALUE } from './constants.js';
 
+let state = {
+  count: DATE_OF_GRADUATION_CEREMONY - 1,
+};
+const isValidProp = (prop) => prop === 'count';
 const $root = document.querySelector('#root');
 const lyricsIterator = LYRICS[Symbol.iterator]();
 
@@ -12,9 +16,6 @@ const updateDOM = (state) => {
 
   render(virtualDOM, $root);
 };
-
-let state = { count: DATE_OF_GRADUATION_CEREMONY - 1 };
-const isValidProp = (prop) => prop === 'count';
 
 const stateSetter = (target, prop, value) => {
   try {
@@ -48,7 +49,6 @@ const stateHandler = {
   set: stateSetter,
   get: stateGetter,
 };
-state = new Proxy(state, stateHandler);
 
 const handleClickCounter = (e) => {
   const isAddButtonClicked = !!e.target.closest('.btn-add');
@@ -68,5 +68,6 @@ const handleClickCounter = (e) => {
   }
 };
 
+state = new Proxy(state, stateHandler);
 updateDOM(state);
 $root.addEventListener('click', handleClickCounter);
