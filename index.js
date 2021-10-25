@@ -1,8 +1,10 @@
 import { render } from './renderer.js';
 import { parse } from './parser.js';
 import { getCounterTemplate } from './template.js';
+import { DATE_OF_GRADUATION_CEREMONY, LYRICS, COUNT_VALUE } from './constants.js';
 
 const $root = document.querySelector('#root');
+const lyricsIterator = LYRICS[Symbol.iterator]();
 
 const updateDOM = (state) => {
   const counterTemplate = getCounterTemplate(state);
@@ -10,15 +12,6 @@ const updateDOM = (state) => {
 
   render(virtualDOM, $root);
 };
-
-const DATE_OF_GRADUATION_CEREMONY = 1126;
-const lyrics = [
-  '안녕은 영원한 헤어짐은 아니겠지요.',
-  '다시 만나기 위한 약속일거야',
-  '함께했던 시간은 이젠 추억으로 남기고',
-  '서로 가야할 길 찾아서 떠나야해요',
-];
-const lyricsIter = lyrics[Symbol.iterator]();
 
 let state = { count: DATE_OF_GRADUATION_CEREMONY - 1 };
 const isValidProp = (prop) => prop === 'count';
@@ -29,7 +22,7 @@ const stateSetter = (target, prop, value) => {
       throw new Error(`Failed to execute getter: ${prop} is invalid prop`);
     }
     if (value > DATE_OF_GRADUATION_CEREMONY) {
-      throw new Error(lyricsIter.next().value);
+      throw new Error(lyricsIterator.next().value);
     }
     target[prop] = value;
     updateDOM(target);
@@ -63,15 +56,15 @@ const handleClickCounter = (e) => {
   const isResetButtonClicked = !!e.target.closest('.btn-reset');
 
   if (isAddButtonClicked) {
-    state.count += 1;
+    state.count += COUNT_VALUE.DIFF;
     return;
   }
   if (isSubtractButtonClicked) {
-    state.count -= 1;
+    state.count -= COUNT_VALUE.DIFF;
     return;
   }
   if (isResetButtonClicked) {
-    state.count = 0;
+    state.count = COUNT_VALUE.RESET;
   }
 };
 
