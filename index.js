@@ -1,14 +1,14 @@
 import { render } from './renderer.js';
 import { parse } from './parser.js';
 import { getCounterTemplate } from './template.js';
-import { DATE_OF_GRADUATION_CEREMONY, LYRICS, COUNT_VALUE } from './constants.js';
+import { DATE_OF_GRADUATION_CEREMONY, ERROR_MESSAGE, COUNT_VALUE } from './constants.js';
 
 let state = {
   count: DATE_OF_GRADUATION_CEREMONY - 1,
 };
 const isValidProp = (prop) => prop === 'count';
 const $root = document.querySelector('#root');
-const lyricsIterator = LYRICS[Symbol.iterator]();
+const errorMessageIterator = ERROR_MESSAGE.LIST[Symbol.iterator]();
 
 const updateDOM = (state) => {
   const counterTemplate = getCounterTemplate(state);
@@ -23,7 +23,12 @@ const stateSetter = (target, prop, value) => {
       throw new Error(`Failed to execute getter: ${prop} is invalid prop`);
     }
     if (value > DATE_OF_GRADUATION_CEREMONY) {
-      throw new Error(lyricsIterator.next().value);
+      const errorMessage = errorMessageIterator.next();
+
+      if (errorMessage.done) {
+        throw new Error(ERROR_MESSAGE.STOP);
+      }
+      throw new Error(errorMessage.value);
     }
     target[prop] = value;
     updateDOM(target);
