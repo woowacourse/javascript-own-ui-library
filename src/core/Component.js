@@ -3,34 +3,43 @@ import { html } from "../dom.js";
 
 // 웹 컴포넌트 입니다.
 class Component extends HTMLElement {
-  // 웹 컴포넌트에서 기본적으로 제공해주는 메서드입니다.
   constructor() {
     super();
+
+    this.state = {};
+
+    /*
+    this.stateProxy = new Proxy(this.state, {
+      get(target, prop) {
+        console.log("proxy get");
+        return target[prop];
+      },
+      set(target, prop, value) {
+        target[prop] = value;
+        console.log("proxy set"); // 왜 동작안하지?
+
+        const newTemplate = this.getTemplate();
+        this.diff(this.template, newTemplate);
+      }
+    });
+  */
   }
 
-  // 엘리먼트가 생성될때 실행됩니다.
   connectedCallback() {
-    this.render();
+    this.append(this.template);
   }
-
-  // 해당 요소가 새로운 문서로 이동될때 실행됩니다.
-  adoptCallback() {}
-
-  // observedAttributes에 등록된 요소의 속성이 추가, 제거, 업데이트, 교체되는 부분을 관찰하고 호출됩니다.
-  attributeChangedCallback(attrName, oldValue, newValue) {}
-
-  //attributeChangedCallback 에서 관찰하는 항목을 리턴합니다.
-  static get observedAttributes() {}
-
-  // custom element 가 제거될때 호출된다.
-  disconnectedCallback() {}
 
   // 아래부터는 제가 커스텀해준 메서드입니다.
-  // // step1에 필요한 기능들
 
-  render() {}
+  render() {
+    const newTemplate = this.getTemplate();
+    if (!this.template) {
+      this.template = newTemplate;
+    }
 
-  template = null;
+    this.diff(this.template, newTemplate);
+  }
+
   getTemplate() {
     return html`<div></div>`;
   }
@@ -71,7 +80,13 @@ class Component extends HTMLElement {
     }
   }
 
-  // // step2에 필요한 기능들
+  setState(newState) {
+    Object.entries(newState).forEach(([key, value]) => {
+      this.state[key] = value;
+    });
+
+    this.render();
+  }
 }
 
 export default Component;
