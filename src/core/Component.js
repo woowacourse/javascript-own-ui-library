@@ -26,34 +26,46 @@ class Component extends HTMLElement {
   */
   }
 
+  // 웹 컴포넌트에서 기본적으로 제공하는 메서드로, 엘리먼트가 생성될때 자동으로 실행됩니다.
   connectedCallback() {
     this.append(this.template);
   }
 
+  // 템플릿을 반환하는 함수입니다.
   getTemplate() {
     return html`<div></div>`;
   }
 
+  // 디바운스용입니다.
   timeId = null;
 
+  // vDom의 변경사항을 실제 Dom에 반영하는 메서드 입니다.
   updateVDom2RealDom() {
     this.diff(this.template, this.template.vDom);
   }
 
+  // 그리기 메서드입니다.
   render() {
+    // 처음에 template없으면 여기서 할당해줍니다.
     if (!this.template) {
       this.template = this.getTemplate();
     }
 
+    // 최신 상태값을 반영하여, vDom을 업데이트 합니다.
     this.diff(this.template.vDom, this.getTemplate());
 
+    // 디바운스를 사용하여, 100ms이내에 변경사항이 있으면 추가로 vDom에 반영합니다.
     if (this.timeId) {
       clearTimeout(this.timeId);
     }
+
+    // 100ms 지나도록 변경사항이 없으면, RealDom에 업데이트 합니다.
     this.timeId = setTimeout(this.updateVDom2RealDom.bind(this), 100);
   }
 
+  // diff 메서드입니다.
   diff($oldDom, $newDom) {
+    // oldDom과 newDom을 순회하는 이터레이터입니다.
     const oldDomIterator = document.createNodeIterator(
       $oldDom,
       NodeFilter.SHOW_ALL
@@ -75,8 +87,10 @@ class Component extends HTMLElement {
         break;
       }
 
+      // 같은 태그인가?
       const isSameTagName = oldNode.localName === newNode.localName;
 
+      // 같은 속성인가?
       const oldNodeAttrs = Array.from(oldNode.attributes || []).sort(
         (a, b) => a.nodeName < b.nodeName
       );
@@ -96,33 +110,43 @@ class Component extends HTMLElement {
         }) &&
         oldNodeAttrs.length === newNodeAttrs.length;
 
+      // 같은 데이터인가?
       const isSameData = oldNode?.data === newNode?.data;
 
+      // 같은 길이의 자식들인가?
       const isSameChildrenLength =
         oldNode.childNodes.length === newNode.childNodes.length;
 
+      // 그래서 같은 Dom인가?
       const isSameDom =
         isSameTagName && isSameAttributes && isSameData && isSameChildrenLength;
 
+      // 다른 Dom이라고 판단되었을때 diff를 적용합니다.
       if (!isSameDom) {
+        // text노드면 text값만 바꿔줍니다.
         if (oldNode.nodeType === Node.TEXT_NODE) {
           oldNode.textContent = newNode.textContent;
         } else {
+          // Dom 자체가 다르면 바꿔줍니다.
           oldNode.replaceWith(newNode);
 
+          // 바꾸고나서 next로 한번 더 가야, 이터레이터 순서가 newNode와 같길래 한번더 next 해줬습니다.
           oldNode = oldDomIterator.nextNode();
         }
       }
     }
 
+    // 업데이트된 oldDom의 vDom을 자기자신으로 업데이트 해줍니다.
     $oldDom.vDom = $oldDom;
   }
 
   setState(newState) {
+    // 상태를 반영합니다. 여기서 Proxy가 동작하지 않았습니다 ㅜ
     Object.entries(newState).forEach(([key, value]) => {
       this.state[key] = value;
     });
 
+    // 상태가 변경되었으니 render해줍니다.
     this.render();
   }
 }

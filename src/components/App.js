@@ -2,6 +2,7 @@ import Component from "../core/Component.js";
 import { html } from "../utils/dom.js";
 
 class App extends Component {
+  // 웹 컴포넌트는 '-'이 포함된 커스텀 태그를 쓸 수 있습니다.
   static WebComponentName = "custom-app";
 
   constructor() {
@@ -94,6 +95,7 @@ class App extends Component {
   }
 }
 
+// 웹컴포넌트는 window에 커스텀 태그를 정의해줘야 사용가능합니다.
 if (!window.customElements.get(App.WebComponentName)) {
   window.customElements.define(App.WebComponentName, App);
 }
