@@ -1,5 +1,5 @@
-import App from "./App.js";
-import { html } from "./dom.js";
+import App from "./components/App.js";
+import { html } from "./utils/dom.js";
 
 const ReactDOM = {
   render($elem, element) {

@@ -1,5 +1,5 @@
-import Component from "./core/Component.js";
-import { html } from "./dom.js";
+import Component from "../core/Component.js";
+import { html } from "../utils/dom.js";
 
 class App extends Component {
   static WebComponentName = "custom-app";

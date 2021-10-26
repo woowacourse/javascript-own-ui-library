@@ -1,5 +1,5 @@
-import deepObjectEqual from "../deepEqual.js";
-import { html } from "../dom.js";
+import deepObjectEqual from "../utils/deepEqual.js";
+import { html } from "../utils/dom.js";
 
 // 웹 컴포넌트 입니다.
 class Component extends HTMLElement {
@@ -8,7 +8,7 @@ class Component extends HTMLElement {
 
     this.state = {};
 
-    /*
+    /* 프록시를 사용하려했는데 안되어서 남겨진 코드
     this.stateProxy = new Proxy(this.state, {
       get(target, prop) {
         console.log("proxy get");
