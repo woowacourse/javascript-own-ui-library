@@ -8,7 +8,9 @@ class Component extends HTMLElement {
 
     this.state = {};
 
-    /* 프록시를 사용하려했는데 안되어서 남겨진 코드
+    /* 
+    프록시를 사용하려했는데 안되어서 남겨진 코드 (this.state 감지중인데 this.state.count = 0 했을때 프록시가 실행안되네요? ㅜ 클래스면 뭐 다른가?
+      
     this.stateProxy = new Proxy(this.state, {
       get(target, prop) {
         console.log("proxy get");
@@ -29,54 +31,74 @@ class Component extends HTMLElement {
     this.append(this.template);
   }
 
-  // 아래부터는 제가 커스텀해준 메서드입니다.
-
-  render() {
-    const newTemplate = this.getTemplate();
-    if (!this.template) {
-      this.template = newTemplate;
-    }
-
-    this.diff(this.template, newTemplate);
-  }
-
   getTemplate() {
     return html`<div></div>`;
   }
 
+  timeId = null;
+
+  updateVDom2RealDom() {
+    this.diff(this.template, this.template.vDom);
+  }
+
+  render() {
+    const newTemplate = this.getTemplate();
+
+    if (!this.template) {
+      this.template = newTemplate;
+    }
+
+    this.diff(this.template.vDom, newTemplate);
+
+    if (this.timeId) {
+      clearTimeout(this.timeId);
+    }
+    this.timeId = setTimeout(this.updateVDom2RealDom.bind(this), 100);
+  }
+
   diff($oldDom, $newDom) {
-    const hasVirtualDom = !!$oldDom?.vDom;
+    const oldDomIterator = document.createNodeIterator(
+      $oldDom,
+      NodeFilter.SHOW_ALL
+    );
+    const newDomIterator = document.createNodeIterator(
+      $newDom,
+      NodeFilter.SHOW_ALL
+    );
 
-    if (!hasVirtualDom) {
-      $oldDom = Object.assign($oldDom, {
-        vDom: $oldDom
-      });
-    }
+    while (true) {
+      let oldNode = oldDomIterator.nextNode();
+      let newNode = newDomIterator.nextNode();
 
-    const isSameTagName = $oldDom.vDom?.localName === $newDom.localName;
-    const isSameAttributes =
-      deepObjectEqual(Array.from($oldDom.vDom.attributes || [])) ===
-      deepObjectEqual(Array.from($newDom.attributes || []));
+      if (!oldNode) {
+        break;
+      }
 
-    const isSameData = $oldDom.vDom?.data === $newDom?.data;
-    const isSameChildrenLength =
-      $oldDom.vDom.childNodes.length === $newDom.childNodes.length;
-    const isSameDom =
-      isSameTagName && isSameAttributes && isSameData && isSameChildrenLength;
+      if (!newNode) {
+        break;
+      }
 
-    if (!isSameDom) {
-      $oldDom = Object.assign($oldDom, {
-        vDom: $newDom
-      });
+      const isSameTagName = oldNode.localName === newNode.localName;
 
-      $oldDom.replaceWith($newDom);
-      return;
-    }
+      const isSameAttributes =
+        deepObjectEqual(Array.from(oldNode.attributes || [])) ===
+        deepObjectEqual(Array.from(newNode.attributes || []));
 
-    for (let i = 0; i < $newDom.childNodes.length; i++) {
-      if (!$oldDom.childNodes[i]) continue;
-      if (!$newDom.childNodes[i]) continue;
-      this.diff($oldDom.childNodes[i], $newDom.childNodes[i]);
+      const isSameData = oldNode?.data === newNode?.data;
+
+      const isSameChildrenLength =
+        oldNode.childNodes.length === newNode.childNodes.length;
+
+      const isSameDom =
+        isSameTagName && isSameAttributes && isSameData && isSameChildrenLength;
+
+      if (!isSameDom) {
+        if (oldNode.nodeType === Node.TEXT_NODE) {
+          oldNode.textContent = newNode.textContent;
+        } else {
+          oldNode.replaceWith(newNode);
+        }
+      }
     }
   }
 

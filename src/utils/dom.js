@@ -63,15 +63,17 @@ export const html = (stringArr, ...paramArr) => {
         } else {
           node.textContent = paramArr[realValueIndex];
         }
+      } else if (text.trim().length === 0) {
+        node.remove();
       }
     }
 
     const attributes = Array.from(node.attributes ?? []);
 
     if (attributes.length > 0) applyAttribute(node, attributes);
-
-    node.vDom = node;
   }
+
+  $domFromHtmlString.vDom = $domFromHtmlString.cloneNode(true);
 
   return $domFromHtmlString;
 };

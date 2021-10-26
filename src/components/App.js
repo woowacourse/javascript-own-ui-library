@@ -25,7 +25,7 @@ class App extends Component {
           </div>
           ${true &&
           html`<div>
-            <span>조건부 렌더링 테스트:</span> ${this.state.count}
+            <span>jsx파서 조건부 렌더링 테스트:</span> ${this.state.count}
           </div>`}
         </div>
       </div>`;
