@@ -86,21 +86,21 @@ const diff = (prev, curr) => {
 
   // eslint-disable-next-line no-constant-condition
   while (true) {
-    const pr = prevChildIter.next();
-    const cr = currChildIter.next();
+    const { done: prevIterDone, value: prevChild } = prevChildIter.next();
+    const { done: currIterDone, value: currChild } = currChildIter.next();
 
-    if (pr.done && cr.done) {
+    if (prevIterDone && currIterDone) {
       break;
     }
 
-    if (pr.value == null) {
-      cr.value.ref = toRNode(cr.value);
-      curr.ref.append(cr.value.ref);
+    if (prevChild == null) {
+      currChild.ref = toRNode(currChild);
+      curr.ref.append(currChild.ref);
 
       continue;
     }
 
-    diff(pr.value, cr.value);
+    diff(prevChild, currChild);
   }
 };
 
