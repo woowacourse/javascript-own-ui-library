@@ -17,4 +17,4 @@
 
 ### 심화 요구사항
 
-- [ ] Count Diff Range 기능 추가 구현
+- [x] Count Diff Range 기능 추가 구현

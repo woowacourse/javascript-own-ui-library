@@ -37,6 +37,7 @@ class Component extends HTMLElement {
   timeId = null;
 
   updateVDom2RealDom() {
+    console.log("updateVDom2RealDom");
     this.diff(this.template, this.template.vDom);
   }
 
@@ -47,15 +48,17 @@ class Component extends HTMLElement {
       this.template = newTemplate;
     }
 
-    this.diff(this.template, newTemplate);
+    this.diff(this.template.vDom, newTemplate);
 
-    // if (this.timeId) {
-    //   clearTimeout(this.timeId);
-    // }
-    // this.timeId = setTimeout(this.updateVDom2RealDom.bind(this), 100);
+    if (this.timeId) {
+      clearTimeout(this.timeId);
+    }
+    this.timeId = setTimeout(this.updateVDom2RealDom.bind(this), 100);
   }
 
   diff($oldDom, $newDom) {
+    console.log($oldDom, "#####", $newDom);
+    console.log("@@@@@@@@");
     const oldDomIterator = document.createNodeIterator(
       $oldDom,
       NodeFilter.SHOW_ALL
@@ -79,12 +82,27 @@ class Component extends HTMLElement {
 
       const isSameTagName = oldNode.localName === newNode.localName;
 
-      const oldNodeAttrs = Array.from(oldNode.attributes || []);
-      const newNodeAttrs = Array.from(newNode.attributes || []);
+      const oldNodeAttrs = Array.from(oldNode.attributes || []).sort(
+        (a, b) => a.nodeName < b.nodeName
+      );
+      const newNodeAttrs = Array.from(newNode.attributes || []).sort(
+        (a, b) => a.nodeName < b.nodeName
+      );
 
       const isSameAttributes =
-        oldNodeAttrs.every(attr => newNodeAttrs.includes(attr)) &&
+        oldNodeAttrs.length === newNodeAttrs.length &&
+        oldNodeAttrs.every((oldNodeAttr, index) => {
+          const newNodeAttr = newNodeAttrs[index];
+
+          return (
+            oldNodeAttr.nodeName === newNodeAttr.nodeName &&
+            oldNodeAttr.nodeValue === newNodeAttr.nodeValue
+          );
+        }) &&
         oldNodeAttrs.length === newNodeAttrs.length;
+
+      console.log(oldNodeAttrs[0]);
+      console.log(oldNodeAttrs, newNodeAttrs, isSameAttributes);
 
       const isSameData = oldNode?.data === newNode?.data;
 
