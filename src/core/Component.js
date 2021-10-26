@@ -1,4 +1,3 @@
-import deepObjectEqual from "../utils/deepEqual.js";
 import { html } from "../utils/dom.js";
 
 // 웹 컴포넌트 입니다.
@@ -48,12 +47,12 @@ class Component extends HTMLElement {
       this.template = newTemplate;
     }
 
-    this.diff(this.template.vDom, newTemplate);
+    this.diff(this.template, newTemplate);
 
-    if (this.timeId) {
-      clearTimeout(this.timeId);
-    }
-    this.timeId = setTimeout(this.updateVDom2RealDom.bind(this), 100);
+    // if (this.timeId) {
+    //   clearTimeout(this.timeId);
+    // }
+    // this.timeId = setTimeout(this.updateVDom2RealDom.bind(this), 100);
   }
 
   diff($oldDom, $newDom) {
@@ -80,9 +79,12 @@ class Component extends HTMLElement {
 
       const isSameTagName = oldNode.localName === newNode.localName;
 
+      const oldNodeAttrs = Array.from(oldNode.attributes || []);
+      const newNodeAttrs = Array.from(newNode.attributes || []);
+
       const isSameAttributes =
-        deepObjectEqual(Array.from(oldNode.attributes || [])) ===
-        deepObjectEqual(Array.from(newNode.attributes || []));
+        oldNodeAttrs.every(attr => newNodeAttrs.includes(attr)) &&
+        oldNodeAttrs.length === newNodeAttrs.length;
 
       const isSameData = oldNode?.data === newNode?.data;
 

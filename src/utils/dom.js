@@ -58,8 +58,6 @@ export const html = (stringArr, ...paramArr) => {
     const node = domIterator.nextNode();
     if (!node) break;
 
-    console.log(node);
-
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent;
 

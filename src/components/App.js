@@ -29,17 +29,40 @@ class App extends Component {
             </button>
           </div>
 
-          <input type="range" />
+          <span>
+            <input
+              type="range"
+              min="${this.minCount}"
+              max="${this.maxCount}"
+              onChange=${this.onChange.bind(this)}
+              value=${this.state.count}
+            />
+          </span>
 
-          ${true &&
-          html`<div>
-            <span>jsx파서 조건부 렌더링 테스트:</span> ${this.state.count}
-          </div>`}
+          <div>
+            ${false &&
+            html`<div>
+              <span>jsx파서 조건부 렌더링 테스트: 안보여야함</span> ${this.state
+                .count}
+            </div>`}
+          </div>
+          <div>
+            ${true &&
+            html`<div>
+              <span>jsx파서 조건부 렌더링 테스트:</span> ${this.state.count}
+            </div>`}
+          </div>
         </div>
       </div>`;
     };
 
     this.template = this.getTemplate();
+  }
+
+  onChange(event) {
+    this.setState({
+      count: Number(event.target.value)
+    });
   }
 
   decreaseCount() {
@@ -52,11 +75,13 @@ class App extends Component {
       count: this.state.count - 1
     });
   }
+
   resetCount() {
     this.setState({
       count: 0
     });
   }
+
   increaseCount() {
     if (!(this.state.count + 1 <= this.maxCount)) {
       alert(`${this.maxCount}이하여야 합니다.`);
