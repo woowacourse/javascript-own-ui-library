@@ -1,0 +1,11 @@
+{
+  "name": "javascript-own-ui-library",
+  "version": "1.0.0",
+  "main": "index.js",
+  "repository": "https://github.com/zigsong/javascript-own-ui-library.git",
+  "author": "zigsong <wldms5764@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "parcel build index.html"
+  }
+}

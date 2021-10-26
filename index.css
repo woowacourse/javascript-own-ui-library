@@ -32,6 +32,7 @@ body {
 
 .btn-group {
 	border-radius: var(--main-border-radius);
+	margin-bottom: 1rem;
 }
 
 .btn-group button {
