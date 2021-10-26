@@ -58,6 +58,8 @@ export const html = (stringArr, ...paramArr) => {
     const node = domIterator.nextNode();
     if (!node) break;
 
+    console.log(node);
+
     if (node.nodeType === Node.TEXT_NODE) {
       const text = node.textContent;
 
@@ -66,6 +68,12 @@ export const html = (stringArr, ...paramArr) => {
 
         if (paramArr[realValueIndex] instanceof HTMLElement) {
           node.replaceWith(paramArr[realValueIndex]);
+        } else if (
+          paramArr[realValueIndex] === false ||
+          paramArr[realValueIndex] === null ||
+          paramArr[realValueIndex] === undefined
+        ) {
+          node.remove();
         } else {
           node.textContent = paramArr[realValueIndex];
         }
