@@ -4,6 +4,12 @@ const attachEvent = (dom, eventType, cb) => {
   dom.addEventListener(eventType, cb);
 };
 
+/*  
+  JSX 파서, 개선해야할 사항
+  - 연속된 ${} param값 처리안됨 (`${}${}`이런거 파싱 못한다는 뜻)
+  - <App/> 같은 컴포넌트 인식 못함
+*/
+
 export const html = (stringArr, ...paramArr) => {
   const htmlStr = stringArr.reduce((acc, curr, index) => {
     acc += curr;

@@ -7,11 +7,16 @@ class App extends Component {
   constructor() {
     super();
     const initialState = { count: 0 };
+
+    this.minCount = 0;
+    this.maxCount = 100;
+
     this.setState(initialState);
     this.getTemplate = () => {
       return html`<div>
         <div class="container">
           <span class="count">${this.state.count}</span>
+
           <div class="btn-group">
             <button onClick=${this.decreaseCount.bind(this)}>
               <strong>-</strong>
@@ -23,6 +28,9 @@ class App extends Component {
               <strong>+</strong>
             </button>
           </div>
+
+          <input type="range" />
+
           ${true &&
           html`<div>
             <span>jsx파서 조건부 렌더링 테스트:</span> ${this.state.count}
@@ -35,6 +43,11 @@ class App extends Component {
   }
 
   decreaseCount() {
+    if (!(this.minCount <= this.state.count - 1)) {
+      alert(`${this.minCount}이상이어야 합니다.`);
+
+      return;
+    }
     this.setState({
       count: this.state.count - 1
     });
@@ -45,6 +58,11 @@ class App extends Component {
     });
   }
   increaseCount() {
+    if (!(this.state.count + 1 <= this.maxCount)) {
+      alert(`${this.maxCount}이하여야 합니다.`);
+
+      return;
+    }
     this.setState({
       count: this.state.count + 1
     });
