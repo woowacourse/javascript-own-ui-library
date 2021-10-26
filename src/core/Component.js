@@ -37,18 +37,15 @@ class Component extends HTMLElement {
   timeId = null;
 
   updateVDom2RealDom() {
-    console.log("updateVDom2RealDom");
     this.diff(this.template, this.template.vDom);
   }
 
   render() {
-    const newTemplate = this.getTemplate();
-
     if (!this.template) {
-      this.template = newTemplate;
+      this.template = this.getTemplate();
     }
 
-    this.diff(this.template.vDom, newTemplate);
+    this.diff(this.template.vDom, this.getTemplate());
 
     if (this.timeId) {
       clearTimeout(this.timeId);
@@ -57,8 +54,6 @@ class Component extends HTMLElement {
   }
 
   diff($oldDom, $newDom) {
-    console.log($oldDom, "#####", $newDom);
-    console.log("@@@@@@@@");
     const oldDomIterator = document.createNodeIterator(
       $oldDom,
       NodeFilter.SHOW_ALL
@@ -101,9 +96,6 @@ class Component extends HTMLElement {
         }) &&
         oldNodeAttrs.length === newNodeAttrs.length;
 
-      console.log(oldNodeAttrs[0]);
-      console.log(oldNodeAttrs, newNodeAttrs, isSameAttributes);
-
       const isSameData = oldNode?.data === newNode?.data;
 
       const isSameChildrenLength =
@@ -117,9 +109,13 @@ class Component extends HTMLElement {
           oldNode.textContent = newNode.textContent;
         } else {
           oldNode.replaceWith(newNode);
+
+          oldNode = oldDomIterator.nextNode();
         }
       }
     }
+
+    $oldDom.vDom = $oldDom;
   }
 
   setState(newState) {
