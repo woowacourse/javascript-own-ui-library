@@ -6,7 +6,7 @@ import { throwError } from "../util/error.js";
  */
 const createStateMachine = () => {
   let state = {};
-  let isFirstCall = false;
+  let isFirstCall = true;
 
   const setState = (key, value) => {
     state = {
@@ -20,9 +20,9 @@ const createStateMachine = () => {
   const getState = () => ({ ...state });
 
   const initState = (initialState) => {
-    if (isFirstCall) return;
+    if (!isFirstCall) return;
 
-    isFirstCall = true;
+    isFirstCall = false;
 
     if (typeof initialState !== "object" || initialState === null) {
       throwError(
