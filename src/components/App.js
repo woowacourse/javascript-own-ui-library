@@ -5,59 +5,55 @@ class App extends Component {
   // 웹 컴포넌트는 '-'이 포함된 커스텀 태그를 쓸 수 있습니다.
   static WebComponentName = "custom-app";
 
-  constructor() {
-    super();
-    const initialState = { count: 0 };
-
+  initState() {
     this.minCount = 0;
     this.maxCount = 100;
 
-    this.setState(initialState);
-    this.getTemplate = () => {
-      return html`<div>
-        <div class="container">
-          <span class="count">${this.state.count}</span>
+    this.state = { count: 0 };
+  }
 
-          <div class="btn-group">
-            <button onClick=${this.decreaseCount.bind(this)}>
-              <strong>-</strong>
-            </button>
-            <button onClick=${this.resetCount.bind(this)}>
-              <strong>RESET</strong>
-            </button>
-            <button onClick=${this.increaseCount.bind(this)}>
-              <strong>+</strong>
-            </button>
-          </div>
+  getTemplate() {
+    return html`<div>
+      <div class="container">
+        <span class="count">${this.state.count}</span>
 
-          <span>
-            <input
-              type="range"
-              min="${this.minCount}"
-              max="${this.maxCount}"
-              onChange=${this.onChange.bind(this)}
-              value=${this.state.count}
-            />
-          </span>
-
-          <div>
-            ${false &&
-            html`<div>
-              <span>jsx파서 조건부 렌더링 테스트: 안보여야함</span> ${this.state
-                .count}
-            </div>`}
-          </div>
-          <div>
-            ${true &&
-            html`<div>
-              <span>jsx파서 조건부 렌더링 테스트:</span> ${this.state.count}
-            </div>`}
-          </div>
+        <div class="btn-group">
+          <button onClick=${this.decreaseCount.bind(this)}>
+            <strong>-</strong>
+          </button>
+          <button onClick=${this.resetCount.bind(this)}>
+            <strong>RESET</strong>
+          </button>
+          <button onClick=${this.increaseCount.bind(this)}>
+            <strong>+</strong>
+          </button>
         </div>
-      </div>`;
-    };
 
-    this.template = this.getTemplate();
+        <span>
+          <input
+            type="range"
+            min="${this.minCount}"
+            max="${this.maxCount}"
+            onChange=${this.onChange.bind(this)}
+            value=${this.state.count}
+          />
+        </span>
+
+        <div>
+          ${false &&
+          html`<div>
+            <span>jsx파서 조건부 렌더링 테스트: 안보여야함</span> ${this.state
+              .count}
+          </div>`}
+        </div>
+        <div>
+          ${true &&
+          html`<div>
+            <span>jsx파서 조건부 렌더링 테스트:</span> ${this.state.count}
+          </div>`}
+        </div>
+      </div>
+    </div>`;
   }
 
   onChange(event) {

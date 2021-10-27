@@ -5,30 +5,32 @@ class Component extends HTMLElement {
   constructor() {
     super();
 
-    this.state = {};
-
-    /* 
-    프록시를 사용하려했는데 안되어서 남겨진 코드 (this.state 감지중인데 this.state.count = 0 했을때 프록시가 실행안되네요? ㅜ 클래스면 뭐 다른가?
-      
-    this.stateProxy = new Proxy(this.state, {
-      get(target, prop) {
-        console.log("proxy get");
-        return target[prop];
-      },
-      set(target, prop, value) {
-        target[prop] = value;
-        console.log("proxy set"); // 왜 동작안하지?
-
-        const newTemplate = this.getTemplate();
-        this.diff(this.template, newTemplate);
-      }
-    });
-  */
+    this.initState();
+    this.template = this.getTemplate();
+    this.append(this.template);
   }
 
-  // 웹 컴포넌트에서 기본적으로 제공하는 메서드로, 엘리먼트가 생성될때 자동으로 실행됩니다.
+  initState() {
+    this.state = {};
+  }
+
+  // 웹 컴포넌트에서 기본적으로 제공하는 메서드로, 엘리먼트가 Dom에 붙으면 실행됩니다. (현재 안씀)
   connectedCallback() {
-    this.append(this.template);
+    /* 
+    프록시를 사용하려했는데 안되어서 남겨진 코드 (this.state 감지중인데 this.state.count = 0 했을때 프록시가 실행안되네요? ㅜ 클래스면 뭐 다른가?
+    */
+    // this.stateProxy = new Proxy(this.state, {
+    //   get(target, prop) {
+    //     console.log("proxy get");
+    //     return target[prop];
+    //   },
+    //   set(target, prop, value) {
+    //     target[prop] = value;
+    //     console.log("proxy set"); // 왜 동작안하지?
+    //     const newTemplate = this.getTemplate();
+    //     this.diff(this.template, newTemplate);
+    //   }
+    // });
   }
 
   // 템플릿을 반환하는 함수입니다.
