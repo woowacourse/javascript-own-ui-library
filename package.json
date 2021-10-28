@@ -1,0 +1,43 @@
+{
+  "name": "javascript-own-ui-library",
+  "packageManager": "yarn@3.0.2",
+  "author": {
+    "name": "Danny Kim",
+    "email": "likepeppermint@gmail.com",
+    "url": "https://velog.io/@bigsaigon333"
+  },
+  "license": "MIT",
+  "private": true,
+  "scripts": {
+    "lint": "eslint --fix --cache **/*.js",
+    "stylelint": "stylelint --fix --cache '**/*.css'",
+    "format": "prettier --write --ignore-unknown .",
+    "prepare": "husky install",
+    "deploy": "NODE_DEBUG=gh-pages gh-pages --dist src -f"
+  },
+  "engines": {
+    "node": ">=12.18.3"
+  },
+  "types": "module",
+  "devDependencies": {
+    "eslint": "^7.32.0",
+    "eslint-config-airbnb-base": "^14.2.1",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-import-resolver-node": "^0.3.6",
+    "eslint-plugin-import": "^2.24.2",
+    "gh-pages": "^3.2.3",
+    "husky": ">=6",
+    "lint-staged": ">=10",
+    "prettier": "2.3.1",
+    "stylelint": "^13.13.1",
+    "stylelint-config-hudochenkov": "^5.0.0",
+    "stylelint-config-prettier": "^8.0.2",
+    "stylelint-config-standard": "^22.0.0",
+    "stylelint-order": "^4.1.0"
+  },
+  "lint-staged": {
+    "*.js": "eslint --cache --fix",
+    "*.css": "stylelint --cache --fix",
+    "*": "prettier --write --ignore-unknown"
+  }
+}

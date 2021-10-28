@@ -1,0 +1,81 @@
+:root {
+  --white: #eee;
+  --blue: #00adb5;
+  --gray: #393e46;
+  --main-border-radius: 3rem;
+}
+
+body {
+  background-color: var(--white);
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  margin-top: 3rem;
+}
+
+.count {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 4rem;
+  margin: 1.5rem;
+  padding: 2.5rem;
+  border-radius: var(--main-border-radius);
+  background-color: var(--blue);
+  color: var(--white);
+  font-size: 3rem;
+}
+
+.btn-group {
+  border-radius: var(--main-border-radius);
+}
+
+.btn-group button {
+  float: left;
+  padding: 1rem 2rem;
+  border: 0 solid;
+  background-color: var(--gray);
+  color: var(--white);
+  font-size: 1.5rem;
+  cursor: pointer;
+}
+
+.btn-group button:first-child {
+  border-top-left-radius: inherit;
+  border-bottom-left-radius: inherit;
+}
+
+.btn-group button:last-child {
+  border-top-right-radius: inherit;
+  border-bottom-right-radius: inherit;
+}
+
+.toggle-btn {
+  width: 10rem;
+  height: 5rem;
+  margin-top: 1rem;
+  border: none;
+  border-radius: 0.5rem;
+  box-shadow: 0 0 0 4px var(--blue);
+  font-weight: 600;
+  font-size: 2rem;
+  cursor: pointer;
+}
+
+.toggle-btn:hover {
+  background-color: rgba(0, 173, 181, 0.1);
+}
+
+.toggle-btn:focus {
+  box-shadow: 0 0 0 6px var(--blue);
+  outline: none;
+}
+
+.toggle-btn:active {
+  background-color: var(--blue);
+}
