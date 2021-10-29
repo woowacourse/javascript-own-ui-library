@@ -83,9 +83,8 @@ function diff(node, vNode) {
     return;
   }
 
-  // TODO: node.attributes와 Object.keys(vNode.attributes)의 길이가 다를 때, 참조 에러 막기
-  for (let j = 0; j < node.attributes.length; j++) {
-    const { name, value } = node.attributes[j];
+  for (let i = 0; i < node.attributes.length; i++) {
+    const { name, value } = node.attributes[i];
 
     if (!vNode.attributes[name]) {
       console.log('해당 속성 없음', currentAttribute[name]);
@@ -104,8 +103,38 @@ function diff(node, vNode) {
     }
   }
 
-  // TODO: node.childNodes와 vNode.children의 길이가 다를 때, 참조 에러 막기
-  for (let i = 0; i < node.childNodes.length; i++) {
+  const childrenLength = Math.max(
+    node.childNodes?.length ?? 0,
+    vNode.children?.length ?? 0
+  );
+
+  for (let i = 0; i < childrenLength; i++) {
+    // 업데이트할 버추얼 돔보다 리얼 돔이 자식 노드를 더 가지고 있다면, 리얼돔에서 삭제되어야 한다.
+    if (i >= vNode.children.length) {
+      for (let j = 0; j < eventList.length; j++) {
+        // 삭제될 노드에 걸려 있는 이벤트가 있다면, 해당 이벤트 리스너를 해제한다.
+        if (eventList[j]?.node === node.childNodes[i]) {
+          document.removeEventListener(
+            eventList[j].eventType,
+            eventList[j].callback
+          );
+          eventList.splice(j, 1);
+        }
+      }
+
+      node.childNodes[i].remove();
+
+      continue;
+    }
+
+    // 반대로 리얼돔에는 없지만 새로 생성되어야 할 노드들이 있다면 렌더한다.
+    if (i >= node.childNodes.length) {
+      const newNode = createRealDOMNode(vNode.children[i]);
+      node.appendChild(newNode);
+
+      continue;
+    }
+
     diff(node.childNodes[i], vNode.children[i]);
   }
 }
