@@ -61,15 +61,14 @@ function updateRealDOMNode(vNode, targetNode) {
 
 // Real DOM Node와 VNode와의 변경 사항을 체크한다.
 // 현재 노드의 nodeName, attributes들을 순서대로 쭉 비교한다.
-// 현재 노드가 변경되었으면, 하위 노드들도 변경된 상태로 간주하고 vNode의 내용을 DOM에 새로 업데이트한다..
+// 현재 노드가 변경되었으면, 하위 노드들도 변경된 상태로 간주하고 vNode의 내용을 DOM에 새로 업데이트한다.
 // 변경된 노드가 없으면 하위 노드들도 하나씩 재귀적으로 diff를 실행한다.
 function diff(node, vNode) {
   if (node instanceof Text && !(vNode instanceof VNode)) {
-    // node 문자열과 vNode 문자열이 같지 않다면 텍스트 노드가 다르다고 판단한다.
+    // node 문자열과 vNode 문자열이 같지 않다면 텍스트가 다르다고 판단하고 DOM을 업데이트한다.
     if (node.data !== `${vNode}`) {
       console.log('텍스트 노드 다름', node.data, `${vNode}`);
 
-      // 바뀐 노드에만 DOM을 업데이트한다.
       updateRealDOMNode(vNode, node);
     }
 
