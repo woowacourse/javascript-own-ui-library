@@ -19,20 +19,20 @@ const state = new Proxy(initialState, {
   },
 });
 
-const App = () => {
-  const onDecrease = () => {
-    state.count -= 1;
-  };
+const onDecrease = () => {
+  state.count -= 1;
+};
 
-  const onIncrease = () => {
-    state.count += 1;
-  };
+const onIncrease = () => {
+  state.count += 1;
+};
 
-  const onReset = () => {
-    state.count = 0;
-  };
+const onReset = () => {
+  state.count = 0;
+};
 
-  return Cheffe.createElement('div', { class: 'container' }, [
+const App = () =>
+  Cheffe.createElement('div', { class: 'container' }, [
     Cheffe.createElement('span', { class: 'count' }, [state.count]),
     Cheffe.createElement('div', { class: 'btn-group' }, [
       Cheffe.createElement(
@@ -58,7 +58,6 @@ const App = () => {
       ),
     ]),
   ]);
-};
 
 const rootElement = document.getElementById('root');
 CheffeDOM.render(App(), rootElement);
