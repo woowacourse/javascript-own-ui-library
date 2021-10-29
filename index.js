@@ -5,25 +5,21 @@ const initialState = {
   count: 0,
 };
 
+const state = new Proxy(initialState, {
+  get(target, prop) {
+    if (prop in target) {
+      return target[prop];
+    }
+  },
+  set(target, prop, value) {
+    target[prop] = value;
+    CheffeDOM.update(App());
+
+    return true;
+  },
+});
+
 const App = () => {
-  const state = new Proxy(initialState, {
-    get(target, prop) {
-      if (prop in target) {
-        return target[prop];
-      }
-    },
-    set(target, prop, value) {
-      if (prop in target) {
-        target[prop] = value;
-        CheffeDOM.update(App());
-
-        return true;
-      }
-
-      return false;
-    },
-  });
-
   const onDecrease = () => {
     state.count -= 1;
   };
