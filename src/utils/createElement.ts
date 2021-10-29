@@ -2,7 +2,7 @@ const createElement = (tag, props, ...children): HTMLElement => {
   const element = document.createElement(tag);
 
   if (props.hasOwnProperty("event")) {
-    const event = props.event;
+    const { event } = props;
 
     Object.keys(event).forEach((key) => {
       element.addEventListener(key, event[key]);

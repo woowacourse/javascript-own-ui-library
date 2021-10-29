@@ -1,4 +1,4 @@
-const isChanged = (oldNode: Node, newNode: Node): Boolean => {
+const isChanged = (oldNode: Node, newNode: Node): boolean => {
   return !oldNode.isEqualNode(newNode);
 };
 
