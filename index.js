@@ -12,6 +12,10 @@ const state = new Proxy(initialState, {
     }
   },
   set(target, prop, value) {
+    if (target[prop] === value) {
+      return true;
+    }
+
     target[prop] = value;
     CheffeDOM.update(App());
 
