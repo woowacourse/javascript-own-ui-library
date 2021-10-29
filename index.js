@@ -1,110 +1,43 @@
 import Cheffe from './cheffe.js';
 import CheffeDOM from './cheffeDOM.js';
 
-let count = 0;
+const initialState = {
+  count: 0,
+};
 
 const App = () => {
-  const onDecrease = () => {
-    count -= 1;
+  const state = new Proxy(initialState, {
+    get(target, prop) {
+      if (prop in target) {
+        return target[prop];
+      }
+    },
+    set(target, prop, value) {
+      if (prop in target) {
+        target[prop] = value;
+        CheffeDOM.update(App());
 
-    CheffeDOM.update(
-      Cheffe.createElement('div', { class: 'container' }, [
-        Cheffe.createElement('span', { class: 'count' }, [count]),
-        Cheffe.createElement('div', { class: 'btn-group' }, [
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onDecrease,
-            },
-            [Cheffe.createElement('strong', null, ['-'])]
-          ),
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onReset,
-            },
-            [Cheffe.createElement('strong', null, ['RESET'])]
-          ),
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onIncrease,
-            },
-            [Cheffe.createElement('strong', null, ['+'])]
-          ),
-        ]),
-      ])
-    );
+        return true;
+      }
+
+      return false;
+    },
+  });
+
+  const onDecrease = () => {
+    state.count -= 1;
   };
 
   const onIncrease = () => {
-    count += 1;
-
-    CheffeDOM.update(
-      Cheffe.createElement('div', { class: 'container' }, [
-        Cheffe.createElement('span', { class: 'count' }, [count]),
-        Cheffe.createElement('div', { class: 'btn-group' }, [
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onDecrease,
-            },
-            [Cheffe.createElement('strong', null, ['-'])]
-          ),
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onReset,
-            },
-            [Cheffe.createElement('strong', null, ['RESET'])]
-          ),
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onIncrease,
-            },
-            [Cheffe.createElement('strong', null, ['+'])]
-          ),
-        ]),
-      ])
-    );
+    state.count += 1;
   };
 
   const onReset = () => {
-    count = 0;
-
-    CheffeDOM.update(
-      Cheffe.createElement('div', { class: 'container' }, [
-        Cheffe.createElement('span', { class: 'count' }, [count]),
-        Cheffe.createElement('div', { class: 'btn-group' }, [
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onDecrease,
-            },
-            [Cheffe.createElement('strong', null, ['-'])]
-          ),
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onReset,
-            },
-            [Cheffe.createElement('strong', null, ['RESET'])]
-          ),
-          Cheffe.createElement(
-            'button',
-            {
-              onclick: onIncrease,
-            },
-            [Cheffe.createElement('strong', null, ['+'])]
-          ),
-        ]),
-      ])
-    );
+    state.count = 0;
   };
 
   return Cheffe.createElement('div', { class: 'container' }, [
-    Cheffe.createElement('span', { class: 'count' }, [count]),
+    Cheffe.createElement('span', { class: 'count' }, [state.count]),
     Cheffe.createElement('div', { class: 'btn-group' }, [
       Cheffe.createElement(
         'button',
