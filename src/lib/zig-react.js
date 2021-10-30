@@ -30,6 +30,10 @@ const Zig = (function () {
 
     const getState = () => hooks[_idx] || initialValue;
 
+    const state = {
+      value: getState,
+    };
+
     const setState = (newValue) => {
       hooks[_idx] = newValue;
 
@@ -38,7 +42,7 @@ const Zig = (function () {
 
     idx++;
 
-    return [getState, setState];
+    return [state, setState];
   };
 
   return { createElement, useState };

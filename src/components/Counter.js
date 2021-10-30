@@ -1,14 +1,26 @@
 import Zig from '../lib/zig-react';
 
 const Counter = () => {
-  const [getCount, setCount] = Zig.useState(0);
+  const [initialCount, setCount] = Zig.useState(0);
+
+  const count = new Proxy(initialCount, {
+    get(target, prop) {
+      try {
+        let value = target[prop];
+
+        return typeof target.value === 'function' ? value.call(target) : target.value;
+      } catch (error) {
+        console.error(`Proxy get Error: ${error}`);
+      }
+    },
+  });
 
   const decrease = () => {
-    setCount(getCount() - 1);
+    setCount(count.value - 1);
   };
 
   const increase = () => {
-    setCount(getCount() + 1);
+    setCount(count.value + 1);
   };
 
   const reset = () => {
@@ -19,7 +31,7 @@ const Counter = () => {
     Zig.createElement(
       'div',
       { className: 'container' },
-      Zig.createElement('span', { className: 'count' }, getCount()),
+      Zig.createElement('span', { className: 'count' }, count.value),
       Zig.createElement(
         'div',
         { className: 'btn-group' },
