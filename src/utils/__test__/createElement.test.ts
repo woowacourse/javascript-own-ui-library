@@ -26,7 +26,11 @@ describe("createElement Test", () => {
   });
 
   test("depth가 3인 element를 생성할 수 있다.", () => {
-    const element = createElement("div", {}, createElement("div", {}, createElement("span", {}, "Hello World")));
+    const element = createElement(
+      "div",
+      {},
+      createElement("div", {}, createElement("span", {}, "Hello World"))
+    );
 
     document.body.appendChild(element);
 
@@ -34,7 +38,12 @@ describe("createElement Test", () => {
   });
 
   test("child가 2개인 element를 생성할 수 있다.", () => {
-    const element = createElement("div", {}, createElement("div", {}, ""), createElement("span", {}, "Hello World"));
+    const element = createElement(
+      "div",
+      {},
+      createElement("div", {}, ""),
+      createElement("span", {}, "Hello World")
+    );
 
     document.body.appendChild(element);
 
@@ -65,6 +74,8 @@ describe("createElement Test", () => {
 
     document.body.appendChild(element);
 
-    expect(document.body.innerHTML).toBe(`<div><div></div><span><div>Hello World</div></span></div>`);
+    expect(document.body.innerHTML).toBe(
+      `<div><div></div><span><div>Hello World</div></span></div>`
+    );
   });
 });

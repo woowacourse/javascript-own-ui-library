@@ -16,7 +16,9 @@ const createElement = (tag, props, ...children): HTMLElement => {
   });
 
   children?.forEach((child) => {
-    typeof child === "object" ? element.appendChild(child) : element.appendChild(document.createTextNode(child));
+    typeof child === "object"
+      ? element.appendChild(child)
+      : element.appendChild(document.createTextNode(child));
   });
 
   return element;

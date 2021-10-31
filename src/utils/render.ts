@@ -15,7 +15,11 @@ const getNodeObject = (node: Element, obj = {}) => {
   return obj;
 };
 
-const rerender = (target: Element, newNodeObj: { [key: string]: Element }, oldNodeObj: { [key: string]: Element }) => {
+const rerender = (
+  target: Element,
+  newNodeObj: { [key: string]: Element },
+  oldNodeObj: { [key: string]: Element }
+) => {
   if (isEmptyObject(newNodeObj) || isEmptyObject(oldNodeObj)) return;
 
   for (const key of Object.keys(newNodeObj)) {
@@ -56,7 +60,11 @@ const rerender = (target: Element, newNodeObj: { [key: string]: Element }, oldNo
 
     // new 자식 o && old 자식 o
     for (const childKey of Object.keys(newNodeObj[key])) {
-      rerender(target, getNodeObject(newNodeObj[key][childKey]), getNodeObject(oldNodeObj[key][childKey]));
+      rerender(
+        target,
+        getNodeObject(newNodeObj[key][childKey]),
+        getNodeObject(oldNodeObj[key][childKey])
+      );
     }
   }
 };
