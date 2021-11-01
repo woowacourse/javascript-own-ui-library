@@ -15,6 +15,6 @@ const render = () => {
   );
 };
 
-store.subscribe(render); // 이후 state의 변화가 생기면(reducer가 호출되면) 자동으로 render 시키기
+export const myReactHook = myReact.createHook(render);
 
 render(); // 최초 렌더링

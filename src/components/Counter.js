@@ -1,21 +1,22 @@
 import { myReact } from '../lib/index.js';
 import CounterButton from './CounterButton.js';
+import { myReactHook } from '../index.js';
 
 const { createElement } = myReact;
 
-const Counter = ({ getState, dispatch }) => {
-  const { number } = getState();
-
-  const onDecrease = () => {
-    dispatch({ type: 'DECREASE' });
-  };
+const Counter = () => {
+  const [number, setNumber] = myReactHook.useState(0);
 
   const onIncrease = () => {
-    dispatch({ type: 'INCREASE' });
+    setNumber((state) => state + 1);
+  };
+
+  const onDecrease = () => {
+    setNumber((state) => state - 1);
   };
 
   const onReset = () => {
-    dispatch({ type: 'RESET' });
+    setNumber(() => 0);
   };
 
   return createElement(
@@ -27,9 +28,18 @@ const Counter = ({ getState, dispatch }) => {
     createElement(
       'div',
       { className: 'btn-group' },
-      createElement(CounterButton, { text: '-', onClick: onDecrease }),
-      createElement(CounterButton, { text: 'reset', onClick: onReset }),
-      createElement(CounterButton, { text: '+', onClick: onIncrease })
+      createElement(CounterButton, {
+        text: '-',
+        onClick: onDecrease,
+      }),
+      createElement(CounterButton, {
+        text: 'reset',
+        onClick: onReset,
+      }),
+      createElement(CounterButton, {
+        text: '+',
+        onClick: onIncrease,
+      })
     )
   );
 };
