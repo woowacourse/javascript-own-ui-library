@@ -11,15 +11,7 @@ const setStyleAttrs = (
   }
 };
 
-const setEventAttrs = (
-  node: HTMLElement,
-  type: string,
-  listener: () => void
-) => {
-  node.addEventListener(type, listener);
-};
-
-const setAttrs = (node: any, key: string | symbol | number, val: any) => {
+const setAttrs = (node: any, key: string | number, val: any) => {
   if (key === "styles") {
     setStyleAttrs(node, val);
     return;
@@ -28,7 +20,7 @@ const setAttrs = (node: any, key: string | symbol | number, val: any) => {
   if (/^on/.test(key.toString())) {
     const type = key.toString().substr(2).toLocaleLowerCase();
 
-    setEventAttrs(node, type, val);
+    node.addEventListener(type, val);
   }
 
   node[key] = val;

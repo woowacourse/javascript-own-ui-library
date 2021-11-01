@@ -14,12 +14,14 @@ const myDOM: MyDOM = {
   node: null,
   root: null,
   oldNode: null,
+
   render(node, container) {
     this.node = node;
     this.root = container;
 
     this._render();
   },
+
   _render() {
     const newNode = typeof this.node === "function" ? this.node() : this.node;
 
