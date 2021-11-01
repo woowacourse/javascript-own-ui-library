@@ -1,3 +1,6 @@
+/** 
+ * STEP2 STORE로 상태 관리하기
+ * 
 const createStore = (reducer, preloadedState = {}) => {
   let state = preloadedState;
   let subscribers = [];
@@ -31,3 +34,4 @@ const createStore = (reducer, preloadedState = {}) => {
 };
 
 export default createStore;
+*/
