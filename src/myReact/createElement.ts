@@ -4,13 +4,11 @@ const createElement = (
   tagName: string,
   { props, children = [] }: Pick<MyElementNode, "props" | "children">
 ) => {
-  for (let i = 0; i < children.length; i++) {
-    if (typeof children[i] === "function") {
-      children.splice(i, 1, (children[i] as Function)());
-    }
-  }
+  const processedChildren = children.map((child) =>
+    typeof child === "function" ? child() : child
+  );
 
-  return { tagName, props, children };
+  return { tagName, props, children: processedChildren };
 };
 
 export default createElement;
