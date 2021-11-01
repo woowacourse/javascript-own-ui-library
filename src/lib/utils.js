@@ -1,5 +1,3 @@
-export const isClassProp = (prop) => prop === 'className';
-
 export const isEventProp = (prop) => {
   return prop.startsWith('on');
 };
@@ -62,13 +60,19 @@ export const diff = ($parent, oldNode, newNode) => {
     return;
   }
 
-  // CASE4: 노드들 간의 attribute 비교
+  // CASE4: 노드 타입 비교하기
+  if (oldNode.nodeName !== newNode.nodeName) {
+    oldNode.replaceWith(newNode);
+    return;
+  }
+
+  // CASE5: 노드들 간의 attribute 비교
   if (isAttributeChange(oldNode, newNode)) {
     oldNode.replaceWith(newNode);
     return;
   }
 
-  // CASE5: children 비교
+  // CASE6: children 비교
   // text 노드를 가져오기 위해서 children대신 childNodes 사용
   const oldChildNodes = Array.from(oldNode.children);
   const newChildNodes = Array.from(newNode.children);

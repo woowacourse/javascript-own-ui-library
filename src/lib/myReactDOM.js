@@ -1,4 +1,4 @@
-import { isClassProp, isEventProp, isPlainText, diff } from './utils.js';
+import { isEventProp, isPlainText, diff } from './utils.js';
 
 // vNode를 받아서 실제 DOM Node로 변환하는 함수
 const vNodeToNode = (vNode) => {
@@ -8,19 +8,23 @@ const vNodeToNode = (vNode) => {
 
   const { children, ...rest } = props;
 
-  // props 추가하기
+  // 해당 DOM 요소에 props 추가하기
   Object.entries(rest).forEach(([key, value]) => {
-    if (isClassProp(key)) {
-      $node.setAttribute('class', value);
+    // html attributes
+    if (key in $node) {
+      $node[key] = value;
     }
 
-    if (isEventProp(key)) {
+    // event
+    else if (isEventProp(key)) {
       const eventName = key.replace('on', '').toLowerCase();
-
       $node.addEventListener(eventName, value);
     }
 
-    $node.setAttribute(key, value);
+    // etc prop
+    else {
+      $node.setAttribute(`data-prop-${key}`, value);
+    }
   });
 
   // 자식 요소에 대해서 재귀적으로 DOM Node로 변환하여 부모 요소에 추가
