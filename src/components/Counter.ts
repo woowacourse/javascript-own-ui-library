@@ -16,6 +16,8 @@ const decrease = () => {
 };
 const reset = () => {
   count = 0;
+
+  console.log("in", count);
   render($root, Counter());
 };
 

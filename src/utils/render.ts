@@ -1,19 +1,6 @@
+import getNodeObject from "./getNodeObject";
 import isChanged from "./isChanged";
 import isEmptyObject from "./isEmptyObject";
-
-const getNodeObject = (node: Element, obj = {}) => {
-  if (node.hasChildNodes()) {
-    obj[node.getAttribute("key")] = node;
-
-    [...node.children].forEach((child) => {
-      getNodeObject(child, obj[node.getAttribute("key")]);
-    });
-  } else {
-    obj[node.getAttribute("key")] = node;
-  }
-
-  return obj;
-};
 
 const rerender = (
   target: Element,
@@ -77,8 +64,6 @@ const render = (() => {
       target.appendChild(node);
 
       getNodeObject(node, oldNodeObj);
-
-      console.log(oldNodeObj);
     } else {
       const newNodeObj = getNodeObject(node);
 
