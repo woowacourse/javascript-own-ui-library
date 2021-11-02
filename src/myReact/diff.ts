@@ -1,6 +1,7 @@
-import type { MyNode } from "./types";
+import type { MyElementNode } from "./types";
 
-const diff = (oldNode: MyNode, newNode: MyNode) => {
+const diff = (oldNode: MyElementNode | null, newNode: MyElementNode) => {
+  if (!oldNode) return true;
   // 1. TextNode인 경우
   if (typeof oldNode === "string" || typeof newNode === "string") {
     return oldNode !== newNode;
@@ -23,8 +24,8 @@ const diff = (oldNode: MyNode, newNode: MyNode) => {
 
   for (let i = 0; i < (newNode.children?.length || 0); i++) {
     const hasDifference = diff(
-      oldNode.children![i] as MyNode,
-      newNode.children![i] as MyNode
+      oldNode.children![i] as MyElementNode,
+      newNode.children![i] as MyElementNode
     );
 
     if (hasDifference) return true;

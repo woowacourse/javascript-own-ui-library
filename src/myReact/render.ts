@@ -1,12 +1,16 @@
-import type { MyNode } from "./types";
+import type { MyElementNode, MyTextNode } from "./types";
 import diff from "./diff";
 import paint from "./paint";
+import createElement from "./createElement";
 
 interface MyDOM {
-  node: MyNode | (() => MyNode) | null;
+  node: MyElementNode | (() => MyElementNode) | null;
   root: HTMLElement | null;
-  oldNode: MyNode | null;
-  render: (node: MyNode | (() => MyNode), container: HTMLElement) => void;
+  oldNode: MyElementNode | null;
+  render: (
+    node: MyElementNode | (() => MyElementNode),
+    container: HTMLElement
+  ) => void;
   _render: () => void;
 }
 
@@ -25,9 +29,9 @@ const myDOM: MyDOM = {
   _render() {
     const newNode = typeof this.node === "function" ? this.node() : this.node;
 
-    if (this.oldNode && !diff(this.oldNode, newNode as MyNode)) return;
+    if (!diff(this.oldNode, newNode!)) return;
 
-    paint(newNode as MyNode, this.root as HTMLElement, true);
+    paint(newNode, this.root, true);
     this.oldNode = newNode;
   },
 };
