@@ -1,32 +1,34 @@
-import { minus, plus, reset } from '../src/utils.js';
-
 import { createElement } from './dom.js';
 
-export const createCounterElement = (state) => {
+export const createCounterElement = (state, setState) => {
+  const onMinusClick = () => {
+    setState((prevState) => prevState - 1);
+  };
+
+  const onResetClick = () => {
+    setState(0);
+  };
+
+  const onPlusClick = () => {
+    setState((prevState) => prevState + 1);
+  };
+
   return createElement(
     'div',
     [{ class: 'container' }],
     [
-      createElement('span', [{ class: 'count' }], state.value),
+      createElement('span', [{ class: 'count' }], state),
       createElement(
         'div',
         [{ class: 'btn-group' }],
         [
+          createElement('button', [{ click: onMinusClick }], [createElement('strong', [], '-')]),
           createElement(
             'button',
-            [{ click: () => minus(state) }],
-            [createElement('strong', [], '-')]
-          ),
-          createElement(
-            'button',
-            [{ click: () => reset(state) }],
+            [{ click: onResetClick }],
             [createElement('strong', [], 'RESET')]
           ),
-          createElement(
-            'button',
-            [{ click: () => plus(state) }],
-            [createElement('strong', [], '+')]
-          ),
+          createElement('button', [{ click: onPlusClick }], [createElement('strong', [], '+')]),
         ]
       ),
     ]
