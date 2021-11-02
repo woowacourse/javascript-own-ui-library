@@ -1,9 +1,11 @@
-import type { MyNode } from "./types";
+import type { MyElementNode, MyTextNode } from "./types";
 
 const setStyleAttrs = (
-  node: HTMLElement,
+  node: HTMLElement | null,
   stylesMap: Record<string, string>
 ) => {
+  if (!node) return;
+
   for (const key in stylesMap) {
     if (!stylesMap.hasOwnProperty(key)) continue;
 
@@ -26,7 +28,13 @@ const setAttrs = (node: any, key: string | number, val: any) => {
   node[key] = val;
 };
 
-const paint = (element: MyNode, container: HTMLElement, isReplace: boolean) => {
+const paint = (
+  element: MyElementNode | MyTextNode | null,
+  container: HTMLElement | null,
+  isReplace: boolean
+) => {
+  if (!element || !container) return;
+
   if (typeof element === "string") {
     isReplace ? container.replaceChildren(element) : container.append(element);
     return;
@@ -41,7 +49,7 @@ const paint = (element: MyNode, container: HTMLElement, isReplace: boolean) => {
   }
 
   for (const child of element.children!) {
-    paint(child as MyNode, node, false);
+    paint(child as MyElementNode, node, false);
   }
 
   isReplace ? container.replaceChildren(node) : container.append(node);

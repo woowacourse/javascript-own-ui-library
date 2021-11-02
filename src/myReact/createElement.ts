@@ -1,14 +1,14 @@
 import type { MyElementNode } from "./types";
 
 const createElement = (
-  tagName: string,
-  { props, children = [] }: Pick<MyElementNode, "props" | "children">
+  tagName: string | ((props?: Pick<MyElementNode, "props">) => MyElementNode),
+  { props, children = [] }: Pick<MyElementNode, "props" | "children"> = {}
 ) => {
-  const processedChildren = children.map((child) =>
-    typeof child === "function" ? child() : child
-  );
+  if (typeof tagName === "function") {
+    return tagName(props);
+  }
 
-  return { tagName, props, children: processedChildren };
+  return { tagName, props, children };
 };
 
 export default createElement;
