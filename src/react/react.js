@@ -34,21 +34,34 @@ const createElement = (type, props, ...children) => {
   };
 };
 
-//TODO: useState에서 다수의 상태를 다룰 수 있도록 변경
 const useState = (() => {
-  let state = null;
-
-  const setState = newState => {
-    state = newState;
-    renderSubtreeIntoContainer();
-  };
+  const state = [];
+  let stateIndex = 0;
+  let timerId = null;
 
   return initialState => {
-    if (!state) {
-      state = initialState;
+    const currentIndex = stateIndex;
+
+    stateIndex++;
+
+    if (state[currentIndex] === undefined) {
+      state[currentIndex] = initialState;
     }
 
-    return [state, setState];
+    const setState = newState => {
+      if (state[currentIndex] === newState) return;
+
+      state[currentIndex] = newState;
+      stateIndex = 0;
+
+      if (timerId) {
+        clearTimeout(timerId);
+      }
+
+      timerId = setTimeout(() => renderSubtreeIntoContainer(), 0);
+    };
+
+    return [state[currentIndex], setState];
   };
 })();
 

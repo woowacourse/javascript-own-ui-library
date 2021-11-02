@@ -3,6 +3,7 @@ import ReactDOM from './react/reactDOM.js';
 
 const App = () => {
   const [count, setCount] = React.useState(0);
+  const [another, setAnother] = React.useState(true);
 
   return React.createElement(
     'div',
@@ -14,7 +15,7 @@ const App = () => {
       {
         className: 'count',
       },
-      count
+      `${count}${another}`
     ),
     React.createElement(
       'div',
@@ -24,7 +25,10 @@ const App = () => {
       React.createElement(
         'button',
         {
-          onclick: () => setCount(count - 1),
+          onclick: () => {
+            setCount(count - 1);
+            setAnother(!another);
+          },
         },
         React.createElement('strong', null, '-')
       ),
