@@ -1,5 +1,6 @@
 import createVDOM from "./lib/createVDOM.js";
 import render from "./lib/render.js";
+import rerender from "./lib/rerender.js";
 
 let count = 0;
 const rootElement = document.querySelector("#root");
@@ -12,33 +13,39 @@ const Element = () => {
     createVDOM(
       "div",
       { className: "btn-group" },
-      createVDOM("button", { onclick: onDecreaseNumber }, "-"),
-      createVDOM("button", { onclick: onResetButton }, "RESET"),
-      createVDOM("button", { onclick: onIncreaseNumber }, "+")
+      createVDOM(
+        "button",
+        { onclick: onDecreaseNumber },
+        createVDOM("strong", null, "-")
+      ),
+      createVDOM(
+        "button",
+        { onclick: onResetButton },
+        createVDOM("strong", null, "RESET")
+      ),
+      createVDOM(
+        "button",
+        { onclick: onIncreaseNumber },
+        createVDOM("strong", null, "+")
+      )
     )
   );
 };
 
 function onDecreaseNumber() {
   count--;
-  updateDOM(Element(), rootElement);
+  rerender(Element(), rootElement);
 }
 
 function onResetButton() {
   count = 0;
-  updateDOM(Element(), rootElement);
+  rerender(Element(), rootElement);
 }
 
 function onIncreaseNumber() {
   count++;
-  updateDOM(Element(), rootElement);
+  rerender(Element(), rootElement);
 }
 
 // 초기 rendering
 render(Element(), rootElement);
-
-function updateDOM(VDOM, rootElement) {
-  // 전체 리렌더링을 하고 있어서, 초기화 해주는 작업이 필요해서 추가한 코드
-  rootElement.innerHTML = "";
-  render(VDOM, rootElement);
-}
