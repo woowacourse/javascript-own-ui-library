@@ -1,12 +1,12 @@
-import type { MyElementNode, MyTextNode } from "./types";
 import diff from "./diff";
-import paint from "./paint";
-import createElement from "./createElement";
+import paint, { createRealNode } from "./createRealNode";
+import type { MyElementNode } from "./types";
 
 interface MyDOM {
   node: MyElementNode | (() => MyElementNode) | null;
   root: HTMLElement | null;
-  oldNode: MyElementNode | null;
+  oldVNode: MyElementNode | null;
+  realNode: HTMLElement | null;
   render: (
     node: MyElementNode | (() => MyElementNode),
     container: HTMLElement
@@ -17,7 +17,8 @@ interface MyDOM {
 const myDOM: MyDOM = {
   node: null,
   root: null,
-  oldNode: null,
+  oldVNode: null,
+  realNode: null,
 
   render(node, container) {
     this.node = node;
@@ -27,12 +28,20 @@ const myDOM: MyDOM = {
   },
 
   _render() {
-    const newNode = typeof this.node === "function" ? this.node() : this.node;
+    if (!this.root || !this.node) {
+      throw new Error("myDOM이 초기화되지 않았습니다. render를 호출해주세요.");
+    }
 
-    if (!diff(this.oldNode, newNode!)) return;
+    const newVNode = typeof this.node === "function" ? this.node() : this.node;
 
-    paint(newNode, this.root, true);
-    this.oldNode = newNode;
+    if (!this.realNode || !this.oldVNode) {
+      this.realNode = createRealNode(newVNode);
+      this.root.replaceChildren(this.realNode);
+    } else {
+      diff(this.root, this.realNode, this.oldVNode, newVNode);
+    }
+
+    this.oldVNode = newVNode;
   },
 };
 
