@@ -1,5 +1,5 @@
 const render = ({ type, props }, rootElement) => {
-  const { className, children, ...attributes } = props;
+  const { className, text, children, ...attributes } = props;
 
   const tagElement = document.createElement(type);
 
@@ -11,6 +11,11 @@ const render = ({ type, props }, rootElement) => {
     });
   }
 
+  // text 속성
+  if (String(text)) {
+    tagElement.textContent = text;
+  }
+
   // 기타 속성 부여하기
   if (attributes) {
     for (const [key, value] of Object.entries(attributes)) {
@@ -18,16 +23,11 @@ const render = ({ type, props }, rootElement) => {
     }
   }
 
+  // children
   if (Array.isArray(children)) {
     children.forEach((child) => {
-      if (typeof child === "object") {
-        render(child, tagElement);
-      } else {
-        tagElement.appendChild(child);
-      }
+      render(child, tagElement);
     });
-  } else {
-    tagElement.innerText = children;
   }
 
   rootElement.appendChild(tagElement);
