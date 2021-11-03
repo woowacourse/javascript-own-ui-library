@@ -33,6 +33,7 @@ const Counter = () => {
         children: [
           createElement("button", {
             props: { onClick: () => setValue(value - range) },
+
             children: [
               createElement("strong", {
                 children: ["-"],
