@@ -86,7 +86,7 @@ function diff(node, vNode) {
   for (let i = 0; i < node.attributes.length; i++) {
     const { name, value } = node.attributes[i];
 
-    if (!vNode.attributes[name]) {
+    if (!(name in vNode.attributes)) {
       console.log('해당 속성 없음', currentAttribute[name]);
 
       updateRealDOMNode(vNode, node);
