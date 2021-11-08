@@ -94,6 +94,8 @@ export default class VStorage {
       prevVElement.children !== vElement.children
     ) {
       HTMLElement.innerText = vElement.children;
+
+      return true;
     }
 
     if (
