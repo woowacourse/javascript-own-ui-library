@@ -91,6 +91,10 @@ export const updateOnlyChangedDOM = (
       return;
     }
 
+    if ($virtualChildNode.textContent === $actualChildNode.textContent) {
+      return;
+    }
+
     $actualChildNode.replaceWith($virtualChildNode);
   });
 };

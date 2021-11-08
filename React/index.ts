@@ -66,6 +66,7 @@ const React = (function () {
       set(obj, prop, value) {
         if (isKeyOf(obj, prop)) {
           states[currentStateIndex][prop] = value;
+          // TODO: 이벤트 콜백마다 setState 모아서 수정한뒤 한번에 rerender하기
           rerender();
           return true;
         }
