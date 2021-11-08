@@ -19,9 +19,11 @@ export const convertReactElementToDOM = (element: ReactElement) => {
   return $newDOM;
 };
 
-export const getDOMElementToRender = (element: ReactElement): HTMLElement => {
-  const $newDOM = convertReactElementToDOM(element);
-  const children = element.children;
+export const getDOMElementToRender = (
+  reactElement: ReactElement
+): HTMLElement => {
+  const $newDOM = convertReactElementToDOM(reactElement);
+  const children = reactElement.children;
 
   if (children === undefined) {
     return;
@@ -38,7 +40,9 @@ export const getDOMElementToRender = (element: ReactElement): HTMLElement => {
   }
 
   children.forEach((child) => {
-    const childToAppend = getDOMElementToRender(child);
+    const reactElement = typeof child === "function" ? child() : child;
+
+    const childToAppend = getDOMElementToRender(reactElement);
 
     if (childToAppend !== undefined) {
       $newDOM.appendChild(childToAppend);

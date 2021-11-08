@@ -1,5 +1,5 @@
 export interface Props {
-  children?: ReactElement[] | string | number;
+  children?: (ReactElement | ReactComponent)[] | string | number;
   className?: string;
   onClick?: () => void;
 }

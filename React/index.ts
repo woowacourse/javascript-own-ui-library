@@ -15,6 +15,16 @@ const React = (function () {
   let stateIndex = 0;
   let $actualDOM: HTMLElement;
 
+  const createElement = (
+    tag: keyof HTMLElementTagNameMap,
+    props: Props
+  ): ReactElement => {
+    return {
+      nodeName: tag,
+      ...props,
+    };
+  };
+
   const render: Render = (Component, $container) => {
     const isFirst = !RootComponent && !$rootContainer;
 
@@ -28,16 +38,6 @@ const React = (function () {
     const $virtualDOM = getDOMElementToRender(RootComponent());
     $rootContainer.replaceChildren($virtualDOM);
     $actualDOM = $virtualDOM;
-  };
-
-  const createElement = (
-    tag: keyof HTMLElementTagNameMap,
-    props: Props
-  ): ReactElement => {
-    return {
-      nodeName: tag,
-      ...props,
-    };
   };
 
   const rerender = () => {
