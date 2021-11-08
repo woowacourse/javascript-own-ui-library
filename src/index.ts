@@ -1,6 +1,5 @@
-import React from "../React";
-import Count from "Components/Count";
-import "./index.css";
 import App from "App";
+import { ReactDOM } from "../React";
+import "./index.css";
 
-React.render(App, document.querySelector("#root"));
+ReactDOM.render(App, document.querySelector("#root"));

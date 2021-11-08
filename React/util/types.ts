@@ -9,3 +9,5 @@ export interface ReactElement extends Props {
 }
 
 export type ReactComponent = (props?: Props) => ReactElement;
+
+export type Render = (element: ReactComponent, container: HTMLElement) => void;

@@ -1,22 +1,22 @@
-import React from "../../React";
-import { ReactComponent } from "../../React/types";
+import React, { ReactDOM } from "../../React";
+import { ReactComponent } from "../../React/util/types";
 
 const Count: ReactComponent = () => {
   const count = React.useState(0);
 
-  return React.createElement("div", {
+  return ReactDOM.createElement("div", {
     className: "container",
     children: [
-      React.createElement("span", {
+      ReactDOM.createElement("span", {
         className: "count",
         children: count.value,
       }),
-      React.createElement("div", {
+      ReactDOM.createElement("div", {
         className: "btn-group",
         children: [
-          React.createElement("button", {
+          ReactDOM.createElement("button", {
             children: [
-              React.createElement("strong", {
+              ReactDOM.createElement("strong", {
                 onClick: () => {
                   count.value -= 1;
                 },
@@ -24,9 +24,9 @@ const Count: ReactComponent = () => {
               }),
             ],
           }),
-          React.createElement("button", {
+          ReactDOM.createElement("button", {
             children: [
-              React.createElement("strong", {
+              ReactDOM.createElement("strong", {
                 onClick: () => {
                   count.value = 0;
                 },
@@ -34,7 +34,7 @@ const Count: ReactComponent = () => {
               }),
             ],
           }),
-          React.createElement("button", {
+          ReactDOM.createElement("button", {
             onClick: () => {
               count.value += 1;
               count.value += 1;
@@ -48,7 +48,7 @@ const Count: ReactComponent = () => {
               count.value += 1;
             },
             children: [
-              React.createElement("strong", {
+              ReactDOM.createElement("strong", {
                 children: "+10",
               }),
             ],
