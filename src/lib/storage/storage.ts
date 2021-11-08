@@ -57,16 +57,16 @@ export default class VStorage {
     this.stateIndex = -1;
   }
 
-  updater(prevVElement: VElement, vElement: VElement) {
+  tryElementUpdate(prevVElement: VElement, vElement: VElement) {
     this.increaseElementIndex();
     const HTMLElement = this.HTMLElementStorage[this.elementIndex];
 
     if (prevVElement.type !== vElement.type) {
-      return true;
+      return false;
     }
 
     if (typeof prevVElement.children !== typeof vElement.children) {
-      return true;
+      return false;
     }
 
     if (
@@ -74,7 +74,7 @@ export default class VStorage {
       Array.isArray(vElement.children) &&
       prevVElement.children.length !== vElement.children.length
     ) {
-      return true;
+      return false;
     }
 
     if (
@@ -101,9 +101,14 @@ export default class VStorage {
       typeof vElement.children !== "string"
     ) {
       prevVElement.children.forEach((child, index) => {
-        return this.updater(child, vElement.children[index] as VElement);
+        return this.tryElementUpdate(
+          child,
+          vElement.children[index] as VElement
+        );
       });
     }
+
+    return true;
   }
 
   compare(latestVDom: VElement, onFindDifference: Function) {
@@ -111,9 +116,9 @@ export default class VStorage {
       throw Error("업데이트 될 VDOM 이 초기화되지 않았습니다.");
     }
 
-    const distortionFound = this.updater(this.VDom, latestVDom);
+    const updateSuccess = this.tryElementUpdate(this.VDom, latestVDom);
 
-    if (distortionFound === true) {
+    if (!updateSuccess) {
       onFindDifference();
     }
   }
