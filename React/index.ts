@@ -46,8 +46,12 @@ const React = (function () {
       ...props,
       onClick: () => {
         if (typeof props.onClick === "function") {
+          const beforeStates = states;
           props.onClick();
-          rerender();
+
+          if (beforeStates !== states) {
+            rerender();
+          }
         }
       },
     };
@@ -71,6 +75,7 @@ const React = (function () {
       },
       set(obj, prop, value) {
         if (isKeyOf(obj, prop)) {
+          states = [...states];
           states[currentStateIndex][prop] = value;
 
           return true;
