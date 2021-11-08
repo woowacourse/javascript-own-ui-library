@@ -3,7 +3,6 @@ import {
   tagTypeList,
   attributeNameList,
   styleNameList,
-  idSeparatorUnit,
 } from "./constants";
 import { contains } from "./@types/guards";
 

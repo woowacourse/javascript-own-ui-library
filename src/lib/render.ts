@@ -91,7 +91,6 @@ const createHTMLElement = (vElement: VElement): HTMLElement => {
   const HTMLElement = document.createElement(type);
 
   setHTMLElementAttributes(HTMLElement, attribute);
-  HTMLElement.setAttribute("data-element-index", String(elementIndex));
 
   const elementStyles = getHTMLElementStyles(style);
   HTMLElement.setAttribute("style", elementStyles);
