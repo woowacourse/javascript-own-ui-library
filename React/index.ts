@@ -9,21 +9,11 @@ interface State<T> {
 }
 
 const React = (function () {
-  const states: State<unknown>[] = [];
+  let states: State<unknown>[] = [];
   let RootComponent: ReactComponent;
   let $rootContainer: Element;
   let stateIndex = 0;
   let $actualDOM: HTMLElement;
-
-  const createElement = (
-    tag: keyof HTMLElementTagNameMap,
-    props: Props
-  ): ReactElement => {
-    return {
-      nodeName: tag,
-      ...props,
-    };
-  };
 
   const render: Render = (Component, $container) => {
     const isFirst = !RootComponent && !$rootContainer;
@@ -47,6 +37,22 @@ const React = (function () {
     updateOnlyChangedDOM($virtualDOM, $actualDOM);
   };
 
+  const createElement = (
+    tag: keyof HTMLElementTagNameMap,
+    props: Props
+  ): ReactElement => {
+    return {
+      nodeName: tag,
+      ...props,
+      onClick: () => {
+        if (typeof props.onClick === "function") {
+          props.onClick();
+          rerender();
+        }
+      },
+    };
+  };
+
   const useState = <T>(initialValue: T): State<T> => {
     const currentStateIndex = stateIndex;
     stateIndex++;
@@ -66,8 +72,7 @@ const React = (function () {
       set(obj, prop, value) {
         if (isKeyOf(obj, prop)) {
           states[currentStateIndex][prop] = value;
-          // TODO: 이벤트 콜백마다 setState 모아서 수정한뒤 한번에 rerender하기
-          rerender();
+
           return true;
         }
 

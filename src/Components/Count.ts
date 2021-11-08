@@ -37,10 +37,19 @@ const Count: ReactComponent = () => {
           React.createElement("button", {
             onClick: () => {
               count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
+              count.value += 1;
             },
             children: [
               React.createElement("strong", {
-                children: "+",
+                children: "+10",
               }),
             ],
           }),
