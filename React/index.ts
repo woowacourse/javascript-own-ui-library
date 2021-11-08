@@ -41,28 +41,31 @@ const React = (function () {
   };
 
   const rerender = () => {
+    stateIndex = 0;
     const $virtualDOM = getDOMElementToRender(RootComponent());
 
     updateOnlyChangedDOM($virtualDOM, $actualDOM);
   };
 
   const useState = <T>(initialValue: T): State<T> => {
-    //TODO: stateIndex 활용해서 여러 state를 사용할 수 있도록 해야함.
-    if (states[stateIndex] === undefined) {
-      states[stateIndex] = {
+    const currentStateIndex = stateIndex;
+    stateIndex++;
+
+    if (states[currentStateIndex] === undefined) {
+      states[currentStateIndex] = {
         value: initialValue,
       };
     }
 
-    return new Proxy(states[stateIndex] as State<T>, {
+    return new Proxy(states[currentStateIndex] as State<T>, {
       get(obj, prop) {
         if (isKeyOf(obj, prop)) {
-          return { ...states[stateIndex] }[prop];
+          return { ...states[currentStateIndex] }[prop];
         }
       },
       set(obj, prop, value) {
         if (isKeyOf(obj, prop)) {
-          states[stateIndex][prop] = value;
+          states[currentStateIndex][prop] = value;
           rerender();
           return true;
         }

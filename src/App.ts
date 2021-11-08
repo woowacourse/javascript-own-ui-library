@@ -3,7 +3,7 @@ import React from "../React";
 
 const App = () => {
   return React.createElement("div", {
-    children: [Count, Count],
+    children: [Count, Count, Count],
   });
 };
 
