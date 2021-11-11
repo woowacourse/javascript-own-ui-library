@@ -1,6 +1,7 @@
-import type { MyElementNode, MyTextNode } from "./types";
+import { MyElementNode, MyTextNode } from "./types";
+import { isTextNode } from "./validation";
 
-const setStyleAttrs = (
+export const setStyleAttrs = (
   node: HTMLElement | null,
   stylesMap: Record<string, string>
 ) => {
@@ -13,29 +14,43 @@ const setStyleAttrs = (
   }
 };
 
+export const setEvent = (
+  node: HTMLElement,
+  key: string | number,
+  callback: () => void,
+  oldCallback?: () => void
+) => {
+  const type = key.toString().substr(2).toLocaleLowerCase();
+
+  if (oldCallback) {
+    node.removeEventListener(type, oldCallback);
+  }
+
+  node.addEventListener(type, callback);
+};
+
 const setAttrs = (node: any, key: string | number, val: any) => {
-  if (key === "styles") {
+  if (key === "style") {
     setStyleAttrs(node, val);
     return;
   }
 
   if (/^on/.test(key.toString())) {
-    const type = key.toString().substr(2).toLocaleLowerCase();
-
-    node.addEventListener(type, val);
+    setEvent(node, key, val);
+    return;
   }
 
   node[key] = val;
 };
 
-const paint = (
+const _createRealNode = (
+  container: Element | null,
   element: MyElementNode | MyTextNode | null,
-  container: HTMLElement | null,
   isReplace: boolean
 ) => {
   if (!element || !container) return;
 
-  if (typeof element === "string") {
+  if (isTextNode(element)) {
     isReplace ? container.replaceChildren(element) : container.append(element);
     return;
   }
@@ -49,10 +64,20 @@ const paint = (
   }
 
   for (const child of element.children!) {
-    paint(child as MyElementNode, node, false);
+    _createRealNode(node, child, false);
   }
 
   isReplace ? container.replaceChildren(node) : container.append(node);
+
+  return node;
 };
 
-export default paint;
+export const createRealNode = (VNode: MyElementNode): HTMLElement => {
+  const node = document.createElement("div");
+
+  _createRealNode(node, VNode, true);
+
+  return node.children[0] as HTMLElement;
+};
+
+export default createRealNode;

@@ -9,10 +9,10 @@ interface Hook {
 const hook: Hook = {
   values: [],
   index: 0,
+
   useState<T>(initialValue: T) {
     const stateIndex = this.index++;
-    const isFirstRendered = this.values.length <= stateIndex;
-    const state = isFirstRendered ? initialValue : this.values[stateIndex];
+    const state = this.values[stateIndex] || initialValue;
 
     const setState = (value: T) => {
       this.values[stateIndex] = value;
