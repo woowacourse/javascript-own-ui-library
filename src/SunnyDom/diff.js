@@ -1,6 +1,6 @@
 import createDomNode from './createDomNode.js';
 
-const diff = (prevNode, newNode, changedNodes) => {
+const diff = (prevNode, newNode, changedNodes = []) => {
   const $prevNode = createDomNode(prevNode);
   const $newNode = createDomNode(newNode);
 
