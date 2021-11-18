@@ -1,5 +1,5 @@
 /*
- ** ony using SunnyElement
+ ** only using SunnyElement
  */
 
 import createElement from './createElement.js';
