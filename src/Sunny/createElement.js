@@ -4,10 +4,6 @@ const createElement = (tagName, params) => {
     child.parent = node;
   };
 
-  const removeChild = (child) => {
-    console.log(remove);
-  };
-
   const addEventListener = (eventType, listener) => {
     node.eventListener[eventType] = listener;
   };
@@ -19,7 +15,6 @@ const createElement = (tagName, params) => {
     children: [],
     eventListener: {},
     appendChild,
-    removeChild,
     addEventListener,
   };
 
