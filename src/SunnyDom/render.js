@@ -1,4 +1,4 @@
-import Sunny, { findElement } from '../Sunny/index.js';
+import Sunny from '../Sunny/index.js';
 import createDomNode from './createDomNode.js';
 import diff from './diff.js';
 import findDomNode from './findDomNode.js';
@@ -10,15 +10,15 @@ import { isEmptyObject } from '../utils/objectUtils.js';
 /* 그 이후에 부모가 추가되면 parent에 추가하고, 해당 parent를 최상단으로 올린다. */
 let prevDOMNode = {};
 
-/* element: SunnyDomNode, prevElement?: realDomNode */
-const render = (element, prevElement) => {
-  const parsedPrevElement = prevElement ? Sunny.parseDomElement(prevElement) : null;
+/* element: SunnyDomNode, parentElement?: realDomNode */
+const render = (element, parentElement) => {
+  const parsedPrevElement = parentElement ? Sunny.parseDomElement(parentElement) : null;
 
-  if (isEmptyObject(prevDOMNode) && prevElement) {
+  if (isEmptyObject(prevDOMNode) && parentElement) {
     prevDOMNode = parsedPrevElement;
   }
 
-  const targetNode = findElement(prevDOMNode, { ...element, className: element.class });
+  const targetNode = Sunny.findElement(prevDOMNode, { ...element, className: element.class });
 
   if (targetNode) {
     /* 변경된 노드 목록 */
