@@ -1,6 +1,11 @@
-const render = ({ type, props }, rootElement) => {
-  const { className, text, children, ...attributes } = props;
+let rootElement;
 
+const render = ({ type, props }, parentElement) => {
+  if (!rootElement) {
+    rootElement = parentElement;
+  }
+
+  const { className, text, children, ...attributes } = props;
   const tagElement = document.createElement(type);
 
   // class 속성 부여하기
@@ -30,7 +35,14 @@ const render = ({ type, props }, rootElement) => {
     });
   }
 
-  rootElement.appendChild(tagElement);
+  if (!parentElement) {
+    // TODO : 비교하는 로직 추가하기
+    rootElement.innerHTML = "";
+
+    rootElement.appendChild(tagElement);
+  } else {
+    parentElement.appendChild(tagElement);
+  }
 };
 
 export default render;

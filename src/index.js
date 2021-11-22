@@ -1,6 +1,5 @@
 import createVDOM from "./lib/createVDOM.js";
 import render from "./lib/render.js";
-import rerender from "./lib/rerender.js";
 
 let count = 0;
 const rootElement = document.querySelector("#root");
@@ -34,17 +33,17 @@ const Element = () => {
 
 function onDecreaseNumber() {
   count--;
-  rerender(Element(), rootElement);
+  render(Element());
 }
 
 function onResetButton() {
   count = 0;
-  rerender(Element(), rootElement);
+  render(Element());
 }
 
 function onIncreaseNumber() {
   count++;
-  rerender(Element(), rootElement);
+  render(Element());
 }
 
 // 초기 rendering
