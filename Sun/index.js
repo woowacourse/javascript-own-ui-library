@@ -1,14 +1,21 @@
+let $latestTarget = null;
 let vDom = {};
 
 const createElement = (domObject) => {
   const element = document.createElement(domObject.type);
-  const { children, className } = domObject.props;
+  const { children, className, events } = domObject.props;
 
   if (className) {
     element.className = className;
   }
 
-  if (typeof children === 'string') {
+  if (events) {
+    Object.keys(events).forEach((event) =>
+      element.addEventListener(event, events[event])
+    );
+  }
+
+  if (typeof children === 'string' || typeof children === 'number') {
     element.textContent = children;
   }
 
@@ -24,9 +31,14 @@ const createElement = (domObject) => {
 };
 
 const render = (domObject, $target) => {
+  if ($target) {
+    $latestTarget = $target;
+  }
+
   vDom = createElement(domObject);
 
-  $target.appendChild(vDom);
+  $latestTarget.innerHTML = '';
+  $latestTarget.appendChild(vDom);
 };
 
 export default { render };
