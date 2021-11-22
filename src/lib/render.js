@@ -8,6 +8,9 @@ const render = ({ type, props }, parentElement) => {
   const { className, text, children, ...attributes } = props;
   const tagElement = document.createElement(type);
 
+  // text 속성
+  tagElement.textContent = text;
+
   // class 속성 부여하기
   if (className) {
     const classArr = className?.split(" ");
@@ -16,23 +19,16 @@ const render = ({ type, props }, parentElement) => {
     });
   }
 
-  // text 속성
-  if (String(text)) {
-    tagElement.textContent = text;
-  }
-
-  // 기타 속성 부여하기
-  if (attributes) {
-    for (const [key, value] of Object.entries(attributes)) {
-      tagElement[key] = value;
-    }
-  }
-
   // children
   if (Array.isArray(children)) {
     children.forEach((child) => {
       render(child, tagElement);
     });
+  }
+
+  // 기타 속성 부여하기
+  for (const [key, value] of Object.entries(attributes)) {
+    tagElement[key] = value;
   }
 
   if (!parentElement) {
