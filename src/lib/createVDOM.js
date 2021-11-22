@@ -13,12 +13,14 @@ const createVDOM = (tag, attr, ...children) => {
   }
 
   children.forEach((child) => {
-    if (child === undefined) return;
+    if (child === undefined || child === null) return;
 
+    // 단순 텍스트 노드
     if (typeof child === "string" || typeof child === "number") {
       element.props = { ...element.props, text: child };
     }
 
+    // children
     if (typeof child === "object") {
       const currentChildren = element.props["children"];
 
