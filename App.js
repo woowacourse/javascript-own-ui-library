@@ -18,28 +18,24 @@ export const App = () => {
   return createElement(
     'div',
     { class: 'container' },
-    createElement(
-      'span',
-      { class: 'count' },
-      createElement('text', null, count)
-    ),
+    createElement('span', { class: 'count' }, createElement('text', {}, count)),
     createElement(
       'div',
       { class: 'btn-group' },
       createElement(
         'button',
         { click: decrease },
-        createElement('strong', null, createElement('text', null, '-'))
+        createElement('strong', {}, createElement('text', {}, '-'))
       ),
       createElement(
         'button',
         { click: reset },
-        createElement('strong', null, createElement('text', null, 'RESET'))
+        createElement('strong', {}, createElement('text', {}, 'RESET'))
       ),
       createElement(
         'button',
         { click: increase },
-        createElement('strong', null, createElement('text', null, '+'))
+        createElement('strong', {}, createElement('text', {}, '+'))
       )
     )
   );
