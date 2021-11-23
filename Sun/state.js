@@ -7,7 +7,7 @@ const useState = (component, initialState) => {
     throw new Error('useState를 사용할 컴포넌트를 입력해주세요.');
   }
 
-  let Component = component;
+  const Component = component;
 
   if (state === undefined) {
     state = initialState;
