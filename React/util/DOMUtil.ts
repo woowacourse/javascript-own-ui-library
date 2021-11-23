@@ -31,23 +31,19 @@ export const getDOMElementToRender = (
 
   if (typeof children === "string") {
     $newDOM.innerText = children;
-    return $newDOM;
-  }
-
-  if (typeof children === "number") {
+  } else if (typeof children === "number") {
     $newDOM.innerText = String(children);
-    return $newDOM;
+  } else {
+    children.forEach((child) => {
+      const reactElement = typeof child === "function" ? child() : child;
+
+      const childToAppend = getDOMElementToRender(reactElement);
+
+      if (childToAppend !== undefined) {
+        $newDOM.appendChild(childToAppend);
+      }
+    });
   }
-
-  children.forEach((child) => {
-    const reactElement = typeof child === "function" ? child() : child;
-
-    const childToAppend = getDOMElementToRender(reactElement);
-
-    if (childToAppend !== undefined) {
-      $newDOM.appendChild(childToAppend);
-    }
-  });
 
   return $newDOM;
 };
