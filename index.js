@@ -3,27 +3,56 @@ import { getCounterNodeObj } from './counter/counter.js';
 
 const rootElementId = 'root';
 
-let count = 0;
+let state = {
+	count: 0,
+	secondCount: 0,
+};
 
-ShinseDOM.render(getCounterNodeObj(count), rootElementId);
+const countProxy = new Proxy(state, {
+	get(target, prop) {
+		return target[prop];
+	},
+
+	set(target, prop, value) {
+		target[prop] = value;
+		return true;
+	},
+});
+
+ShinseDOM.render(getCounterNodeObj(countProxy), rootElementId);
 
 const updateDOM = () => {
-	ShinseDOM.render(getCounterNodeObj(count), rootElementId);
+	ShinseDOM.render(getCounterNodeObj(countProxy), rootElementId);
 	addEventToCounterButtons();
 };
 
 const handleMinusButton = () => {
-	count -= 1;
+	countProxy.count -= 1;
 	updateDOM();
 };
 
 const handleResetButton = () => {
-	count = 0;
+	countProxy.count = 0;
 	updateDOM();
 };
 
 const handlePlusButton = () => {
-	count += 1;
+	countProxy.count += 1;
+	updateDOM();
+};
+
+const handleSecondMinusButton = () => {
+	countProxy.secondCount -= 10;
+	updateDOM();
+};
+
+const handleSecondResetButton = () => {
+	countProxy.secondCount = 0;
+	updateDOM();
+};
+
+const handleSecondPlusButton = () => {
+	countProxy.secondCount += 10;
 	updateDOM();
 };
 
@@ -31,10 +60,16 @@ const addEventToCounterButtons = () => {
 	const minusButton = document.getElementById('minus-button');
 	const resetButton = document.getElementById('reset-button');
 	const plusButton = document.getElementById('plus-button');
+	const secondMinusButton = document.getElementById('second-minus-button');
+	const secondResetButton = document.getElementById('second-reset-button');
+	const secondPlusButton = document.getElementById('second-plus-button');
 
 	minusButton.addEventListener('click', handleMinusButton);
 	resetButton.addEventListener('click', handleResetButton);
 	plusButton.addEventListener('click', handlePlusButton);
+	secondMinusButton.addEventListener('click', handleSecondMinusButton);
+	secondResetButton.addEventListener('click', handleSecondResetButton);
+	secondPlusButton.addEventListener('click', handleSecondPlusButton);
 };
 
 addEventToCounterButtons();
