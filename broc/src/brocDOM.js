@@ -142,25 +142,18 @@ class VDOM {
 
   diff() {
     const newVDOM = createVDOMNode(this.element);
-    console.dir(this.stored);
-    console.dir(newVDOM);
 
     const _diff = (newVDOMNode, storedVDOMNode) => {
       if (newVDOMNode.type !== storedVDOMNode.type) {
-        // type이 다르면 무조건 update
         this.updateAll();
       } else {
         if (newVDOMNode.type === FRAGMENT) {
-          // 둘다 fragment면
-          // 바로 children 비교
           _diffChildren(newVDOMNode, storedVDOMNode);
         } else if (newVDOMNode.type === TEXT_NODE) {
-          // 텍스트 노드면 value 비교
           if (storedVDOMNode.props.value !== newVDOMNode.props.value) {
             this.updateAll();
           }
         } else {
-          // 기존에 있던 props에서 변경되거나 새로 추가 된 게 있으면 update
           Object.keys(newVDOMNode.props)
             .filter((prop) => prop !== "children")
             .forEach((prop) => {
@@ -169,14 +162,12 @@ class VDOM {
               }
             });
 
-          // 기존 props에서 사라진게 있으면 update
           Object.keys(storedVDOMNode.props).forEach((propKey) => {
             if (!(propKey in newVDOMNode.props)) {
               this.updateAll();
             }
           });
 
-          // children 비교
           _diffChildren(newVDOMNode, storedVDOMNode);
         }
       }
