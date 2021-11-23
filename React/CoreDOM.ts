@@ -7,7 +7,7 @@ const CoreDOM = (function () {
   let $rootContainer: Element;
   let $actualDOM: HTMLElement;
 
-  const createElement = (
+  const createReactElement = (
     tag: keyof HTMLElementTagNameMap,
     props: Props
   ): ReactElement => {
@@ -28,9 +28,9 @@ const CoreDOM = (function () {
   };
 
   const render: Render = (Component, $container) => {
-    const isFirst = !RootComponent && !$rootContainer;
+    const isRoot = !RootComponent && !$rootContainer;
 
-    if (!isFirst) {
+    if (!isRoot) {
       return;
     }
 
@@ -51,7 +51,7 @@ const CoreDOM = (function () {
 
   return {
     render,
-    createElement,
+    createReactElement,
   };
 })();
 

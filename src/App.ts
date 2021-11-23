@@ -2,7 +2,7 @@ import Counter from "Components/Counter";
 import { ReactDOM } from "../React";
 
 const App = () => {
-  return ReactDOM.createElement("div", {
+  return ReactDOM.createReactElement("div", {
     children: [Counter, Counter, Counter],
   });
 };
