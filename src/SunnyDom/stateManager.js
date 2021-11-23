@@ -4,7 +4,7 @@
  * renderer: function
  */
 
-const stateManager = (defaultState, renderer) => {
+const stateManager = (defaultState = {}, renderer) => {
   return new Proxy(defaultState, {
     get: function (target, prop) {
       return target[prop];
