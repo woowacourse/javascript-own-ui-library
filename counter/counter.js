@@ -1,4 +1,4 @@
-export const getCounterNodeObj = (count) => {
+export const getCounterNodeObj = (state) => {
 	// 상상속의 신세한탄 JSX Parser를 쓰면 아래처럼 리턴된다는 가정 하에 만든 샘플입니다.
 
 	return {
@@ -19,7 +19,7 @@ export const getCounterNodeObj = (count) => {
 				id: null,
 				class: 'count',
 				childrenType: 'number',
-				children: count,
+				children: state.count,
 			},
 			{
 				tag: 'div',
@@ -69,6 +69,66 @@ export const getCounterNodeObj = (count) => {
 								class: null,
 								childrenType: 'text',
 								children: '+',
+							},
+						],
+					},
+				],
+			},
+			{
+				tag: 'span',
+				id: null,
+				class: 'count',
+				childrenType: 'number',
+				children: state.secondCount,
+			},
+			{
+				tag: 'div',
+				id: null,
+				class: 'btn-group',
+				childrenType: 'node',
+				children: [
+					{
+						tag: 'button',
+						id: 'second-minus-button',
+						class: null,
+						childrenType: 'node',
+						children: [
+							{
+								tag: 'strong',
+								id: null,
+								class: null,
+								childrenType: 'text',
+								children: '-10',
+							},
+						],
+					},
+					{
+						tag: 'button',
+						id: 'second-reset-button',
+						class: null,
+						childrenType: 'node',
+						children: [
+							{
+								tag: 'strong',
+								id: null,
+								class: null,
+								childrenType: 'text',
+								children: 'RESET',
+							},
+						],
+					},
+					{
+						tag: 'button',
+						id: 'second-plus-button',
+						class: null,
+						childrenType: 'node',
+						children: [
+							{
+								tag: 'strong',
+								id: null,
+								class: null,
+								childrenType: 'text',
+								children: '+10',
 							},
 						],
 					},
