@@ -8,7 +8,7 @@ let state = {
 	secondCount: 0,
 };
 
-const countProxy = new Proxy(state, {
+const stateManager = new Proxy(state, {
 	get(target, prop) {
 		return target[prop];
 	},
@@ -19,40 +19,40 @@ const countProxy = new Proxy(state, {
 	},
 });
 
-ShinseDOM.render(getCounterNodeObj(countProxy), rootElementId);
+ShinseDOM.render(getCounterNodeObj(stateManager), rootElementId);
 
 const updateDOM = () => {
-	ShinseDOM.render(getCounterNodeObj(countProxy), rootElementId);
+	ShinseDOM.render(getCounterNodeObj(stateManager), rootElementId);
 	addEventToCounterButtons();
 };
 
 const handleMinusButton = () => {
-	countProxy.count -= 1;
+	stateManager.count -= 1;
 	updateDOM();
 };
 
 const handleResetButton = () => {
-	countProxy.count = 0;
+	stateManager.count = 0;
 	updateDOM();
 };
 
 const handlePlusButton = () => {
-	countProxy.count += 1;
+	stateManager.count += 1;
 	updateDOM();
 };
 
 const handleSecondMinusButton = () => {
-	countProxy.secondCount -= 10;
+	stateManager.secondCount -= 10;
 	updateDOM();
 };
 
 const handleSecondResetButton = () => {
-	countProxy.secondCount = 0;
+	stateManager.secondCount = 0;
 	updateDOM();
 };
 
 const handleSecondPlusButton = () => {
-	countProxy.secondCount += 10;
+	stateManager.secondCount += 10;
 	updateDOM();
 };
 
