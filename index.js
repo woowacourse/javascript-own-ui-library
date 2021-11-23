@@ -15,6 +15,8 @@ const stateManager = new Proxy(state, {
 
 	set(target, prop, value) {
 		target[prop] = value;
+		updateDOM();
+
 		return true;
 	},
 });
@@ -28,32 +30,26 @@ const updateDOM = () => {
 
 const handleMinusButton = () => {
 	stateManager.count -= 1;
-	updateDOM();
 };
 
 const handleResetButton = () => {
 	stateManager.count = 0;
-	updateDOM();
 };
 
 const handlePlusButton = () => {
 	stateManager.count += 1;
-	updateDOM();
 };
 
 const handleSecondMinusButton = () => {
 	stateManager.secondCount -= 10;
-	updateDOM();
 };
 
 const handleSecondResetButton = () => {
 	stateManager.secondCount = 0;
-	updateDOM();
 };
 
 const handleSecondPlusButton = () => {
 	stateManager.secondCount += 10;
-	updateDOM();
 };
 
 const addEventToCounterButtons = () => {
