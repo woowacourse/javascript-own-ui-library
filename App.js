@@ -1,21 +1,19 @@
-import { createElement, render } from './library/JuactDOM.js';
+import { createElement } from './library/JuactDOM.js';
+import { useState } from './library/useState.js';
 
 export const App = () => {
-  let count = 0;
+  const [count, setCount] = useState(0);
 
   const increase = () => {
-    count += 1;
-    render(elements(), document.getElementById('root'));
+    setCount(count + 1);
   };
 
   const decrease = () => {
-    count -= 1;
-    render(elements(), document.getElementById('root'));
+    setCount(count - 1);
   };
 
   const reset = () => {
-    count = 0;
-    render(elements(), document.getElementById('root'));
+    setCount(0);
   };
 
   const elements = () =>
