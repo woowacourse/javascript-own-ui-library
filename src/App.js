@@ -1,25 +1,20 @@
 import Sun from '../Sun/index.js';
 
 const INITIAL_COUNT = 0;
-let count = INITIAL_COUNT;
 
 const App = () => {
-  const onIncrease = () => {
-    count += 1;
+  const [count, setCount] = Sun.useState(App, INITIAL_COUNT);
 
-    Sun.render(App());
+  const onIncrease = () => {
+    setCount(count + 1);
   };
 
   const onDecrease = () => {
-    count -= 1;
-
-    Sun.render(App());
+    setCount(count - 1);
   };
 
   const onReset = () => {
-    count = INITIAL_COUNT;
-
-    Sun.render(App());
+    setCount(INITIAL_COUNT);
   };
 
   return {
