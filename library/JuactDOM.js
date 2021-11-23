@@ -37,5 +37,5 @@ export const render = (vDOM, root) => {
   const fragment = document.createDocumentFragment();
 
   createDOM(vDOM, fragment);
-  root.appendChild(fragment);
+  root.replaceChildren(fragment);
 };
