@@ -9,7 +9,7 @@ const createElement = (type, props, ...children) => {
 };
 
 const createHook = (callback) => {
-  let hooks = [];
+  const hooks = [];
   let index = -1;
 
   const useState = (initialValue) => {
@@ -18,8 +18,6 @@ const createHook = (callback) => {
 
     const setState = (updater) => {
       hooks[index] = updater(hooks[index]);
-
-      console.log(hooks[index]);
 
       index = -1;
       callback();
