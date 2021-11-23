@@ -83,6 +83,7 @@ export const stateController = (() => {
 
     render(id) {
       renderer.get(id)?.();
+      stateIndex = 0;
     },
   };
 })();

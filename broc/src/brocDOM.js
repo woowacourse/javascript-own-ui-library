@@ -5,17 +5,16 @@ const setEventHandlers = (() => {
   const eventMap = new Map();
 
   return ($element, eventPropName, handler) => {
-    if (eventMap.get($element)?.has(eventPropName)) {
-      return;
+    const eventName = eventPropName.replace("on", "").toLowerCase();
+    const eventMapKey = JSON.stringify({ $element, eventName });
+
+    if (eventMap.has(eventMapKey)) {
+      $element.removeEventListener(eventName, eventMap.get(eventMapKey));
+    } else {
+      eventMap.set(eventMapKey, handler);
     }
 
-    $element.addEventListener(eventPropName.replace("on", "").toLowerCase(), handler);
-
-    if (!eventMap.has($element)) {
-      eventMap.set($element, new Set());
-    }
-
-    eventMap.get($element).add(eventPropName);
+    $element.addEventListener(eventName, handler);
   };
 })();
 
@@ -106,6 +105,7 @@ const createVDOMNode = (rootElement) => {
 
   return {
     ...rootElement,
+    ref: null,
     props: {
       ...rootElement.props,
       children: rootElement.children.map((child) =>
@@ -140,35 +140,67 @@ class VDOM {
     this.stored = createVDOMNode(this.element);
   }
 
-  // diff() {
-  //   const newVDOM = createVDOMNode(this.element);
+  diff() {
+    const newVDOM = createVDOMNode(this.element);
 
-  //   const _diff = (newVDOMNode, storedVDOMNode, parent) => {
-  //     if (newVDOMNode.type !== storedVDOMNode.type) {
-  //       if (storedVDOMNode.type === FRAGMENT) {
-  //         removeChildrenAll(parent);
-  //         parent.append(createDOMNodeFromVDOM(newVDOMNode));
-  //       } else {
-  //       }
-  //     }
-  //   };
+    const _diff = (newVDOMNode, storedVDOMNode) => {
+      if (newVDOMNode.type !== storedVDOMNode.type) {
+        this.updateAll();
+      } else {
+        if (newVDOMNode.type === FRAGMENT) {
+          _diffChildren(newVDOMNode, storedVDOMNode);
+        } else if (newVDOMNode.type === TEXT_NODE) {
+          if (storedVDOMNode.props.value !== newVDOMNode.props.value) {
+            this.updateAll();
+          }
+        } else {
+          Object.keys(newVDOMNode.props)
+            .filter((prop) => prop !== "children")
+            .forEach((prop) => {
+              if (storedVDOMNode.props[prop] !== newVDOMNode.props[prop]) {
+                this.updateAll();
+              }
+            });
 
-  //   return _diff(newVDOM, this.stored, this.container);
-  // }
+          Object.keys(storedVDOMNode.props).forEach((propKey) => {
+            if (!(propKey in newVDOMNode.props)) {
+              this.updateAll();
+            }
+          });
+
+          _diffChildren(newVDOMNode, storedVDOMNode);
+        }
+      }
+    };
+
+    const _diffChildren = (newVDOMNode, storedVDOMNode) => {
+      // length가 다르면 update
+      if (newVDOMNode.props.children.length !== storedVDOMNode.props.children.length) {
+        this.updateAll();
+      } else {
+        for (let i = 0; i < storedVDOMNode.props.children.length; i++) {
+          _diff(newVDOMNode.props.children[i], storedVDOMNode.props.children[i]);
+        }
+      }
+    };
+
+    _diff(newVDOM, this.stored);
+    this.stored = newVDOM;
+  }
 
   renderVDOMtoDOM() {
     this.container.append(createDOMTreeFromVDOM(this.stored));
   }
 
-  updateDOM() {
+  updateAll() {
     this.container.innerHTML = "";
     this.setVDOM();
     this.renderVDOMtoDOM();
+  }
 
-    // this.element를 통해 새로운 vdom 생성
-    // 새로운 vdom과 stored를 비교
-    // 변화가 있는 dom의 좌표와 변경 사항을 저장
-    // 변경사항을 dom에 반영
+  updateDOM() {
+    // this.diff();
+    this.updateAll();
   }
 }
 
