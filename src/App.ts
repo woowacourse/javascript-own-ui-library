@@ -1,9 +1,9 @@
-import Count from "Components/Count";
+import Counter from "Components/Counter";
 import { ReactDOM } from "../React";
 
 const App = () => {
   return ReactDOM.createElement("div", {
-    children: [Count, Count, Count],
+    children: [Counter, Counter, Counter],
   });
 };
 

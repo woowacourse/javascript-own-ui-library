@@ -1,7 +1,7 @@
 import React, { ReactDOM } from "../../React";
 import { ReactComponent } from "../../React/util/types";
 
-const Count: ReactComponent = () => {
+const Counter: ReactComponent = () => {
   const count = React.useState(0);
 
   return ReactDOM.createElement("div", {
@@ -59,4 +59,4 @@ const Count: ReactComponent = () => {
   });
 };
 
-export default Count;
+export default Counter;
