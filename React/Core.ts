@@ -4,30 +4,42 @@ interface State<T> {
   value: T;
 }
 
+interface ReturnValue {
+  states: State<unknown>[];
+  useState: <T>(initialValue: T) => State<T>;
+  initStateIndex: () => void;
+}
+
 const Core = (function () {
-  let states: State<unknown>[] = [];
+  const returnValue: ReturnValue = {
+    states: [],
+    useState,
+    initStateIndex: () => {
+      stateIndex = 0;
+    },
+  };
   let stateIndex = 0;
 
-  const useState = <T>(initialValue: T): State<T> => {
+  function useState<T>(initialValue: T): State<T> {
     const currentStateIndex = stateIndex;
     stateIndex++;
 
-    if (states[currentStateIndex] === undefined) {
-      states[currentStateIndex] = {
+    if (returnValue.states[currentStateIndex] === undefined) {
+      returnValue.states[currentStateIndex] = {
         value: initialValue,
       };
     }
 
-    return new Proxy(states[currentStateIndex] as State<T>, {
+    return new Proxy(returnValue.states[currentStateIndex] as State<T>, {
       get(obj, prop) {
         if (isKeyOf(obj, prop)) {
-          return { ...states[currentStateIndex] }[prop];
+          return { ...returnValue.states[currentStateIndex] }[prop];
         }
       },
       set(obj, prop, value) {
         if (isKeyOf(obj, prop)) {
-          states = [...states];
-          states[currentStateIndex][prop] = value;
+          returnValue.states = [...returnValue.states];
+          returnValue.states[currentStateIndex][prop] = value;
 
           return true;
         }
@@ -35,15 +47,9 @@ const Core = (function () {
         return false;
       },
     });
-  };
+  }
 
-  return {
-    states,
-    useState,
-    initStateIndex: () => {
-      stateIndex = 0;
-    },
-  };
+  return returnValue;
 })();
 
 export default Core;

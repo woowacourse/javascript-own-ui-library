@@ -28,7 +28,7 @@ const Count: ReactComponent = () => {
             children: [
               ReactDOM.createElement("strong", {
                 onClick: () => {
-                  count.value = 0;
+                  console.log("아무런 state를 바꾸지 않음");
                 },
                 children: "RESET",
               }),

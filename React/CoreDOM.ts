@@ -19,9 +19,8 @@ const CoreDOM = (function () {
           const beforeStates = Core.states;
           props.onClick();
 
-          rerender();
-
           if (beforeStates !== Core.states) {
+            rerender();
           }
         }
       },
