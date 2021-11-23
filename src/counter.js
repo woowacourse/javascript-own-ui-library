@@ -1,36 +1,36 @@
-import { minus, plus, reset } from '../src/utils.js';
+import { createElement } from './dom.js';
 
-export const createCounterDocumentObject = (state) => {
-  return {
-    tagName: 'div',
-    attributes: [{ class: 'container' }],
-    children: [
-      {
-        tagName: 'span',
-        attributes: [{ class: 'count' }],
-        innerText: state.value,
-      },
-      {
-        tagName: 'div',
-        attributes: [{ class: 'btn-group' }],
-        children: [
-          {
-            tagName: 'button',
-            attributes: [{ click: () => minus(state) }],
-            children: [{ tagName: 'strong', attributes: [], innerText: '-' }],
-          },
-          {
-            tagName: 'button',
-            attributes: [{ click: () => reset(state) }],
-            children: [{ tagName: 'strong', attributes: [], innerText: 'RESET' }],
-          },
-          {
-            tagName: 'button',
-            attributes: [{ click: () => plus(state) }],
-            children: [{ tagName: 'strong', attributes: [], innerText: '+' }],
-          },
-        ],
-      },
-    ],
+export const createCounterElement = (state, setState) => {
+  const onMinusClick = () => {
+    setState((prevState) => prevState - 1);
   };
+
+  const onResetClick = () => {
+    setState(0);
+  };
+
+  const onPlusClick = () => {
+    setState((prevState) => prevState + 1);
+  };
+
+  return createElement(
+    'div',
+    [{ class: 'container' }],
+    [
+      createElement('span', [{ class: 'count' }], state),
+      createElement(
+        'div',
+        [{ class: 'btn-group' }],
+        [
+          createElement('button', [{ click: onMinusClick }], [createElement('strong', [], '-')]),
+          createElement(
+            'button',
+            [{ click: onResetClick }],
+            [createElement('strong', [], 'RESET')]
+          ),
+          createElement('button', [{ click: onPlusClick }], [createElement('strong', [], '+')]),
+        ]
+      ),
+    ]
+  );
 };

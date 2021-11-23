@@ -23,6 +23,8 @@ const makeAttributes = (currentElem, attrs) => {
  * @param {Object[]} children[].children
  */
 const makeChildren = (parentElem, children) => {
+  if (children === null || typeof children === 'undefined') return;
+
   const fragment = document.createDocumentFragment();
 
   children.forEach((child) => {
