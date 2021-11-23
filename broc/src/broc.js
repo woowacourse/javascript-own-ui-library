@@ -83,6 +83,7 @@ export const stateController = (() => {
 
     render(id) {
       renderer.get(id)?.();
+      stateIndex = 0;
     },
   };
 })();
@@ -110,6 +111,8 @@ const useState = (initialState) => {
   };
 
   stateController.setStateIndexToNext();
+  console.log(currentIndex);
+  console.log(stateController.getStateByIndex(currentIndex));
 
   return [stateController.getStateByIndex(currentIndex), setState];
 };
