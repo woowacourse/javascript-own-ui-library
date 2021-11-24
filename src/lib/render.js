@@ -1,10 +1,6 @@
 let rootElement;
 
-const render = ({ type, props }, parentElement) => {
-  if (!rootElement) {
-    rootElement = parentElement;
-  }
-
+const createReactElement = ({ type, props }) => {
   const { className, text, children, ...attributes } = props;
   const tagElement = document.createElement(type);
 
@@ -31,10 +27,18 @@ const render = ({ type, props }, parentElement) => {
     tagElement[key] = value;
   }
 
-  if (!parentElement) {
-    // TODO : 비교하는 로직 추가하기
-    rootElement.innerHTML = "";
+  return tagElement;
+};
 
+const render = (element, parentElement) => {
+  if (!rootElement) {
+    rootElement = parentElement;
+  }
+
+  const tagElement = createReactElement(element);
+
+  if (!parentElement) {
+    rootElement.innerHTML = "";
     rootElement.appendChild(tagElement);
   } else {
     parentElement.appendChild(tagElement);
