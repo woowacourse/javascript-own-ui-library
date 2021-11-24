@@ -9,8 +9,8 @@ export const createElement = (type, attributes, ...children) => ({
   ),
 });
 
-// virtualDOM을 순회하면서 실제 DOM에 반영할 element를 생성합니다.
-const createDOM = (vDOM, parentFragment) => {
+// virtualDOM을 순회하면서 실제 DOM에 반영할 element를 붙입니다.
+const attachToDOM = (vDOM, parentFragment) => {
   const { type, attributes, children } = vDOM;
   const element = document.createElement(type);
 
@@ -29,13 +29,13 @@ const createDOM = (vDOM, parentFragment) => {
   parentFragment.appendChild(element);
 
   children.map((child) => {
-    createDOM(child, element);
+    attachToDOM(child, element);
   });
 };
 
 export const render = (vDOM, root) => {
   const fragment = document.createDocumentFragment();
 
-  createDOM(vDOM, fragment);
+  attachToDOM(vDOM, fragment);
   root.replaceChildren(fragment);
 };
