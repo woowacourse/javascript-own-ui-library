@@ -1,14 +1,15 @@
 import createVDOM from "./lib/createVDOM.js";
 import render from "./lib/render.js";
+import store from "./lib/store.js";
 
-let count = 0;
 const rootElement = document.querySelector("#root");
+const state = store({ count: 0 }, () => render(Element()));
 
 const Element = () => {
   return createVDOM(
     "div",
     { className: "container" },
-    createVDOM("span", { className: "count" }, count),
+    createVDOM("span", { className: "count" }, state.count),
     createVDOM(
       "div",
       { className: "btn-group" },
@@ -32,18 +33,15 @@ const Element = () => {
 };
 
 function onDecreaseNumber() {
-  count--;
-  render(Element());
+  state.count -= 1;
 }
 
 function onResetButton() {
-  count = 0;
-  render(Element());
+  state.count = 0;
 }
 
 function onIncreaseNumber() {
-  count++;
-  render(Element());
+  state.count += 1;
 }
 
 // 초기 rendering
