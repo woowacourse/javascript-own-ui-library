@@ -1,91 +1,36 @@
-<p align="middle" >
-  <img src="https://techcourse-storage.s3.ap-northeast-2.amazonaws.com/d54ca5e74f204f3b983378cdd4ee324e" width="400">
-</p>
-<h1 align="middle">Level4 - 나만의 UI Library 만들기</h1>
-</p>
+<p align="middle">Level4 - Step 1</p>
+<h2 align="middle">Virtual DOM 만들기</h2>
 
-## 🚀 Getting Started
+## 🎯 후기
 
-> JavaScript 만으로 모던 프레임워크나 라이브러리를 구현하며 그 동작 원리를 탐구합니다.
+```
+기본적인 렌더러만 구현했습니다.
+jsx는 react를 사용해 변환하는 방식으로 작동 시켰습니다.
+상태관리 업데이트 되게끔 구현했습니다.
 
-✔️ 원활한 리뷰를 위해 PR 일정을 준수해주세요.  
-✔️ 별도의 SPA 프레임워크나 라이브러리 없이 `오로지 JavaScript`만으로 작성합니다.  
-✔️ 개별 미션으로 크루간 상호 코드 리뷰
+다음 단계에서
 
-## 📅 일정
+1. react 의존성 제거후 custom createElement 구현
+2. diff 알고리즘
 
-<table>
-  <tr>
-    <th>주차</th>
-    <th>월</th>
-    <th>화</th>
-    <th>수</th>
-    <th>목</th>
-    <th>금</th>
-  </tr>
-    <tr>
-    <td rowspan="2">1</td>
-    <td colspan="2" align="center">-</td>
-    <td>6</td>
-    <td>7</td>
-    <td>8</td>
-  </tr>
-  <tr>
-    <td colspan="2" align="center">-</td>
-    <td align="center" style="background-color:#2dc0bd; color: white;">VirtualDOM 강의 - 1회차</td>
-    <td colspan="1" align="center">-</td>
-    <td colspan="1" align="center" style="background-color:#2dc0bd; color: white;">VirtualDOM 강의 - 2회차</td>
-  </tr>
-  <tr>
-    <td rowspan="2">2</td>
-    <td>11</td>
-    <td>12</td>
-    <td>13</td>
-    <td>14</td>
-    <td>15</td>
-  </tr>
-  <tr>
-    <td align="center">X</td>
-    <td colspan="1" align="center">-</td>
-    <td colspan="1" align="center" style="background-color:#2dc0bd; color: white;">나만의 VirtualDOM  공유</td>
-    <td colspan="1" align="center">-</td>
-    <td colspan="1" align="center">-</td>
-  </tr>
-
-  <tr>
-    <td rowspan="2">3</td>
-    <td>18</td>
-    <td>19</td>
-    <td>20</td>
-    <td>21</td>
-    <td>22</td>
-  </tr>
-  <tr>
-    <td colspan="1" align="center" style="background-color:orange; color: white;">VirtualDOM 미션 마감</td>
-    <td colspan="1" align="center" style="background-color:#2dc0bd; color: white;">상태 관리 디자인 패턴 강의</td>
-    <td colspan="1" align="center" style="background-color:red; color: white;">VirtualDOM 리뷰 마감</td>
-    <td colspan="1" align="center">-</td>
-    <td colspan="1" align="center">-</td>
-  </tr>
-
-  <tr>
-    <td rowspan="2">4</td>
-    <td>25</td>
-    <td>26</td>
-    <td>27</td>
-    <td>28</td>
-    <td>29</td>
-  </tr>
-  <tr>
-    <td colspan="1" align="center" style="background-color:#2dc0bd; color: white;">나만의 상태 관리 디자인 패턴 공유</td>
-    <td colspan="1" align="center">-</td>
-    <td colspan="1" align="center" style="background-color:orange; color: white;">상태 관리 디자인 패턴  미션 마감</td>
-    <td colspan="1" align="center">-</td>
-    <td colspan="1" align="center" style="background-color:red; color: white;">상태 관리 디자인 패턴 리뷰 마감</td>
-  </tr>
-</table>
+위주로 개선해보겠습니다
+```
 
 ## 📝 Requirements
 
-- [Step1 요구사항](STEP1-REQUIREMENTS.md)
-- [Step2 요구사항](STEP2-REQUIREMENTS.md)
+### 필수 요구사항
+
+- [x] 렌더러 구현
+- [x] 직접 구현한 렌더러와 VirtualDOM으로 Counter App 렌더링
+- [x] DOM Node 비교
+- [x] 업데이트 DOM Node
+- [x] 렌더링한 Counter App 동작시키기
+- [x] `데이터 변경에 반응`하여 렌더링되도록 구현
+- [ ] VirtualDOM 생성 팩토리 함수 구현 (aka createElement)
+
+### 심화 요구사항
+
+- [ ] 문자열 기반의 JSX Parser 구현
+- [ ] AST 처리 기반의 JSX Parser 구현
+- [ ] 동일한 Element인 경우 Key 속성을 만들어 순서를 지정하도록 구현
+- [ ] Router 구현 후 Query Parameter를 사용해 초기 값 정의
