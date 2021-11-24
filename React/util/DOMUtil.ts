@@ -12,10 +12,6 @@ export const convertReactElementToDOM = (element: ReactElement) => {
     $newDOM.onclick = element.onClick;
   }
 
-  if (element.className) {
-    $newDOM.className = element.className;
-  }
-
   return $newDOM;
 };
 
