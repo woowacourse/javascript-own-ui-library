@@ -1,5 +1,5 @@
-interface Props {
-  children?: ReactElement[] | string | number;
+export interface Props {
+  children?: (ReactElement | ReactComponent)[] | string | number;
   className?: string;
   onClick?: () => void;
 }
@@ -9,3 +9,5 @@ export interface ReactElement extends Props {
 }
 
 export type ReactComponent = (props?: Props) => ReactElement;
+
+export type Render = (element: ReactComponent, container: HTMLElement) => void;
