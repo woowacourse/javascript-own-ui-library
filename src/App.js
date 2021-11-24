@@ -3,28 +3,29 @@ import SunnyDom from './SunnyDom/index.js';
 
 const DEFAULT_COUNT = 0;
 
-let count = 0;
+const initialState = {
+  count: 0,
+};
 
 const App = () => {
+  const state = SunnyDom.stateManager(initialState, () => SunnyDom.render(App()));
+
   const onDecrement = () => {
-    count = count - 1;
-    SunnyDom.render(App());
+    state.count = state.count - 1;
   };
 
   const onIncrement = () => {
-    count = count + 1;
-    SunnyDom.render(App());
+    state.count = state.count + 1;
   };
 
   const onReset = () => {
-    count = DEFAULT_COUNT;
-    SunnyDom.render(App());
+    state.count = DEFAULT_COUNT;
   };
 
   return Sunny.createElement('div', {
     class: 'container',
     children: [
-      Sunny.createElement('span', { class: 'count', textContent: count }),
+      Sunny.createElement('span', { class: 'count', textContent: state.count }),
       Sunny.createElement('div', {
         class: 'btn-group',
         children: [
