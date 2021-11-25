@@ -16,6 +16,10 @@ export const reducer = (state = initialState, action) => {
       return {
         number: 0,
       };
+    case 'RANDOM':
+      return {
+        number: state.number + action.payload,
+      };
     default:
       return state;
   }

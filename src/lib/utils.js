@@ -84,3 +84,7 @@ export const diff = ($parent, oldNode, newNode) => {
     diff(oldNode, oldChildNodes[i], newChildNodes[i]);
   }
 };
+
+export const delay = (ms = 3000) => {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+};

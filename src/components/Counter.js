@@ -1,22 +1,32 @@
 import { myReact } from '../lib/index.js';
+import { delay } from '../lib/utils.js';
 import CounterButton from './CounterButton.js';
-import { myReactHook } from '../index.js';
 
 const { createElement } = myReact;
 
-const Counter = () => {
-  const [number, setNumber] = myReactHook.useState(0);
+const randomAsyncIncreaseThunk = async (dispatch) => {
+  await delay(1000);
+
+  dispatch({ type: 'RANDOM', payload: Math.floor(Math.random() * 5 + 1) });
+};
+
+const Counter = ({ getState, dispatch }) => {
+  const { number } = getState();
 
   const onIncrease = () => {
-    setNumber((state) => state + 1);
+    dispatch({ type: 'INCREASE' });
   };
 
   const onDecrease = () => {
-    setNumber((state) => state - 1);
+    dispatch({ type: 'DECREASE' });
   };
 
   const onReset = () => {
-    setNumber(() => 0);
+    dispatch({ type: 'RESET' });
+  };
+
+  const onRandom = () => {
+    dispatch(randomAsyncIncreaseThunk);
   };
 
   return createElement(
@@ -28,18 +38,10 @@ const Counter = () => {
     createElement(
       'div',
       { className: 'btn-group' },
-      createElement(CounterButton, {
-        text: '-',
-        onClick: onDecrease,
-      }),
-      createElement(CounterButton, {
-        text: 'reset',
-        onClick: onReset,
-      }),
-      createElement(CounterButton, {
-        text: '+',
-        onClick: onIncrease,
-      })
+      createElement(CounterButton, { text: '-', onClick: onDecrease }),
+      createElement(CounterButton, { text: 'reset', onClick: onReset }),
+      createElement(CounterButton, { text: 'random', onClick: onRandom }),
+      createElement(CounterButton, { text: '+', onClick: onIncrease })
     )
   );
 };

@@ -1,9 +1,7 @@
-/** 
- * STEP2 STORE로 상태 관리하기
- * 
-const createStore = (reducer, preloadedState = {}) => {
+const createStore = (reducer, preloadedState = {}, ...middlewares) => {
   let state = preloadedState;
-  let subscribers = [];
+  const subscribers = [];
+  const middlewareList = middlewares ? middlewares.slice().reverse() : []; // 인자로 입력 받은 미들웨어의 실행 순서를 유지하기 위함
 
   const getState = () => ({ ...state });
 
@@ -16,22 +14,36 @@ const createStore = (reducer, preloadedState = {}) => {
     };
   };
 
-  const dispatch = ({ type, payload = null }) => {
-    state = reducer(state, { type, payload });
+  const dispatch = (action) => {
+    state = reducer(state, action);
+    _notify();
 
-    notify();
+    return action;
   };
 
-  const notify = () => {
+  const _notify = () => {
     subscribers.forEach((l) => l());
   };
+
+  let next = dispatch; // 미들웨어 각각의 두 번째 인자로 넘겨줄 dispatch 함수
+
+  // 미들웨어 첫 번째 인자로 넘겨줄 스토어 객체
+  const _store = {
+    getState,
+    dispatch,
+  };
+
+  // 미들웨어를 실행할 때 두 번째 인자로 받는 dispatch가
+  // 다음 미들웨어를 실행시킬 수 있도록 dispatch 함수를 미들웨어 별로 갱신함
+  middlewareList.forEach((m) => {
+    next = m(_store)(next);
+  });
 
   return {
     getState,
     subscribe,
-    dispatch,
+    dispatch: next,
   };
 };
 
 export default createStore;
-*/
