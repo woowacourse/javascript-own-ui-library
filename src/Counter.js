@@ -1,24 +1,34 @@
 import { createElement as h } from "./lib/React.js";
-import createStateMachine from "./lib/StateMachine.js";
-
-const [get, set, init] = createStateMachine();
+import reactive from "./lib/reactive.js";
 
 const Counter = () => {
-  init({ count: 0, isMessageVisible: true });
+  const state = reactive({
+    count: 0,
+    isMessageVisible: true,
+  });
 
-  const { count, isMessageVisible } = get();
+  const reset = () => {
+    state.count = 0;
+  };
 
-  const reset = () => set("count", 0);
-  const increment = () => set("count", (prev) => prev + 1);
-  const decrement = () => set("count", (prev) => prev - 1);
-  const toggle = () => set("isMessageVisible", (prev) => !prev);
+  const increment = () => {
+    state.count += 1;
+  };
+
+  const decrement = () => {
+    state.count -= 1;
+  };
+
+  const toggle = () => {
+    state.isMessageVisible = !state.isMessageVisible;
+  };
 
   return h(
     "div",
     { className: "container" },
     h("h1", { className: "heading" }, "동동의 Counter"),
 
-    h("span", { className: "count" }, count),
+    h("span", { className: "count" }, state.count),
     h(
       "div",
       { className: "btn-group" },
@@ -27,7 +37,7 @@ const Counter = () => {
       h("button", { onClick: increment }, h("strong", null, "+"))
     ),
     h("button", { className: "toggle-btn", onClick: toggle }, "toggle"),
-    isMessageVisible ? h("h2", null, "만나서 반갑습니다") : null
+    state.isMessageVisible ? h("h2", null, "만나서 반갑습니다") : null
   );
 };
 

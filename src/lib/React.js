@@ -13,15 +13,29 @@ export const createTextNode = (value) => ({
  * @params props HTMLAttributes | ComponentProps
  * @params children 자식 노드
  */
-export const createElement = (type, props, ...children) => ({
-  type,
-  props: props ?? {},
-  children: children
-    .filter((child) => child != null)
-    .map((child) =>
-      typeof child !== "object" ? createTextNode(child) : child
-    ),
-});
+export const createElement = (type, props, ...children) => {
+  if (typeof type === "function") {
+    return type();
+  }
+
+  return {
+    type,
+    props: props ?? {},
+    children: children
+      .filter((child) => child != null)
+      .map((child) => {
+        if (typeof child === "function") {
+          return createElement(child);
+        }
+
+        if (typeof child === "object") {
+          return child;
+        }
+
+        return createTextNode(child);
+      }),
+  };
+};
 
 const React = {
   createElement,
